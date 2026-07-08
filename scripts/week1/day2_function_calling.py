@@ -20,6 +20,11 @@ from pathlib import Path
 from typing import Any
 from dotenv import load_dotenv
 from openai import OpenAI
+import httpx
+
+# Windows 默认 stdout 走 GBK，编码不了 emoji/部分中文 -> 切 UTF-8（开箱即跑）
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
 
 load_dotenv(Path(__file__).parent.parent.parent / ".env")
 
@@ -194,7 +199,11 @@ def call_llm(provider, messages, tools=None, max_tokens=1024, temperature=0.3):
     if not _is_real_key(provider["api_key"]):
         raise RuntimeError(f"provider {provider['name']} key 未配置")
 
-    client = OpenAI(api_key=provider["api_key"], base_url=provider["base_url"])
+    client = OpenAI(
+        api_key=provider["api_key"],
+        base_url=provider["base_url"],
+        http_client=httpx.Client(trust_env=False),  # 绕过系统/注册表代理直连
+    )
     kwargs = dict(
         model=provider["model"],
         messages=messages,
@@ -264,7 +273,7 @@ def run_agent(system_prompt: str, user_query: str, max_turns: int = 5, verbose: 
 
             # 把 assistant 的 tool_calls 消息加入历史
             messages.append({
-                "role": "assistant",
+                "role": "assistant", # 模型调用工具时，会返回 tool_calls 消息
                 "content": msg.content,
                 "tool_calls": [
                     {

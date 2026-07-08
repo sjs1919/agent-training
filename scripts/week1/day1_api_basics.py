@@ -21,6 +21,11 @@ import sys
 from pathlib import Path
 from dotenv import load_dotenv
 from openai import OpenAI
+import httpx
+
+# Windows 默认 stdout 走 GBK，编码不了 emoji/部分中文 -> 切 UTF-8（开箱即跑）
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
 
 load_dotenv(Path(__file__).parent.parent.parent / ".env")
 
@@ -79,7 +84,11 @@ def call_llm(provider, system_prompt, user_prompt, max_tokens=200, temperature=0
     if not _is_real_key(provider["api_key"]):
         raise RuntimeError(f"provider {provider['name']} key 未配置")
 
-    client = OpenAI(api_key=provider["api_key"], base_url=provider["base_url"])
+    client = OpenAI(
+        api_key=provider["api_key"],
+        base_url=provider["base_url"],
+        http_client=httpx.Client(trust_env=False),  # 绕过系统/注册表代理直连
+    )
     response = client.chat.completions.create(
         model=provider["model"],
         messages=[
