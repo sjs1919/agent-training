@@ -34,6 +34,26 @@ from day1_rag_basics import (  # noqa: E402
     get_or_build_vectorstore,
     retrieve,
 )
+from day2_hybrid_rerank import (  # noqa: E402
+    retrieve_hybrid,
+    build_bm25_index,
+    load_reranker,
+)
+
+# ---- day2 混合检索层（BM25 + RRF + Cross-Encoder 重排）----
+# 模块级初始化：demo 启动时调 init_retrieval 建好索引 + 加载 reranker，
+# 之后 execute_tool 的 search_knowledge_base 优先用混合检索；未初始化则回退 day1 纯向量。
+_BM25 = None
+_CHUNKS = None
+_METAS = None
+_RERANKER = None
+
+
+def init_retrieval(collection):
+    """建 BM25 索引 + 加载 reranker，存到模块级全局。day2 混合检索前置。"""
+    global _BM25, _CHUNKS, _METAS, _RERANKER
+    _BM25, _CHUNKS, _METAS = build_bm25_index(collection)
+    _RERANKER = load_reranker()
 
 # Windows stdout UTF-8（开箱即跑）
 sys.stdout.reconfigure(encoding="utf-8")
@@ -188,13 +208,21 @@ def execute_tool(tool_name, arguments, collection):
     elif tool_name == "search_knowledge_base":
         query = arguments.get("query", "")
         top_k = arguments.get("top_k", 3)
-        hits = retrieve(collection, query, top_k=top_k)
+        # 优先用 day2 混合检索+重排；reranker 未初始化则回退 day1 纯向量
+        if _RERANKER is not None:
+            hits = retrieve_hybrid(collection, _BM25, _CHUNKS, _METAS, _RERANKER, query, top_k=top_k)
+            score_label = "rerank分"
+            score_key = "rerank_score"
+        else:
+            hits = retrieve(collection, query, top_k=top_k)
+            score_label = "距离"
+            score_key = "distance"
         if not hits:
             return f"检索 '{query}'：未找到相关结果。请尝试用不同的查询词重新搜索。"
         lines = [f"检索 '{query}' 命中 {len(hits)} 条："]
         for i, h in enumerate(hits, 1):
             lines.append(
-                f"  [{i}] 来源: {h['source']}  距离: {h['distance']:.4f}\n"
+                f"  [{i}] 来源: {h['source']}  {score_label}: {h.get(score_key, 0):.4f}\n"
                 f"      内容: {h['text']}"
             )
         return "\n".join(lines)
@@ -423,10 +451,11 @@ def _brief_args(args):
 
 def demo():
     print("=" * 60)
-    print("第一部分：加载向量库（复用 Day1）")
+    print("第一部分：加载向量库（复用 Day1）+ 混合检索层（Day2）")
     print("=" * 60)
     collection = get_or_build_vectorstore()
     print(f"  向量库: {collection.count()} 条向量")
+    init_retrieval(collection)
 
     scenarios = [
         (
