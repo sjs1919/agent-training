@@ -106,6 +106,16 @@ def query_customer(customer=None, customer_id=None):
 
 # ============================================================
 # 工具定义（OpenAI Function Calling 格式，5 个工具）
+# 导航：阅读导航_week1_week2.md → Week2 周五 → "本周 Demo 边界"
+# 知识：真实 Agent = 多种工具协同
+#       ① plan_investigation → 规划（Todo-driven 模式的入口）
+#       ② query_orders → 查订单结构化数据（复用 Week1）
+#       ③ query_customer → 查客户档案（新）
+#       ④ search_knowledge_base → 查知识库（Day2 混合检索）
+#       ⑤ submit_final_answer → 提交综合答案
+# 对比：Day4 只有 3 个工具（plan/search/submit），Day5 增加到 5 个
+#       Week1 query_orders + Day2 混合检索 = 两路数据源
+#       详见：阅读导航 → Week2 周五 → "对照 week2_任务清单"
 # ============================================================
 
 TOOLS = [
@@ -243,7 +253,8 @@ def execute_tool(tool_name, arguments, collection):
         )
 
     elif tool_name == "query_orders":
-        # 过滤只传 query_orders 接受的参数，防模型传多余字段
+        # 【原子操作】参数白名单：只传 query_orders 接受的参数，防模型传多余字段
+        # 模型有时会传 schema 里没定义的字段，白名单过滤保证后端不报错
         valid_keys = {"customer", "status", "stage", "due_before", "due_after", "sort_by", "sort_order"}
         args = {k: v for k, v in arguments.items() if k in valid_keys}
         result = query_orders(**args)
@@ -276,7 +287,8 @@ def execute_tool(tool_name, arguments, collection):
     elif tool_name == "search_knowledge_base":
         query = arguments.get("query", "")
         top_k = arguments.get("top_k", 3)
-        # 优先 day2 混合检索；reranker 未初始化则回退 day1 纯向量
+        # 【原子操作】双路检索：reranker 已加载 → Day2 混合检索；未加载 → 回退 Day1 纯向量
+        # 让 Day2 和 Day1 的检索可以自由切换，不影响 Agent 循环逻辑
         if _RERANKER is not None:
             hits = retrieve_hybrid(collection, _BM25, _CHUNKS, _METAS, _RERANKER, query, top_k=top_k)
             score_label = "rerank分"
@@ -304,6 +316,10 @@ def execute_tool(tool_name, arguments, collection):
 
 # ============================================================
 # Agent 循环（Todo-driven，复用 day4 骨架，支持 5 工具）
+# 导航：阅读导航 → Week2 整体理论脉络 → augmented LLM
+# 知识：Augmented LLM = LLM + retrieval + tools + memory
+#       Day5 的 Agent = LLM(主备) + retrieval(混合检索) + tools(query_orders/customer) + memory(messages)
+#       这是 week1-2 的总集成，也是 week3 MCP+LGraph 的前置基础
 # ============================================================
 
 AGENT_SYSTEM_PROMPT = """你是 3D 打印/CNC 加工生产调度助手，具备查订单、查客户档案、检索知识库三种能力。
@@ -380,6 +396,19 @@ def _brief_args(args):
         return f"answer='{args['answer'][:50]}...'"
     return str(args)[:60]
 
+
+# ============================================================
+# 主 Agent 循环函数
+# 导航：阅读导航 → Week2 周五 → "周五 7/17 · 本周 Demo 串联"
+# 知识：本函数是 week1-2 所有能力的总集成：
+#       Week1 call_with_fallback（主备）
+#     + Week1 Function Calling 循环
+#     + Day1 Chroma 向量库
+#     + Day2 混合检索（BM25+RRF+rerank）
+#     + Day4 Todo-driven Agent 骨架
+#     输出的 answer 综合了订单数据、客户档案、合同条款、历史案例
+#     详见：阅读导航 → Week2 周五 → "本周 Demo 边界"
+# ============================================================
 
 def run_agent(collection, user_question, verbose=True):
     """

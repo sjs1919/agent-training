@@ -116,6 +116,11 @@ def call_with_fallback(system_prompt, user_prompt, max_tokens=500, temperature=0
 
 # ============================================================
 # 第一部分：知识库加载 + 分块
+# 导航：阅读导航_week1_week2.md → Week2 周一 → "分块策略（语义 > 固定）"
+# 知识：RAG 管线第一步：将原始文档切成可检索的片段
+#       分块策略影响 Recall：固定字符切分 → 语义切分(0.67→0.91)
+#       生产环境：RecursiveCharacterTextSplitter (按段落>句子>字符层级)
+#                 或 SemanticChunker (按 embedding 相似度断句)
 # ============================================================
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -136,13 +141,17 @@ def load_documents():
 def chunk_text(text, chunk_size=500, overlap=100):
     """
     字符级分块：按 chunk_size 切，相邻块重叠 overlap 字符。
-    教学版用字符切分，简单直观。
 
-    生产升级路径（分块策略选型，今日知识点）：
+    【原子操作】滑动窗口分块：
+    start = 0 → text[start:start+chunk_size] → start += (chunk_size - overlap)
+    overlap 解决"关键句子刚好被切在两块边界"的问题
+    中文 1 字 ≈ 1.5-2 token，500 字 ≈ 接近 1024 token（常见 LLM context 窗口单位）
+
+    生产升级路径（分块策略选型）：
     - 固定 token 切分（tiktoken）：模型按 token 计费，token 对齐更准
     - RecursiveCharacterTextSplitter（LangChain）：按段落>句子>字符层级切，保语义完整
     - 语义切分（SemanticChunker）：按 embedding 相似度断句，Recall 最高（0.67->0.91）
-    清单建议 1024 token + 100 overlap；中文 1 字≈1.5-2 token，500 字≈接近 1024 token。
+    详见：阅读导航 → Week2 周一 → "分块策略"
     """
     chunks = []
     start = 0
@@ -159,20 +168,18 @@ def chunk_text(text, chunk_size=500, overlap=100):
 
 # ============================================================
 # 第二部分：Chroma 向量库
-# ============================================================
-#
-# Embedding 选型（今日知识点）：
-# 默认用 Chroma 内置 all-MiniLM-L6-v2（ONNX，免装 torch，开箱即跑）。
-# 它是多语言模型，中文能用但召回一般。
-#
-# 升级到中文专用 bge-small-zh-v1.5（推荐）：
-#   pip install sentence-transformers
-#   from chromadb.utils import embedding_functions
-#   ef = embedding_functions.SentenceTransformerEmbeddingFunction(
-#       model_name="BAAI/bge-small-zh-v1.5")
-#   collection = client.get_or_create_collection("kb", embedding_function=ef)
-# bge-small-zh 中文召回明显优于 MiniLM，模型约 95MB，首次下载。
-# 进一步：bge-m3（多语言+长文本）、qwen3-embedding（新模型，持续关注）。
+# 导航：阅读导航_week1_week2.md → Week2 周一 → "Embedding 模型选型"
+# 知识：RAG 管线第二步：分块 → Embedding → 向量库 → 可检索
+#       Embedding = 文本 → 高维向量(768/1024维)，语义相似的文本向量距离近
+#       选型：MiniLM(默认) → bge-small-zh(推荐) → bge-m3(多语言) → qwen3-embedding(最新)
+#       Chroma 默认 all-MiniLM-L6-v2(ONNX, ~80MB, 多语言)
+#       中文专用 bge-small-zh-v1.5(sentence-transformers, ~95MB, 召回明显优于MiniLM)
+#       详见：阅读导航 → Week2 周一 → "RAG 端到端流程(LangChain 官方)"
+# ------------------------------------------------------------
+# Embedding 的认知关键：
+# "加急订单" 和 "紧急订单" 在向量空间距离近（语义相似）
+# "加急订单" 和 "合同编号PO-2026" 在向量空间距离远（语义无关）
+# 所以向量检索擅长"找意思相近的"，不擅长"找关键词精确匹配"（那是 BM25 的领域）
 # ------------------------------------------------------------
 
 DB_DIR = DATA_DIR / "chroma_db"
@@ -212,6 +219,13 @@ def retrieve(collection, query, top_k=3):
     """
     向量检索：query 转向量 -> 在向量库找 top-k 最相似的文本块。
     返回 [{text, source, distance}]，distance 越小越相似（默认 cosine 距离）。
+
+    【原子操作】RAG 检索的三步：
+    ① 用户 query → Embedding 模型 → 向量（768/1024 维浮点数数组）
+    ② collection.query(query_texts=[query]) → Chroma 内部完成向量化 + 相似度搜索
+    ③ 返回 top-k 最相似的文档片段（按 cosine distance 升序）
+    distance 越小越相似：0 = 完全相同，1 = 无关，2 = 语义相反
+    详见：阅读导航 → Week2 周一 → "RAG 端到端流程"
     """
     results = collection.query(query_texts=[query], n_results=top_k)
     hits = []
@@ -230,6 +244,10 @@ def retrieve(collection, query, top_k=3):
 
 # ============================================================
 # 第三部分：端到端 RAG（检索 -> 生成）
+# 导航：阅读导航_week1_week2.md → Week2 整体脉络 → "RAG 数据管线"
+# 知识：RAG 本质 = 检索 + 生成，不是 "把文档全塞进 context"
+#       Augmented LLM = LLM + retrieval + tools + memory (Anthropic Building Effective Agents)
+#       详见：阅读导航 → Week2 整体理论脉络 → "augmented LLM"
 # ============================================================
 
 RAG_SYSTEM_PROMPT = """你是 3D 打印/CNC 加工生产调度助手。
@@ -246,6 +264,12 @@ def rag_answer(collection, query, top_k=3, verbose=True):
     [AI:Claude] 端到端 RAG：
     1. 检索：query -> 向量库找 top-k 相关片段
     2. 生成：检索片段作为 context 喂给 LLM，指示基于 context 回答
+
+    【原子操作】RAG 管线全流程：
+    ① 用户 query → retrieve() → 向量库搜索 → top-k 片段
+    ② 片段拼成 prompt context → 注入 RAG_SYSTEM_PROMPT
+    ③ call_with_fallback() → LLM 基于片段回答，不凭空编造
+    对比 Day4/5：这是 "固定 pipeline" 模式，Agent 不参与检索决策
     """
     if verbose:
         print(f"\n🔍 检索：{query}")
@@ -258,6 +282,8 @@ def rag_answer(collection, query, top_k=3, verbose=True):
             print(f"  [{i}] 来源:{h['source']}  距离:{h['distance']:.4f}")
             print(f"      {preview}...")
 
+    # 【原子操作】检索片段 → Prompt context 的组装格式
+    # 每个片段标注来源，让 LLM 知道"哪段来自哪个文件"
     context = "\n\n".join(
         f"【片段{i}】(来源:{h['source']})\n{h['text']}"
         for i, h in enumerate(hits, 1)

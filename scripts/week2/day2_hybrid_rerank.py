@@ -44,13 +44,22 @@ sys.stderr.reconfigure(encoding="utf-8")
 
 # ============================================================
 # 第一部分：BM25 索引（中文 jieba 分词）
+# 导航：阅读导航_week1_week2.md → Week2 周二 → "BM25 关键词检索原理"
+# 知识：BM25 是关键词精确匹配，补向量检索的短板
+#       公式：IDF × TF / (TF + k × (1-b + b × doc_len/avg_len))
+#       擅长：订单号、客户名、产品名等精确命中
+#       向量检索擅长"语义相似"（加急≈紧急），BM25 擅长"字面匹配"（广州航天必须含"广州"）
 # ============================================================
 
 def build_bm25_index(collection):
     """
     从 Chroma 向量库取出全部 chunk，jieba 分词后建 BM25 索引。
     返回 (bm25, chunks, metas)，供 bm25_search 用。
-    复用 Day1 已灌入的 chunk，不重新分块。
+
+    【原子操作】BM25 索引构建三步骤：
+    ① collection.get() → 取出所有已存储的 chunk（复用 Day1 灌入的数据）
+    ② jieba.cut(chunk) → 中文分词（BM25 需要 token 列表，不是原始文本）
+    ③ BM25Okapi(tokenized) → 构建 BM25 索引（每个文档的 term frequency 矩阵）
     """
     data = collection.get(include=["documents", "metadatas"])
     chunks = data["documents"]
@@ -85,14 +94,24 @@ def bm25_search(bm25, chunks, metas, query, top_k=10):
 
 # ============================================================
 # 第二部分：RRF 融合（Reciprocal Rank Fusion）
+# 导航：阅读导航_week1_week2.md → Week2 周二 → "RRF 融合"
+# 知识：两路检索（向量+BM25）各自排序 → RRF 合并排名
+#       公式：RRF(d) = Σ 1/(k + rank_i(d))，k 一般取 60
+#       如果一个 chunk 在两路都命中，RRF 分数累加 → 排更靠前
+#       本质：不关心分数绝对值，只关心排名位置
 # ============================================================
 
 def rrf_fuse(vector_hits, bm25_hits, k=60, top_k=10):
     """
     RRF 融合：两路检索结果按排名融合。
-    公式：score(d) = Σ 1/(k + rank(d))，k 通常取 60。
-    同一 chunk 两路都命中则分数累加（按 chunk 文本去重）。
-    返回 [{text, source, rrf_score}]，按 rrf_score 降序取 top_k。
+
+    【原子操作】RRF 融合：
+    ① 两路结果各自按 rank 打分：1/(k + rank)，rank 从 1（最相关）开始
+    ② 相同 chunk 的分数累加（两路都命中 → 分数更高）
+    ③ 按累加分数降序取 top_k
+    为什么用 RRF 而不是线性加权？因为我们不需要调权重参数——
+    RRF 只看"排名位置"，对分数尺度不敏感（向量 distance 0~2，BM25 score 0~N）
+    详见：阅读导航 → Week2 周二 → "RRF 融合"
     """
     scores = {}  # key: chunk text -> rrf score
     info = {}    # key: chunk text -> {text, source}
@@ -117,10 +136,16 @@ def rrf_fuse(vector_hits, bm25_hits, k=60, top_k=10):
 
 # ============================================================
 # 第三部分：Cross-Encoder 重排
+# 导航：阅读导航_week1_week2.md → Week2 周二 → "Cross-Encoder 重排序"
+# 知识：Cross-Encoder vs 双塔(向量Embedding) 的区别：
+#       双塔：query 和 doc 各自编码成独立向量 → 余弦距离比远近（快，~100ms/千篇）
+#       Cross-Encoder：query+doc 拼接后一起推理 → 输出 0-1 相关分数（慢，~100ms/对）
+#       Cross-Encoder 更准因为能看到 query 和 doc 的交互，双塔只看各自向量方向
+#       生产流程：向量(快)召回 top-20 → Cross-Encoder(准)重排取 top-3
 # ============================================================
 
 RERANKER_MODEL = "BAAI/bge-reranker-base"
-_PROXY = "http://127.0.0.1:3450"  # Clash 代理（下 HF 模型用）
+_PROXY = os.environ.get("HTTPS_PROXY", os.environ.get("HTTP_PROXY", "http://127.0.0.1:7890"))
 
 
 def load_reranker(model_name=RERANKER_MODEL):
@@ -177,6 +202,13 @@ def rerank(reranker, query, candidates, top_k=3):
     """
     Cross-Encoder 重排：对每个 (query, chunk) 对算相关分，按分排序取 top_k。
     返回 [{text, source, rrf_score, rerank_score}]。
+
+    【原子操作】重排的输入输出：
+    输入：(query, [chunk1, chunk2, ...]) → 每个 chunk 和 query 拼接成对
+    处理：reranker.predict([[query, c1], [query, c2], ...]) → 每个 pair 一个 0-1 分数
+    输出：按 rerank_score 降序取 top_k
+    关键认知：RRF 已经做了第一次排序（用排名位置），
+             Cross-Encoder 做第二次精确排序（用语义相关度）。
     """
     if not candidates:
         return []

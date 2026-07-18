@@ -61,9 +61,15 @@ sys.stderr.reconfigure(encoding="utf-8")
 
 # ============================================================
 # Agentic RAG 的 System Prompt（Todo-driven 模式）
+# 导航：阅读导航_week1_week2.md → Week2 周三 → "4 种模式定义"
+# 知识：传统 RAG 是固定 pipeline → query→检索→生成，路径写死
+#       Agentic RAG 是 Agent 自主决策 → 何时检索、检索什么、检索几次、够了没
+#       本日模式：③ Todo-driven investigation
+#       Agent 收到问题 → plan_investigation 拆解 → 逐项 search → 综合 submit
+#       与 Day1 的本质区别：Day1 的检索路径是程序员预设的
+#                           Day4 的检索策略是 Agent 自主决策的
+#       详见：阅读导航 → Week2 周三 → "模式 ③ Todo-driven investigation"
 # ============================================================
-# 对比 day1 的 RAG_SYSTEM_PROMPT（"只根据检索片段回答"），
-# day4 的 prompt 多了"工作流程"——Agent 自己决定检索策略，不是被动等 context。
 
 AGENTIC_RAG_SYSTEM_PROMPT = """你是 3D 打印/CNC 加工生产调度助手，具备自主检索知识库的能力。
 
@@ -248,11 +254,17 @@ def run_agentic_rag(collection, user_question, verbose=True):
     - day1: query → retrieve（固定）→ generate（固定）
     - day4: question → plan（Agent 决定）→ search（Agent 决定查几次）→ answer（Agent 决定够了）
 
-    循环逻辑（与 week1 day2 的 ReAct 循环同构）：
-    1. 发送 messages + 工具定义给 LLM
-    2. LLM 返回 tool_calls 或文本回复
-    3. 执行工具 → 结果回传 → 回到步骤 1
-    4. 直到 LLM 调用 submit_final_answer 或达到 max_turns
+    【原子操作】Agentic RAG 循环的三步：
+    ① plan_investigation：Agent 把用户问题拆成 2-5 个待查事项（如"查合同+查历史案例"）
+    ② search_knowledge_base：按规划逐项检索（每个事项一次 search 调用）
+    ③ submit_final_answer：所有事项查完后综合回答
+
+    与 week1 day2 的 Agent 循环同构：
+    week1：消息 → 模型决定调工具 → 执行 → 回传 → 再次生成 → 最终回答
+    day4：消息 → 模型决定规划 → 逐项检索 → 回传结果 → 判断够了 → 综合回答
+    区别只在"工具"类型不同：week1 是 query_orders（结构化数据），
+    day4 是 search_knowledge_base（非结构化知识库 + 混合检索）
+    详见：阅读导航 → Week2 周三/周四 → "search_documentation 工具设计"
     """
     messages = [
         {"role": "system", "content": AGENTIC_RAG_SYSTEM_PROMPT},
@@ -281,7 +293,7 @@ def run_agentic_rag(collection, user_question, verbose=True):
         choice = resp.choices[0]
         msg = choice.message
 
-        # 情况 1：模型返回 tool_calls → 执行工具
+        # 【原子操作】判断返回类型：tool_calls → 执行工具 / 纯文本 → 提示按流程走
         if msg.tool_calls:
             for tc in msg.tool_calls:
                 tool_name = tc.function.name
