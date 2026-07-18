@@ -71,6 +71,8 @@ def _is_real_key(key: str) -> bool:
 
 # ============================================================
 # 第一部分：统一调用函数（核心）
+# 导航：阅读导航_week1_week2.md → Week1 Day1 → "读完对照" call_llm()
+# 知识：OpenAI Chat Completions API → messages(role/content) → model → response
 # ============================================================
 
 def call_llm(provider, system_prompt, user_prompt, max_tokens=200, temperature=0.3):
@@ -78,17 +80,26 @@ def call_llm(provider, system_prompt, user_prompt, max_tokens=200, temperature=0
     用指定 provider 调用一次 LLM。
     所有 OpenAI 兼容 provider 走同一段代码，只差 client 配置。
     返回 (response, provider) 或抛出异常。
+
+    【原子操作】OpenAI 兼容协议的核心调用模式：
+    client = OpenAI(api_key, base_url) → client.chat.completions.create(model, messages, ...)
+    豆包/DeepSeek/Kimi 三家 base_url 不同，但这一行代码完全相同。
     """
     if not provider.get("enabled"):
         raise RuntimeError(f"provider {provider['name']} 已禁用")
     if not _is_real_key(provider["api_key"]):
         raise RuntimeError(f"provider {provider['name']} key 未配置")
 
+    # 【原子操作】创建 OpenAI 兼容客户端
+    # trust_env=False 是关键：绕过 Windows 系统代理设置，避免死代理导致 SSL EOF
+    # 详见：阅读导航 → Week1 Day1 → httpx trust_env 与系统代理（踩坑复盘）
     client = OpenAI(
         api_key=provider["api_key"],
         base_url=provider["base_url"],
-        http_client=httpx.Client(trust_env=False),  # 绕过系统/注册表代理直连
+        http_client=httpx.Client(trust_env=False),
     )
+    # 【原子操作】chat.completions.create — 所有 OpenAI 兼容 API 的统一入口
+    # messages 结构：system(角色设定) + user(用户问题)，后续 Day2/3 会扩展 tool_calls
     response = client.chat.completions.create(
         model=provider["model"],
         messages=[
@@ -106,6 +117,13 @@ def call_with_fallback(system_prompt, user_prompt, max_tokens=200, temperature=0
     [AI:Claude] 主备 fallback：按 PROVIDERS 顺序逐个尝试，第一个成功即返回。
     主调失败（网络/限流/鉴权）自动切下一个备用 provider。
     返回 (response, provider, fallback_log)
+
+    【原子操作】企业级 Agent 的主备切换模式：
+    for provider in PROVIDERS:
+        try: call_llm(provider) → 成功即返回
+        except: 记录日志 → 继续下一个
+    核心价值：主调限流/故障时业务不中断，切换成本几乎为零（同协议）
+    详见：阅读导航 → Week1 Day1 → "读完对照" call_with_fallback 的 try/except 链路
     """
     log = []
     last_err = None

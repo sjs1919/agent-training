@@ -49,6 +49,13 @@ def count_tokens(messages, model: str = "gpt-4o") -> int:
     """
     估算 messages 的 token 数。
     说明：不同 provider 使用不同 tokenizer，这里用 cl100k_base / gpt-4o 做近似估算。
+
+    【原子操作】Token 计数原理：
+    ① 获取 tokenizer（tiktoken.encoding_for_model）
+    ② 逐条 message 编码：role + content 的每个字段
+    ③ 加上消息分隔符开销（每条 3 token）+ 回复前缀（3 token）
+    中文 1 汉字 ≈ 1.5-2 token，英文平均 4 字符/token
+    详见：阅读导航 → Week1 Day4 → "Token / 分词"
     """
     tiktoken = _get_encoder()
     try:

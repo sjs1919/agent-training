@@ -36,12 +36,21 @@ from prompts import get_scenario_prompt, get_system_prompt, get_user_version
 
 # ============================================================
 # 第一部分：三层 Prompt 架构（本日核心）
+# 导航：阅读导航_week1_week2.md → Week1 Day3 → System Prompt 设计架构
+# 知识：Jimmy Song ⑦ "核心技术" 章 → 角色设定+能力边界+输出约束+安全规则
+#       三层 = 系统级(固定不变) + 场景级(可配置) + 用户级(动态注入)
+#       OpenAI Instruction Hierarchy(system > developer > user) 与 Jimmy Song 分层正交
+#       详见：阅读导航 → "三层 Prompt 架构 vs OpenAI Instruction Hierarchy"
 # ============================================================
 
 def build_user_message(user_query: str) -> str:
     """
     用户级 Prompt：用 XML 标签包裹用户输入，与系统指令隔离。
-    防止 Prompt Injection——即使用户输入"忽略以上规则"，模型也能识别这是 user_input 内的数据而非真实指令。
+
+    【原子操作】Prompt Injection 防护：
+    用 <user_input> 标签把用户输入包起来，模型能区分"这是用户数据"和"这是系统指令"。
+    即使用户输入"忽略以上所有规则"，模型也知道那是 user_input 内的数据，不是真的指令。
+    详见：阅读导航 → Week1 Day3 → "System Prompt 设计架构" 安全规则部分
     """
     return f"<user_input>{user_query}</user_input>"
 
@@ -49,7 +58,13 @@ def build_user_message(user_query: str) -> str:
 def build_system_prompt(today: str | None = None, user_id: str | None = None) -> str:
     """
     组装三层 Prompt：系统级 + 场景级（用户级在 run_agent 里注入）。
-    场景级根据 user_id 做 A/B 分流。
+
+    【原子操作】三层 Prompt 组装：
+    ① 系统级（system.jinja）：模型身份 + 能力边界 + 当前日期 + 安全规则
+    ② 场景级（scenario_v1.jinja / scenario_v2_cot.jinja）：订单查询规则 + 输出格式 + Few-shot
+    ③ 用户级（<user_input> 标签）：用户原始输入，XML 隔离
+    场景级根据 user_id 做 A/B 分流（hash 分桶，v2_cot 占 20%）
+    详见：阅读导航 → Week1 Day3 → "Jinja2 模板 + PromptOps"
     """
     if today is None:
         today = date.today().isoformat()

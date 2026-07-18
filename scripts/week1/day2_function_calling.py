@@ -66,6 +66,9 @@ def _is_real_key(key: str) -> bool:
 
 # ============================================================
 # 工具定义（OpenAI Function Calling 格式）
+# 导航：阅读导航_week1_week2.md → Week1 Day2 → "OpenAI Function Calling 协议"
+# 知识：Tool definition = name + description + parameters(JSON Schema)
+#       name/description 是模型判断"该不该调这个工具"的唯一依据，必须精确
 # ============================================================
 
 TOOLS = [
@@ -239,6 +242,10 @@ def call_with_fallback(messages, tools=None, max_tokens=1024, temperature=0.3):
 
 # ============================================================
 # Agent 循环（核心）
+# 导航：阅读导航_week1_week2.md → Week1 Day2 → ReAct 循环原理
+# 知识：Agent 闭环 = 发消息 → 模型决定调工具还是回答 → 执行工具 → 回传结果 → 再问模型
+# 原理：OpenAI Function Calling + Anthropic Tool Use 对比
+#       → 阅读导航 "Anthropic Tool Use 对比" → 协议不同但语义等价
 # ============================================================
 
 def run_agent(system_prompt: str, user_query: str, max_turns: int = 5, verbose: bool = True):
@@ -248,6 +255,11 @@ def run_agent(system_prompt: str, user_query: str, max_turns: int = 5, verbose: 
     2. 如果 LLM 返回 tool_calls → 执行工具 → 将结果追加到 messages → 回到步骤 1
     3. 如果 LLM 返回纯文本 → Agent 完成，返回最终回答
     4. 超过 max_turns 轮 → 强制终止
+
+    【原子操作】Agent 循环的三段式：
+    ① 调 LLM（带 tools 定义）→ ② 判断返回类型（tool_calls / text）→ ③ 执行工具并回传
+    这个三段式是所有 Agent 框架（LangChain/LangGraph/MCP）的底层原语。
+    详见：阅读导航 → Week1 Day2 → "ReAct 循环原理（Agent 闭环）"
     """
     messages = [
         {"role": "system", "content": system_prompt},
@@ -258,6 +270,7 @@ def run_agent(system_prompt: str, user_query: str, max_turns: int = 5, verbose: 
         if verbose:
             print(f"\n── 第 {turn} 轮 ──")
 
+        # 【原子操作①】调 LLM，带上 tools 参数
         resp, used, fallback_log = call_with_fallback(messages, tools=TOOLS)
         if verbose:
             for line in fallback_log:
@@ -266,14 +279,15 @@ def run_agent(system_prompt: str, user_query: str, max_turns: int = 5, verbose: 
 
         msg = resp.choices[0].message
 
-        # 情况 1：模型要调工具
+        # 【原子操作②】判断返回类型：tool_calls = 模型要查数据，纯文本 = 模型认为可以回答
         if msg.tool_calls:
             if verbose:
                 print(f"  → 模型决定调用 {len(msg.tool_calls)} 个工具")
 
             # 把 assistant 的 tool_calls 消息加入历史
+            # 注意：tool_calls 结构必须完整保留 id/type/function，缺一不可
             messages.append({
-                "role": "assistant", # 模型调用工具时，会返回 tool_calls 消息
+                "role": "assistant",
                 "content": msg.content,
                 "tool_calls": [
                     {
@@ -288,7 +302,8 @@ def run_agent(system_prompt: str, user_query: str, max_turns: int = 5, verbose: 
                 ],
             })
 
-            # 执行每个工具，回传结果
+            # 【原子操作③】执行每个工具，结果按 tool_call_id 回传
+            # tool_call_id 是关键：模型用它把 tool 结果和 assistant 的 tool_calls 对应起来
             for tc in msg.tool_calls:
                 tool_name = tc.function.name
                 tool_args = json.loads(tc.function.arguments)
@@ -300,6 +315,7 @@ def run_agent(system_prompt: str, user_query: str, max_turns: int = 5, verbose: 
                     total = result.get("total", "?")
                     print(f"  📊 返回 {total} 条结果")
 
+                # role="tool" + tool_call_id 是 OpenAI 协议的规定格式
                 messages.append({
                     "role": "tool",
                     "tool_call_id": tc.id,
