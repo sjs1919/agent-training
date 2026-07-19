@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAIC 2026 智能体(AI Agent)参展商深度分析</title>
+<style>
+  :root {
+    --primary: #1a73e8;
+    --accent: #e8453c;
+    --bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --text: #202124;
+    --text-secondary: #5f6368;
+    --border: #e0e0e0;
+    --tag-agent: #1a73e8;
+    --tag-rpa: #7b1fa2;
+    --tag-model: #00897b;
+    --tag-vertical: #f57c00;
+    --tag-infra: #546e7a;
+    --tag-personal: #e91e63;
+    --tag-embodied: #33691e;
+    --tier1: #e8453c;
+    --tier2: #1a73e8;
+    --tier3: #5f6368;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1a237e 0%, #1a73e8 100%);
+    color: white;
+    padding: 32px 40px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .header p { font-size: 15px; opacity: 0.9; }
+  .header .stats { display: flex; gap: 24px; margin-top: 16px; }
+  .header .stat {
+    background: rgba(255,255,255,0.15);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  .header .stat strong { font-size: 20px; display: block; }
+
+  /* Overview */
+  .overview {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 24px 32px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+  }
+  .overview h2 { font-size: 20px; margin-bottom: 16px; color: var(--primary); }
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .overview-item {
+    background: var(--bg);
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .overview-item .num { font-size: 28px; font-weight: 700; color: var(--primary); }
+  .overview-item .label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* Category bar */
+  .cat-bar { margin-bottom: 24px; }
+  .cat-bar h2 { font-size: 18px; margin-bottom: 12px; }
+  .cat-bar-items { display: flex; flex-wrap: wrap; gap: 10px; }
+  .cat-bar-item {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: white;
+  }
+
+  /* Section */
+  .section {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 24px 32px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+  }
+  .section h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section h2 .tier-badge {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .tier1-badge { background: var(--tier1); color: white; }
+  .tier2-badge { background: var(--tier2); color: white; }
+  .tier3-badge { background: var(--tier3); color: white; }
+  .section .intro { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+
+  /* Company card */
+  .company-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: box-shadow 0.2s;
+  }
+  .company-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+  .company-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .company-card .name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .company-card .name-en {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+  .company-card .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .company-card .tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: white;
+    font-weight: 500;
+  }
+  .tag-agent { background: var(--tag-agent); }
+  .tag-rpa { background: var(--tag-rpa); }
+  .tag-model { background: var(--tag-model); }
+  .tag-vertical { background: var(--tag-vertical); }
+  .tag-infra { background: var(--tag-infra); }
+  .tag-personal { background: var(--tag-personal); }
+  .tag-embodied { background: var(--tag-embodied); }
+
+  .company-card .biz {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 12px;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: 6px;
+  }
+  .company-card .biz strong { color: var(--primary); }
+
+  .company-card .products {
+    margin-bottom: 12px;
+  }
+  .company-card .products h4 {
+    font-size: 14px;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+  .company-card .product-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .product-item .product-name {
+    font-weight: 600;
+    color: var(--text);
+    min-width: 120px;
+  }
+  .product-item .product-desc {
+    color: var(--text-secondary);
+  }
+
+  .company-card .meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .meta-item { display: flex; align-items: center; gap: 4px; }
+  .meta-item strong { color: var(--text); }
+
+  /* Recommendation */
+  .recommendation {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border-radius: 10px;
+    padding: 24px 32px;
+    margin-bottom: 24px;
+    border: 1px solid #ffcc80;
+  }
+  .recommendation h2 { font-size: 20px; color: #e65100; margin-bottom: 12px; }
+  .recommendation p { font-size: 14px; margin-bottom: 8px; }
+  .recommendation .highlight { font-weight: 700; color: #bf360c; }
+  .rec-list { list-style: none; padding: 0; margin-top: 12px; }
+  .rec-list li {
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .rec-list li .rec-company { font-weight: 700; color: #bf360c; }
+  .rec-list li .rec-reason { color: var(--text-secondary); margin-top: 4px; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <h1>WAIC 2026 智能体(AI Agent)参展商深度分析</h1>
+  <p>963家参展商中，智能体相关公司梳理与重点关注推荐</p>
+  <div class="stats">
+    <div class="stat"><strong>963</strong>参展商总数</div>
+    <div class="stat"><strong>87</strong>AI Agent细分领域</div>
+    <div class="stat"><strong>9.0%</strong>占比最高细分赛道</div>
+    <div class="stat"><strong>23</strong>核心关注公司</div>
+  </div>
+</div>
+
+<!-- Overview -->
+<div class="overview">
+  <h2>整体概览：智能体是WAIC 2026最热的细分赛道</h2>
+  <div class="overview-grid">
+    <div class="overview-item">
+      <div class="num">87</div>
+      <div class="label">AI Agent/智能应用细分领域展商</div>
+    </div>
+    <div class="overview-item">
+      <div class="num">39</div>
+      <div class="label">其他领域中Agent相关公司</div>
+    </div>
+    <div class="overview-item">
+      <div class="num">9.0%</div>
+      <div class="label">Agent赛道占全部展商比例</div>
+    </div>
+    <div class="overview-item">
+      <div class="num">6</div>
+      <div class="label">Agent赛道类别方向</div>
+    </div>
+  </div>
+</div>
+
+<!-- Category Distribution -->
+<div class="cat-bar">
+  <h2>智能体赛道6大方向</h2>
+  <div class="cat-bar-items">
+    <div class="cat-bar-item" style="background:var(--tag-agent)">企业级Agent平台 (7家)</div>
+    <div class="cat-bar-item" style="background:var(--tag-rpa)">RPA+Agent超自动化 (3家)</div>
+    <div class="cat-bar-item" style="background:var(--tag-vertical)">行业垂类Agent (8家)</div>
+    <div class="cat-bar-item" style="background:var(--tag-personal)">个人智能体/C端Agent (4家)</div>
+    <div class="cat-bar-item" style="background:var(--tag-infra)">Agent基础设施 (3家)</div>
+    <div class="cat-bar-item" style="background:var(--tag-embodied)">具身智能体 (跨界)</div>
+  </div>
+</div>
+
+<!-- Tier 1: Must Watch -->
+<div class="section">
+  <h2>第一梯队：必看重点 <span class="tier-badge tier1-badge">TOP 5</span></h2>
+  <div class="intro">融资规模大、产品成熟度高、已有规模化落地的头部智能体公司，你最应该优先关注。</div>
+
+  <!-- AutoAgents.AI -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">未来式智能 / AutoAgents.AI</div>
+        <div class="name-en">北京未来式智能科技有限公司 | 世博中心</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-agent">企业级Agent平台</span>
+      </div>
+    </div>
+    <div class="biz">
+      <strong>核心定位：</strong>企业级智能体平台，打造"数字劳动力"，让大模型变成嵌入企业业务流程的数字员工。入选IDC MarketScape中国智能体开发平台<strong>领导者象限</strong>。
+    </div>
+    <div class="products">
+      <h4>核心产品矩阵</h4>
+      <div class="product-item">
+        <span class="product-name">灵搭 2.0</span>
+        <span class="product-desc">企业级智能体全链路生产力底座。Workflow 2.0架构(控制流+数据流双线设计)、Agentic智能体节点(自主拆解任务/规划路径/动态调度)、Text2Agent自然语言生成工作流、AutoGen UI生成式界面、1000页+长文档解析Pipeline</span>
+      </div>
+      <div class="product-item">
+        <span class="product-name">袋袋(Profy)</span>
+        <span class="product-desc">数字专家双边市场，"数字劳动力的京东"，中小企业可直接采购已训练好的智能体</span>
+      </div>
+      <div class="product-item">
+        <span class="product-name">灵搭智能终端</span>
+        <span class="product-desc">桌面入口，集成智能对话+岗位专家+企业知识库+自动化任务，贴近一线工作流</span>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>Pre-A轮(2026.05)，天使轮数千万元(2025.03)，累计创新工场/麟阁/中关村/凡创/探元/东证等</div>
+      <div class="meta-item"><strong>客户：</strong>国家电网(35个数字岗位)、中石油、中石化、中化</div>
+      <div class="meta-item"><strong>团队：</strong>CEO杨劲松(达摩院/字节飞书AI/AWS)</div>
+    </div>
+  </div>
+
+  <!-- 来也科技 -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">来也科技 / Laiye</div>
+        <div class="name-en">Laiye Technology HK Limited | 世博展览馆</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-rpa">RPA+Agent</span>
+        <span class="tag tag-agent">企业级Agent平台</span>
+      </div>
+    </div>
+    <div class="biz">
+      <strong>核心定位：</strong>全球领先的Agentic Automation平台，从RPA进化到AI Agent，连续五年入选Gartner魔力象限，全球唯一在RPA/对话式AI/IDP三项Everest Peak Matrix均获评级。服务<strong>300+世界500强</strong>。
+    </div>
+    <div class="products">
+      <h4>核心产品矩阵</h4>
+      <div class="product-item">
+        <span class="product-name">Laiye Worker</span>
+        <span class="product-desc">桌面端AI Agent应用——"执行层"数字员工。能直接操作ERP/财务/HR系统，模型中立+智能路由，本地隐私脱敏引擎，数据进入大模型前自动脱敏</span>
+      </div>
+      <div class="product-item">
+        <span class="product-name">WEP工作执行平台</span>
+        <span class="product-desc">企业级数字员工平台，集成APA(智能体流程自动化)+ADP(智能体文档处理)+ACX(智能体客户体验)，支持MCP协议</span>
+      </div>
+      <div class="product-item">
+        <span class="product-name">Skills技能生态</span>
+        <span class="product-desc">候选人筛选Agent、线索生成Agent、市场分析Agent等即用型AI员工</span>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>C++轮7000万美元(2022)，累计红杉/光速/平安/双湖/厚朴等，总融资超3亿美元+</div>
+      <div class="meta-item"><strong>客户：</strong>Wyeth/阿斯利康/Lenovo/首钢(44个流程年省180万)/英科医疗(10x效率)</div>
+      <div class="meta-item"><strong>里程碑：</strong>2026.6发布Laiye Worker桌面端Agent</div>
+    </div>
+  </div>
+
+  <!-- 中科闻歌 -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">中科闻歌 / Wenge AI</div>
+        <div class="name-en">北京中科闻歌科技股份有限公司 | 世博展览馆</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-model">大模型+Agent</span>
+        <span class="tag tag-agent">决策智能</span>
+      </div>
+    </div>
+    <div class="biz">
+      <strong>核心定位：</strong>"数据+模型+决策"全栈AI基础设施，2024年中国企业级大模型驱动智能应用市场<strong>排名第一</strong>(份额11.4%)，已通过港交所聆讯拟上市。服务650+政企客户。
+    </div>
+    <div class="products">
+      <h4>核心产品矩阵</h4>
+      <div class="product-item">
+        <span class="product-name">DIOS决策智能操作系统</span>
+        <span class="product-desc">三层架构：数据层(本体建模+数据对象化+数据编排)、模型层(雅意系列通专融合模型)、决策层(X-Agent智能体平台)</span>
+      </div>
+      <div class="product-item">
+        <span class="product-name">智川X-Agent</span>
+        <span class="product-desc">零代码智能体开发平台，可视化拖拽构建AI应用，自主决策+工具调用+多智能体协同仿真。已开源至GitHub(GPL v3)，获信通院<strong>最高评级(5级)</strong></span>
+      </div>
+      <div class="product-item">
+        <span class="product-name">AI-Scientist</span>
+        <span class="product-desc">自动检索381个网页+阅读1133篇论文，生成53页14000字综述，科研智能体</span>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>IPO前累计10轮超10亿元，投后估值约40.46亿，拟港股上市"通用决策大模型第一股"</div>
+      <div class="meta-item"><strong>背景：</strong>中科院自动化所创始团队，国资股东(国开/中网投/深创投等)</div>
+    </div>
+  </div>
+
+  <!-- 壹沓科技 -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">壹沓科技 / ONEAIX</div>
+        <div class="name-en">壹沓科技(上海)有限公司 | 世博中心</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-vertical">供应链垂类Agent</span>
+        <span class="tag tag-rpa">RPA+Agent</span>
+      </div>
+    </div>
+    <div class="biz">
+      <strong>核心定位：</strong>全球首款供应链垂类大模型+数字员工平台，国家级专精特新小巨人，入选Gartner魔力象限，"Agent+平台+数据"三位一体超自动化。服务<strong>1488+企业</strong>。
+    </div>
+    <div class="products">
+      <h4>核心产品矩阵</h4>
+      <div class="product-item">
+        <span class="product-name">运小沓 4.0</span>
+        <span class="product-desc">供应链领域首个具备自主规划能力的垂类AI Agent。覆盖询报价/接单订舱/放舱跟踪/客服应答/单证识别全链路</span>
+      </div>
+      <div class="product-item">
+        <span class="product-name">ONEAIX Platform</span>
+        <span class="product-desc">企业级数字员工开发平台，支持按需搭建/统一调度个性化Agent，7x24自动执行+人机协作</span>
+      </div>
+      <div class="product-item">
+        <span class="product-name">SuperERP/SuperSearchEye/SuperV</span>
+        <span class="product-desc">超级ERP平台(物流+品牌双线)、超级检索平台(全网页面智能采集)、超级视频生成平台</span>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>B+轮(2024.08)，B轮近2亿(2023)，SIG/IDG/红杉/鼎晖/钟鼎等</div>
+      <div class="meta-item"><strong>客户：</strong>中远海运/中外运/青岛港/特步/上美/高露洁/飞科</div>
+      <div class="meta-item"><strong>WAIC动态：</strong>即将发布小沓OS、小沓KE</div>
+    </div>
+  </div>
+
+  <!-- 心识宇宙/Mindverse -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">心识宇宙 / Mindverse</div>
+        <div class="name-en">深圳心洲科技有限公司 + 心识科技(杭州) | 世博展览馆 + 西岸</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-personal">个人智能体</span>
+        <span class="tag tag-agent">AI Agent</span>
+      </div>
+    </div>
+    <div class="biz">
+      <strong>核心定位：</strong>"个人专属模型"(Personal Intelligence)赛道领跑者，让AI变成承载个人记忆与性格特征的数字分身。Macaron/SECOND ME/GitHub 15000+星标开源项目。
+    </div>
+    <div class="products">
+      <h4>核心产品矩阵</h4>
+      <div class="product-item">
+        <span class="product-name">Macaron AI</span>
+        <span class="product-desc">10秒生成带个人记忆的轻量LoRA模型，"世界上第一个Personal AI Agent"，自然语言生成个性化小应用</span>
+      </div>
+      <div class="product-item">
+        <span class="product-name">Second Me</span>
+        <span class="product-desc">开源AI身份模型框架，持续吸收用户上下文成为AI记忆伴侣，支持Notion/Evernote/X导入，自动填表+跨应用记忆+AI社交匹配</span>
+      </div>
+      <div class="product-item">
+        <span class="product-name">MindOS</span>
+        <span class="product-desc">B端零代码角色生成引擎，面向企业的AI Agent构建平台</span>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>A轮近5000万美元(2026.06,美团领投)，Pre-A轮超2000万美元(2026.01,蚂蚁领投)</div>
+      <div class="meta-item"><strong>团队：</strong>创始人陶芳波(清华/Illinois/Jiawei Han弟子/微软/Facebook/阿里)</div>
+      <div class="meta-item"><strong>里程碑：</strong>GitHub 15000+星，Me.bot海外近百万用户</div>
+    </div>
+  </div>
+</div>
+
+<!-- Tier 2: Worth Watching -->
+<div class="section">
+  <h2>第二梯队：值得关注 <span class="tier-badge tier2-badge">7家</span></h2>
+  <div class="intro">产品方向清晰、融资有进展、或有独特技术差异化的智能体公司。</div>
+
+  <!-- 句子互动 -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">句子互动 / JUZI.BOT</div>
+        <div class="name-en">北京句子公司动科技有限公司 | 世博展览馆</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-agent">IM原生Agent</span>
+        <span class="tag tag-vertical">营销Agent</span>
+      </div>
+    </div>
+    <div class="biz"><strong>核心定位：</strong>"Agentic AI + IM原生场景"，Y Combinator中国大陆首批入围团队。让AI在微信/抖音/小红书/WhatsApp等IM通道真实"上岗"，按底薪+提成结算交付业绩。</div>
+    <div class="products">
+      <h4>核心产品</h4>
+      <div class="product-item"><span class="product-name">句子秒回</span><span class="product-desc">AI员工的"工位"，打通微信生态/抖音/小红书/飞书等IM通道</span></div>
+      <div class="product-item"><span class="product-name">句子秒懂</span><span class="product-desc">AI员工的"大脑"，Agent workflow引擎，企业流程+规则+知识训练成上岗AI</span></div>
+    </div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>Pre-A轮数百万美元(2023)，YC/真成/奇绩创坛/PreAngel/TSVC</div>
+      <div class="meta-item"><strong>客户：</strong>上千家大型企业及政府机构，连续三年翻倍盈利</div>
+    </div>
+  </div>
+
+  <!-- 语核科技 -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">语核科技 / LangCore</div>
+        <div class="name-en">语核(上海)科技有限公司 | 世博展览馆</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-agent">端到端Agent</span>
+      </div>
+    </div>
+    <div class="biz"><strong>核心定位：</strong>面向特定岗位的端到端Agent数字员工平台，"结果即服务"(Outcome as Service)模式——不卖工具，卖结果。</div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>天使+轮(2025.12)，常垒/东方华宇/奇绩创坛</div>
+      <div class="meta-item"><strong>特色：</strong>RaaS结果即服务商业模式创新</div>
+    </div>
+  </div>
+
+  <!-- 行远科技 -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">行远科技 / FRONTIS</div>
+        <div class="name-en">北京行远科技有限公司 | 世博展览馆</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-agent">AI原生组织</span>
+      </div>
+    </div>
+    <div class="biz"><strong>核心定位：</strong>"AI原生组织平台"，企业AI专家团/领衔CIP/ForeSight CIP，生成式AI驱动企业数智化创新。</div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>天使轮数亿元人民币(2023)，启明领投/经纬跟投</div>
+      <div class="meta-item"><strong>特色：</strong>单轮天使即数亿人民币，极为罕见，资本信心强</div>
+    </div>
+  </div>
+
+  <!-- 卓世科技 -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">卓世科技 / Zoellent</div>
+        <div class="name-en">卓世科技(海南)股份有限公司 | 世博展览馆</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-vertical">行业垂类Agent</span>
+        <span class="tag tag-model">MaaS+Agent</span>
+      </div>
+    </div>
+    <div class="biz"><strong>核心定位：</strong>行业垂直大模型+MaaS+Agent双引擎平台，知识库+智能体全链路解决方案。Pre-IPO阶段，优必选/国泰君安等入股。</div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>数亿元Pre-IPO轮(2026.02)，国泰君安/优必选/国新国证</div>
+      <div class="meta-item"><strong>特色：</strong>即将上市，双引擎架构(MaaS+Agent)</div>
+    </div>
+  </div>
+
+  <!-- 算模算样 -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">算模算样 / 红熊AI</div>
+        <div class="name-en">上海算模算样科技有限公司 | 世博展览馆</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-agent">记忆框架Agent</span>
+      </div>
+    </div>
+    <div class="biz"><strong>核心定位：</strong>多模态Agent平台+超级记忆框架(红熊AI)，面向记忆科学的大模型垂直应用与MaaS。</div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>Pre-A+轮8000万元(2026.01)，投后估值约7亿元</div>
+      <div class="meta-item"><strong>特色：</strong>记忆科学方向独特，Agent记忆机制是关键技术难题</div>
+    </div>
+  </div>
+
+  <!-- 拉普拉斯AI -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">拉普拉斯AI / Laplace AI Lab</div>
+        <div class="name-en">苏州拉普拉斯人工智能科技有限公司 | 世博展览馆</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-agent">Agent编排</span>
+        <span class="tag tag-infra">AI-PaaS</span>
+      </div>
+    </div>
+    <div class="biz"><strong>核心定位：</strong>AI原生智能生产力操作平台(AI-PaaS)，Agent编排+智能工作流自动化，源自美国Laplace Labs Inc。</div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>战略增资(恒基永昕)，海归/大厂核心团队</div>
+      <div class="meta-item"><strong>特色：</strong>AI-PaaS操作系统定位，编排层差异化</div>
+    </div>
+  </div>
+
+  <!-- 日行迹/FARS -->
+  <div class="company-card">
+    <div class="card-header">
+      <div>
+        <div class="name">日行迹智能 / Analemma AI</div>
+        <div class="name-en">上海日行迹智能科技有限公司 | 世博展览馆</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-agent">AI科研Agent</span>
+      </div>
+    </div>
+    <div class="biz"><strong>核心定位：</strong>全自动AI研究系统FARS，AI4AI科研方向。创始人孙天祥为原复旦MOSS核心成员。</div>
+    <div class="meta">
+      <div class="meta-item"><strong>融资：</strong>天使轮数千万美元(2026)，红杉/高榕/美团龙珠等</div>
+      <div class="meta-item"><strong>特色：</strong>AI自动做科研(AI-Scientist方向)，复旦MOSS团队背景</div>
+    </div>
+  </div>
+</div>
+
+<!-- Tier 3: Interesting niche -->
+<div class="section">
+  <h2>第三梯队：有趣 niche <span class="tier-badge tier3-badge">6家</span></h2>
+  <div class="intro">细分方向独特、早期但值得关注的公司，适合特定场景研究。</div>
+
+  <div class="company-card">
+    <div class="card-header"><div><div class="name">百型智能 / 外贸Agent</div><div class="name-en">上海百型智能科技有限公司 | 世博展览馆</div></div><div class="tags"><span class="tag tag-vertical">外贸垂类</span></div></div>
+    <div class="biz">外贸AI数字员工：Zoe外贸专家/Lisa销售助理/David营销专家，B2B外贸销售自动化。外贸垂直场景Agent落地。</div>
+  </div>
+
+  <div class="company-card">
+    <div class="card-header"><div><div class="name">晶睿者 / JMuse</div><div class="name-en">上海晶睿者科技有限公司 | 世博展览馆</div></div><div class="tags"><span class="tag tag-vertical">科研Agent</span></div></div>
+    <div class="biz">科研Copilot+材料学AI Agent，自动检索论文/调用仿真软件，LLM持续预训练+记忆模块。材料科学垂直Agent。</div>
+  </div>
+
+  <div class="company-card">
+    <div class="card-header"><div><div class="name">DigClaw / 狐勇众行</div><div class="name-en">北京狐勇众行科技有限公司 | 世博展览馆</div></div><div class="tags"><span class="tag tag-vertical">商业情报Agent</span></div></div>
+    <div class="biz">AI商业决策雷达，实时监测百万级早期公司+十万级顶尖人才动态，捕捉"水下"商业弱信号。中科创星/中关村资本天使轮。</div>
+  </div>
+
+  <div class="company-card">
+    <div class="card-header"><div><div class="name">Ttooly.AI / 元生万物</div><div class="name-en">元生万物(上海)人工智能科技有限公司 | 世博展览馆</div></div><div class="tags"><span class="tag tag-agent">Voice Agent</span></div></div>
+    <div class="biz">AI-Native用户研究平台，多模态Voice Agent深度访谈+智能受访者招募+情绪信号检测。种子轮近千万美元(蓝驰/高瓴领投)。</div>
+  </div>
+
+  <div class="company-card">
+    <div class="card-header"><div><div class="name">AGENTMA / 神码硅基</div><div class="name-en">神码硅基(上海)科技有限公司 | 世博展览馆</div></div><div class="tags"><span class="tag tag-agent">Agent共创平台</span></div></div>
+    <div class="biz">AI软件工厂(造梦神码AgentMA)，AI智能体产品共创平台，AI原型与协作设计。类似"Agent版的Figma"。</div>
+  </div>
+
+  <div class="company-card">
+    <div class="card-header"><div><div class="name">EVOMAP</div><div class="name-en">EVOMAP PTE. LTD. | 张江科学会堂</div></div><div class="tags"><span class="tag tag-infra">Agent进化基础设施</span></div></div>
+    <div class="biz">AI自进化基础设施，Genome Evolution Protocol(GEP)，智能体能力共享/验证/继承市场。非常前沿的Agent生态协议概念。</div>
+  </div>
+</div>
+
+<!-- Cross-over: Agent + Embodied -->
+<div class="section">
+  <h2>跨界关注：智能体 + 具身智能 <span class="tier-badge tier2-badge">融合方向</span></h2>
+  <div class="intro">智能体与具身智能(机器人)正在深度融合，以下是同时具备Agent能力+物理实体的参展商。</div>
+
+  <div class="company-card">
+    <div class="card-header"><div><div class="name">智元机器人 / AIGIBOT</div><div class="name-en">智元创新(上海)科技股份有限公司 | 具身智能/人形机器人</div></div><div class="tags"><span class="tag tag-embodied">具身智能体</span></div></div>
+    <div class="biz">通用人形机器人+具身智能+机器人本体与运动控制+机器人数据平台。软硬件全栈。</div>
+  </div>
+
+  <div class="company-card">
+    <div class="card-header"><div><div class="name">穹彻智能 / Noematrix</div><div class="name-en">上海智向智能科技有限公司 | 具身智能/人形机器人</div></div><div class="tags"><span class="tag tag-embodied">具身大模型</span></div></div>
+    <div class="biz">通用具身智能大模型Noematrix Brain，软硬件一体化机器人操作决策系统。</div>
+  </div>
+
+  <div class="company-card">
+    <div class="card-header"><div><div class="name">银河通用 / Galbot</div><div class="name-en">北京银河通用机器人股份有限公司 | 具身智能/人形机器人</div></div><div class="tags"><span class="tag tag-embodied">具身智能体</span></div></div>
+    <div class="biz">25亿元A+轮(中国具身智能单轮最大融资)，累计融资超69.6亿，估值约200亿。轮式双臂机器人+自主导航抓取。</div>
+  </div>
+
+  <div class="company-card">
+    <div class="card-header"><div><div class="name">星动纪元 / Xingdong</div><div class="name-en">北京星动纪元科技股份有限公司 | 具身智能/人形机器人</div></div><div class="tags"><span class="tag tag-embodied">具身大脑</span></div></div>
+    <div class="biz">自研ERA-42具身大脑，通用人形机器人+具身智能AGI，软硬件全栈。</div>
+  </div>
+</div>
+
+<!-- Recommendation -->
+<div class="recommendation">
+  <h2>研究智能体，你应该重点关注什么？</h2>
+  <p>基于WAIC 2026参展商分析，如果你研究智能体方向，以下是核心建议：</p>
+  <ul class="rec-list">
+    <li>
+      <div class="rec-company">1. 未来式智能(AutoAgents.AI)</div>
+      <div class="rec-reason">企业级Agent平台最成熟的落地案例(电网35个数字岗位)，IDC领导者象限，灵搭2.0的Workflow+Agentic双架构是当前Agent编排最前沿方案。</div>
+    </li>
+    <li>
+      <div class="rec-company">2. 来也科技(Laiye)</div>
+      <div class="rec-reason">RPA→Agent的进化路径最完整，Laiye Worker桌面端Agent是2026年最具代表性的"AI员工上岗"产品。模型中立+智能路由+隐私脱敏是工程化亮点。</div>
+    </li>
+    <li>
+      <div class="rec-company">3. 中科闻歌(Wenge AI)</div>
+      <div class="rec-reason">DOMA(Data/Ontology/Models/Agents)四层架构是企业级Agent最完整的系统工程方案，X-Agent零代码+开源+信通院5级认证，拟港股上市提供财务透明度。</div>
+    </li>
+    <li>
+      <div class="rec-company">4. 心识宇宙(Mindverse)</div>
+      <div class="rec-reason">C端个人智能体方向最具想象力，Macaron+Second Me定义了"AI身份"新范式，LoRA+强化学习持续训练框架是Agent记忆/个性的关键技术。</div>
+    </li>
+    <li>
+      <div class="rec-company">5. 壹沓科技(ONEAIX)</div>
+      <div class="rec-reason">供应链垂类Agent是ToB落地最扎实的方向，"运小沓"4代迭代展示了Agent从单场景→自主规划的完整进化路径，即将发布小沓OS值得关注。</div>
+    </li>
+    <li>
+      <div class="rec-company">6. 句子互动(JUZI.BOT)</div>
+      <div class="rec-reason">IM原生Agent是最贴近真实业务流的形态，"秒回+秒懂"双产品组合是Agent"工位+大脑"的优雅抽象，YC背景+三年翻倍盈利证明商业模式可行。</div>
+    </li>
+  </ul>
+  <p style="margin-top: 16px; font-weight: 600; color: #bf360c;">
+    关键趋势洞察：2026年Agent赛道正从"对话辅助"转向"数字劳动力"，核心竞争点从模型能力转向<strong>编排架构</strong>(Workflow vs. 自主规划)、<strong>记忆机制</strong>(红熊AI/Mindverse)、<strong>系统集成深度</strong>(Laiye Worker直接操作ERP)和<strong>商业模式</strong>(RaaS结果即服务/LangCore)。
+  </p>
+</div>
+
+<div class="footer">
+  数据来源：WAIC 2026参展商信息扫描.xlsx (963家) | 分析时间：2026年7月19日 | 仅供参考
+</div>
+
+</div>
+</body>
+</html>
