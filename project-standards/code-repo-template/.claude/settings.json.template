@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash({{TEST_CMD}}:*)",
+      "Bash({{BUILD_CMD}}:*)",
+      "Bash({{LINT_CMD}}:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git fetch:*)",
+      "Bash(git branch:*)"
+    ],
+    "deny": [
+      "Bash(docker push:*)",
+      "Bash(docker rm:*)",
+      "Bash(docker restart:*)",
+      "Bash(scp:*)",
+      "Bash(rsync:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git branch -D:*)",
+      "Bash(rm -rf:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "sh .claude/hooks/guard-hard-interrupt.sh" }
+        ]
+      }
+    ]
+  }
+}

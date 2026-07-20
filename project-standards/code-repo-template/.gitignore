@@ -1,0 +1,16 @@
+# 环境与本地文件
+.env*
+*.local.*
+
+# 日志
+logs/
+*.log
+
+# 构建产物与二进制
+*.exe
+*.out
+dist/
+node_modules/
+
+# 测试覆盖率
+coverage*

@@ -1,0 +1,5 @@
+# {{PROJECT_NAME}} — Agent 指引（薄引用）
+
+规则单一事实源：`rules/` 目录。总索引：@rules/rules-index.md
+
+本文件不承载任何规则条款；新增/修改规则一律改 `rules/`（Trae CLI 会自动加载上行 `@` 引用的文件）。
