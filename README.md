@@ -37,6 +37,14 @@ pip install openai anthropic python-dotenv jinja2 tiktoken
 cd scripts/week1 && python day1_api_basics.py
 ```
 
+## 开发服务器
+
+| 服务器 | IP | 备注 |
+|--------|-----|------|
+| `token_hub`    | 120.76.242.17 | 阿里云 ECS |
+| `token_hub_47`  | 47.106.114.104 | 阿里云 ECS |
+| `token_hub_172` | 172.26.68.61 | 经 `token_hub_47` 跳板 |
+
 ## 参考
 
 - 路线图：[企业级 Agent 开发加速路线](docs/企业级Agent开发加速路线.md)
