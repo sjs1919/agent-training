@@ -17,8 +17,8 @@ scripts/   — 可运行脚本（按周组织，含 data/ 数据文件）
 | 周 | 日期 | 主题 | 文档 | 脚本 |
 |------|------|------|------|------|
 | Week 1 | Jul 3-10 | API + Prompt 工程化 | [day1_guide](docs/week1/day1_guide.md) · [API 对比](docs/week1/day1_openai_vs_anthropic.md) · [fallback 架构](docs/week1/day1_主备fallback架构.md) · [day2_guide](docs/week1/day2_guide.md) · [day3 扩展](docs/week1/day3_extension.md) · [day4 原理](docs/week1/day4_guide.md) | [day1](scripts/week1/day1_api_basics.py) · [day2](scripts/week1/day2_function_calling.py) · [day3](scripts/week1/day3_system_prompt.py) · [day4](scripts/week1/day4_principles.py) · [data](scripts/week1/data/orders.csv) |
-| Week 2 | Jul 13-17 | RAG + Agent 概念 | — | — |
-| Week 3 | Jul 20-24 | MCP + LangGraph 单 Agent ⭐ | — | — |
+| Week 2 | Jul 13-17 | RAG + Agent 概念 | [Week2 总览](docs/week2/week2_任务清单.md) · [代码解读](docs/week2/week2_代码深度解读.md) · [day1](docs/week2/day1_guide.md) · [day4](docs/week2/day4_guide.md) | [day1](scripts/week2/day1_rag_basics.py) · [day2](scripts/week2/day2_hybrid_rerank.py) · [day4](scripts/week2/day4_agentic_rag.py) · [day5](scripts/week2/week2_agentic_rag_agent.py) · [data](scripts/week2/data/) |
+| Week 3 | Jul 20-24 | MCP + LangGraph 单 Agent ⭐ | [Week3 总览](docs/week3/README.md) | [order_server](scripts/week3/order_server.py) · [resource_server](scripts/week3/resource_server.py) · [langgraph_agent](scripts/week3/langgraph_agent.py) · [data](scripts/week3/data/) |
 | Week 4 | Jul 27-31 | 多 Agent 集群 + 鉴权 🎤 | — | — |
 | Week 5 | Aug 3-7 | 可观测 + 业务匹配 | — | — |
 | Week 6 | Aug 10-14 | 微调 + 推理优化 | — | — |
@@ -31,7 +31,7 @@ scripts/   — 可运行脚本（按周组织，含 data/ 数据文件）
 #    编辑 .env，填入 VOLC_API_KEY=...
 
 # 2. 安装依赖
-pip install openai anthropic python-dotenv jinja2 tiktoken
+pip install openai python-dotenv mcp langgraph langchain-core chromadb
 
 # 3. 开始
 cd scripts/week1 && python day1_api_basics.py
