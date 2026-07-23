@@ -47,17 +47,50 @@ from openai import OpenAI
 from order_server import query_orders, get_order_detail, get_production_status
 from resource_server import query_inventory, query_machine_load, query_customer
 
+# ---- Windows GBK 编码兼容（Week1 Day1 已验证） ----
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
+
 # 加载 .env 中的 API Key 和 Base URL
 load_dotenv(Path(__file__).parent.parent.parent / ".env")
 
-# ---- LLM Provider 配置 ----
-# trust_env=False 禁用系统代理检测（避免 Clash 代理干扰国内 API）
-_client = OpenAI(
-    api_key=os.getenv("VOLC_API_KEY"),
-    base_url=os.getenv("VOLC_BASE_URL"),
-    http_client=httpx.Client(trust_env=False),
-)
-MODEL = os.getenv("VOLC_MODEL", "ark-code-latest")
+# ---- Provider 注册表（复用 Week1 Day1 主备架构） ----
+# 链式 fallback：按列表顺序逐个尝试，第一个成功即返回
+# 新增 provider 只需追加一项
+
+
+PROVIDERS = [
+    {
+        "name": "火山豆包(coding)",
+        "enabled": True,
+        "api_key": os.getenv("VOLC_API_KEY", ""),
+        "base_url": os.getenv("VOLC_BASE_URL", "https://ark.cn-beijing.volces.com/api/coding/v3"),
+        "model": os.getenv("VOLC_MODEL", "ark-code-latest"),
+    },
+    {
+        "name": "DeepSeek",
+        "enabled": True,
+        "api_key": os.getenv("DEEPSEEK_API_KEY", ""),
+        "base_url": os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+        "model": os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash"),
+    },
+    ]
+
+
+def _is_real_key(key: str) -> bool:
+    """判断 key 是否为真实配置（非空、非占位符）"""
+    if not key:
+        return False
+    return "your-" not in key.lower()
+
+
+def _build_client(provider: dict) -> OpenAI:
+    """为指定 provider 创建 OpenAI 兼容客户端（trust_env=False 绕过系统代理）"""
+    return OpenAI(
+        api_key=provider["api_key"],
+        base_url=provider["base_url"],
+        http_client=httpx.Client(trust_env=False),
+    )
 
 
 # ============================================================
@@ -259,12 +292,30 @@ class AgentState(TypedDict):
 # ============================================================
 
 def call_llm(messages: list[dict], tools: list[dict] | None = None) -> Any:
-    """调用 LLM，支持 Function Calling 模式。"""
-    kwargs: dict[str, Any] = {"model": MODEL, "messages": messages, "temperature": 0.3}
-    if tools:
-        kwargs["tools"] = tools
-        kwargs["tool_choice"] = "auto"  # ← LLM 自主决定是否调用工具
-    return _client.chat.completions.create(**kwargs)
+    """调用 LLM，支持 Function Calling 模式 + 主备自动降级（Week1 Day1 架构）。
+
+    遍历 PROVIDERS 列表，第一个成功即返回；失败自动切下一个。
+    """
+    last_err = None
+    for p in PROVIDERS:
+        if not p.get("enabled"):
+            continue
+        if not _is_real_key(p["api_key"]):
+            continue
+        try:
+            client = _build_client(p)
+            kwargs: dict[str, Any] = {"model": p["model"], "messages": messages, "temperature": 0.3}
+            if tools:
+                kwargs["tools"] = tools
+                kwargs["tool_choice"] = "auto"
+            response = client.chat.completions.create(**kwargs)
+            return response
+        except Exception as e:
+            last_err = e
+            provider_name = p["name"]
+            print(f"  ⚠️  [{provider_name}] 调用失败: {type(e).__name__}: {str(e)[:80]}，尝试下一个...")
+
+    raise RuntimeError(f"所有 provider 均失败。最后错误: {last_err}")
 
 
 # ============================================================
@@ -510,24 +561,24 @@ def build_graph() -> StateGraph:
 # ============================================================
 # 主入口 — 运行 Agent
 # ============================================================
-# 1. 构建 Graph
-# 2. 构建初始状态（system prompt + 用户提问）
-# 3. app.invoke(initial_state) 一行代码启动整个 Agent 循环
-# 4. 打印结果
+# 三种运行模式：
+#   1. 交互模式（默认）：python langgraph_agent.py
+#   2. 命令行传参：python langgraph_agent.py "ORD001 能按时交付吗？"
+#   3. 预设场景：python langgraph_agent.py --demo
 # ============================================================
 
-def main():
-    print("Week 3 — MCP + LangGraph 调度 Agent")
-    print(f"工具总数：{len(TOOLS)}（order_server: 3 / resource_server: 3）")
-    print(f"模型：{MODEL}")
+# 预设演示场景
+DEMO_SCENARIOS = [
+    "今天先做哪些订单？帮我综合考虑交期紧迫度、客户等级、材料库存和设备负载情况，给出优先级排序。",
+    "ORD001 能按时交付吗？帮我查一下这个订单的当前状态、所需材料和设备情况。",
+    "现在有哪些紧急订单？哪些设备和材料是瓶颈？",
+    "东莞模具厂的订单总体情况怎么样？信用如何？建议优先处理还是延后？",
+    "帮我查一下 PEEK 材料的库存，如果不够，会影响哪些订单？",
+]
 
-    # 构建可执行的状态图
-    app = build_graph()
 
-    # 场景：调度员问"今天先做哪些订单？"
-    query = "今天先做哪些订单？帮我综合考虑交期紧迫度、客户等级、材料库存和设备负载情况，给出优先级排序。"
-
-    # 初始状态
+def run_agent(app, query: str):
+    """运行一次 Agent 并打印结果。"""
     initial_state: AgentState = {
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
@@ -538,11 +589,12 @@ def main():
         "final_answer": "",
     }
 
-    # 一行代码启动 Agent 循环
-    # LangGraph 自动处理：节点调度 → 条件路由 → 状态管理 → 循环终止
+    print(f"\n{'='*60}")
+    print(f" 用户提问：{query}")
+    print(f"{'='*60}")
+
     result = app.invoke(initial_state)
 
-    # 打印结果
     print(f"\n{'='*60}")
     print(" 最终调度建议")
     print(f"{'='*60}")
@@ -550,6 +602,61 @@ def main():
     print(f"\n工具调用统计：{len(result['tool_results'])} 次")
     for tr in result["tool_results"]:
         print(f"  [{TOOLS[tr['tool']]['server']}] {tr['tool']}({tr['arguments']})")
+
+
+def main():
+    print("Week 3 — MCP + LangGraph 调度 Agent")
+    print(f"工具总数：{len(TOOLS)}（order_server: 3 / resource_server: 3）")
+    enabled = [p["name"] for p in PROVIDERS if p.get("enabled") and _is_real_key(p["api_key"])]
+    print(f"可用 Provider：{', '.join(enabled)}（自动降级）")
+
+    app = build_graph()
+
+    # 命令行传参：python langgraph_agent.py "你的问题"
+    if len(sys.argv) > 1 and sys.argv[1] != "--demo" and sys.argv[1] != "-i":
+        run_agent(app, sys.argv[1])
+        return
+
+    # 预设场景演示：python langgraph_agent.py --demo
+    if len(sys.argv) > 1 and sys.argv[1] == "--demo":
+        print(f"\n📋 预设演示场景（共 {len(DEMO_SCENARIOS)} 个）：\n")
+        for i, s in enumerate(DEMO_SCENARIOS, 1):
+            print(f"  {i}. {s}")
+        print()
+        try:
+            choice = input("选择场景编号（回车=全部演示）: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            choice = ""
+
+        if choice.isdigit() and 1 <= int(choice) <= len(DEMO_SCENARIOS):
+            run_agent(app, DEMO_SCENARIOS[int(choice) - 1])
+        else:
+            for i, s in enumerate(DEMO_SCENARIOS, 1):
+                print(f"\n{'#'*60}")
+                print(f"# 场景 {i}/{len(DEMO_SCENARIOS)}")
+                print(f"{'#'*60}")
+                run_agent(app, s)
+        return
+
+    # 交互模式（默认）
+    print("\n💬 交互模式 — 输入问题，Agent 回答（输入 quit 退出）\n")
+    print("  示例问题：")
+    for i, s in enumerate(DEMO_SCENARIOS, 1):
+        print(f"  {i}. {s}")
+    print()
+
+    while True:
+        try:
+            query = input("🔍 请输入调度问题 > ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\n👋 退出")
+            break
+        if not query:
+            continue
+        if query.lower() in ("quit", "exit", "q", "退出"):
+            print("👋 退出")
+            break
+        run_agent(app, query)
 
 
 if __name__ == "__main__":
