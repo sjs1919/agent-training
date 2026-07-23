@@ -15,7 +15,7 @@ from scripts.stock_monitor.data_fetcher import (
     get_latest_ma_values,
 )
 from scripts.stock_monitor.ma_monitor import MAMonitor, MASignal
-from scripts.stock_monitor.summarizer import generate_market_summary, generate_all_summaries
+from scripts.stock_monitor.summarizer import generate_close_summary
 from scripts.stock_monitor.mail_sender import send_email, build_signals_html, build_summary_html
 
 
@@ -81,14 +81,13 @@ def run_monitor_loop(config: AppConfig):
 
 
 def send_close_summary(config: AppConfig):
-    """收盘后：调用 LLM 生成摘要 → 邮件发送。"""
-    print("\n[摘要] 收盘，LLM 正在生成 AI 摘要...")
+    """收盘后：构建结构化数据 + LLM 叙事 → 邮件发送。"""
+    print("\n[摘要] 收盘，正在生成 AI 收盘总结...")
     try:
-        market = generate_market_summary(config)
-        stocks = generate_all_summaries(config)
-        html = build_summary_html(market, stocks)
-        send_email(config.email, f"收盘AI摘要-{datetime.now().strftime('%Y-%m-%d')}", html)
-        print("[摘要] ✅ 收盘AI摘要已发送")
+        summary = generate_close_summary(config)
+        html = build_summary_html(summary)
+        send_email(config.email, f"收盘AI总结-{datetime.now().strftime('%Y-%m-%d')}", html)
+        print("[摘要] ✅ 收盘AI总结已发送")
     except Exception as e:
         print(f"[摘要] ❌ 失败: {e}")
 

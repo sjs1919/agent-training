@@ -121,6 +121,8 @@ def get_realtime_quotes(codes: List[str]) -> pd.DataFrame:
                 "昨收": _sf(p.get("昨收")),
                 "成交量": _sf(p.get("成交量")),
                 "成交额": amt_wan * 10000 if amt_wan else None,  # 万→元
+                "换手率": _sf(p.get("换手率")),
+                "振幅": _sf(p.get("振幅")),
             })
     except Exception as e:
         print(f"[数据] 获取实时行情失败: {e}")
@@ -168,7 +170,7 @@ def get_hist_data(code: str, days: int = 30) -> pd.DataFrame:
         df = df.sort_values("日期").reset_index(drop=True)
         df["涨跌幅"] = df["收盘"].pct_change() * 100
         df["振幅"] = ((df["最高"] - df["最低"]) / df["收盘"].shift(1)) * 100
-        df["成交额"] = df["成交量"] * df["收盘"]  # 估算
+        df["成交额"] = df["成交量"] * 100 * df["收盘"]  # 估算：成交量(手) * 100(股/手) * 收盘价(元)
 
         for w in [5, 10, 20]:
             df[f"MA{w}"] = df["收盘"].rolling(window=w).mean()
@@ -192,8 +194,10 @@ def get_latest_ma_values(code: str) -> Dict[str, Optional[float]]:
 # ============================================================
 _INDEX_MAP = {
     "sh000001": "上证指数",
+    "sz399001": "深证成指",
     "sz399006": "创业板指",
     "sh000688": "科创50",
+    "bj899050": "北证50",
     "sh000985": "中证全指",  # 近似全A
 }
 
@@ -201,6 +205,10 @@ _INDEX_MAP = {
 _MARKET_BREADTH_CACHE: Optional[dict] = None
 _MARKET_BREADTH_DATE: Optional[str] = None
 
+# 持久化目录
+import os as _os
+_STATS_DIR = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "..", "data")
+_os.makedirs(_STATS_DIR, exist_ok=True)
 
 # 昨日指数数据持久化文件（用于环比计算，K线API没有成交额字段）
 _INDEX_STATS_FILE = _os.path.join(_STATS_DIR, "index_stats_yesterday.json")
@@ -296,9 +304,6 @@ def get_all_index_data() -> dict:
 
 
 # 昨日全市场统计持久化文件（用于环比计算）
-import os as _os
-_STATS_DIR = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "..", "data")
-_os.makedirs(_STATS_DIR, exist_ok=True)
 _MARKET_STATS_FILE = _os.path.join(_STATS_DIR, "market_stats_yesterday.json")
 
 
@@ -409,7 +414,23 @@ def get_market_stats() -> dict:
 # ============================================================
 # 个股快照（供 LLM 摘要）
 # ============================================================
-def build_stock_snapshot(code: str, name: str) -> dict:
+def _get_realtime_single(code: str) -> dict:
+    """获取单只股票实时数据（成交额/换手率/振幅），失败返回空 dict。"""
+    try:
+        df = get_realtime_quotes([code])
+        if df.empty:
+            return {}
+        row = df.iloc[0]
+        return {
+            "成交额": row.get("成交额"),
+            "换手率": row.get("换手率"),
+            "振幅": row.get("振幅"),
+        }
+    except Exception:
+        return {}
+
+
+def build_stock_snapshot(code: str, name: str, rt_data: Optional[dict] = None) -> dict:
     try:
         df = get_hist_data(code, days=25)
         if df.empty or len(df) < 5:
@@ -417,6 +438,10 @@ def build_stock_snapshot(code: str, name: str) -> dict:
 
         today = df.iloc[-1]
         yesterday = df.iloc[-2]
+
+        # 实时行情数据（用于获取准确的成交额/换手率/振幅）
+        if rt_data is None:
+            rt_data = _get_realtime_single(code)
 
         snapshot = {
             "code": code, "name": name,
@@ -428,12 +453,14 @@ def build_stock_snapshot(code: str, name: str) -> dict:
             },
             "change": {
                 "pct": _fz(today.get("涨跌幅")),
-                "amplitude": _fz(today.get("振幅")),
+                "amplitude": rt_data.get("振幅") or _fz(today.get("振幅")),
             },
             "volume": {
                 "today": _fz(today.get("成交量")),
                 "yesterday": _fz(yesterday.get("成交量")),
             },
+            "amount": rt_data.get("成交额") or _fz(today.get("成交额")),
+            "turnover": rt_data.get("换手率"),
             "ma": {},
         }
         for ma in ["MA5", "MA10", "MA20"]:
