@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>壹沓科技（ONEAIX）深度分析报告</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #1c2230;
+    --border: #30363d; --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --purple: #a78bfa; --purple-bg: #1a1530; --teal: #2dd4bf; --teal-bg: #0a2e2a;
+    --coral: #f97557; --coral-bg: #2a1810; --pink: #ec4899; --pink-bg: #2a1020;
+    --blue: #58a6ff; --blue-bg: #0d1a2e; --green: #4ade80; --green-bg: #0a2a14;
+    --amber: #fbbf24; --amber-bg: #2a200a; --red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.7; font-size: 15px; }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; }
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; background: linear-gradient(135deg, #f97557, #ec4899, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .subtitle { color: var(--text2); font-size: 14px; margin-bottom: 40px; }
+  h2 { font-size: 22px; font-weight: 600; margin: 48px 0 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  h2 .num { color: var(--coral); font-size: 16px; }
+  h3 { font-size: 17px; font-weight: 600; margin: 28px 0 12px; color: var(--blue); }
+  h4 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; color: var(--teal); }
+  p { margin-bottom: 14px; color: var(--text); }
+  ul, ol { margin: 0 0 16px 20px; }
+  li { margin-bottom: 6px; color: var(--text); }
+  strong { color: var(--amber); font-weight: 600; }
+  code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--teal); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 16px 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .stat .num { font-size: 28px; font-weight: 700; color: var(--coral); }
+  .stat .label { font-size: 13px; color: var(--text2); margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th { background: var(--surface2); color: var(--blue); padding: 10px 14px; text-align: left; font-weight: 600; border: 1px solid var(--border); }
+  td { padding: 10px 14px; border: 1px solid var(--border); color: var(--text); }
+  tr:hover td { background: var(--surface2); }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin: 2px 4px; }
+  .badge-purple { background: var(--purple-bg); color: var(--purple); }
+  .badge-teal { background: var(--teal-bg); color: var(--teal); }
+  .badge-coral { background: var(--coral-bg); color: var(--coral); }
+  .badge-pink { background: var(--pink-bg); color: var(--pink); }
+  .badge-blue { background: var(--blue-bg); color: var(--blue); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .quote { border-left: 3px solid var(--purple); padding: 12px 20px; margin: 16px 0; background: var(--purple-bg); border-radius: 0 8px 8px 0; font-style: italic; color: var(--text2); }
+  .highlight-box { background: var(--teal-bg); border: 1px solid var(--teal); border-radius: 10px; padding: 16px 20px; margin: 16px 0; }
+  .highlight-box strong { color: var(--teal); }
+  .warn-box { background: var(--coral-bg); border: 1px solid var(--coral); border-radius: 10px; padding: 16px 20px; margin: 16px 0; }
+  .warn-box strong { color: var(--coral); }
+  .toc { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 28px; margin-bottom: 32px; }
+  .toc ol { margin-left: 20px; }
+  .toc li { margin-bottom: 4px; }
+  .toc a { color: var(--blue); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-item::before { content: ''; position: absolute; left: -24px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--coral); border: 2px solid var(--bg); }
+  .tl-date { color: var(--amber); font-size: 13px; font-weight: 600; }
+  .tl-title { font-weight: 600; color: var(--text); margin: 2px 0; }
+  .tl-desc { color: var(--text2); font-size: 13px; }
+  @media (max-width: 768px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>壹沓科技（ONEAIX）深度分析报告</h1>
+<p class="subtitle">全球供应链数字员工领导者 · AI Agent 驱动企业超自动化 · 2026 年 7 月</p>
+
+<div class="toc">
+<h3 style="margin-top:0">目录</h3>
+<ol>
+  <li><a href="#s1">公司定位与发展历程</a></li>
+  <li><a href="#s2">产品矩阵与功能体系</a></li>
+  <li><a href="#s3">核心技术架构：三引擎闭环</a></li>
+  <li><a href="#s4">运小沓四代演进路径</a></li>
+  <li><a href="#s5">应用场景与量化效果</a></li>
+  <li><a href="#s6">客户矩阵与全球化布局</a></li>
+  <li><a href="#s7">融资历程与资本认可</a></li>
+  <li><a href="#s8">竞争格局与差异化定位</a></li>
+  <li><a href="#s9">与未来式智能、来也科技、中科闻歌四方对比</a></li>
+  <li><a href="#s10">护城河、风险与未来展望</a></li>
+</ol>
+</div>
+
+<!-- ========== 第1章 ========== -->
+<h2 id="s1"><span class="num">01</span> 公司定位与发展历程</h2>
+
+<div class="card">
+<p><strong>一句话定位</strong>：全球供应链数字员工领导者，以 AI Agent 驱动企业超自动化。</p>
+<p>壹沓科技（ONEAIX Technologies）成立于 2016 年 11 月（2017 年正式运营），总部位于上海市静安区，海外总部设于新加坡。团队约 300 人，核心成员来自华为、阿里、微软等企业。公司是<strong>国家级专精特新"小巨人"企业</strong>、国家高新技术企业、上海市科技小巨人，拥有 100+ 发明专利与自主知识产权，并牵头参编多项人工智能国家标准。</p>
+</div>
+
+<div class="grid3">
+  <div class="stat"><div class="num">2016</div><div class="label">公司成立</div></div>
+  <div class="stat"><div class="num">~300</div><div class="label">团队规模</div></div>
+  <div class="stat"><div class="num">~2000</div><div class="label">服务企业</div></div>
+</div>
+
+<h3>三大发展阶段</h3>
+<div class="timeline">
+  <div class="tl-item">
+    <div class="tl-date">2017 — 2019</div>
+    <div class="tl-title">数据智能阶段</div>
+    <div class="tl-desc">发布大数据集成平台（1Data iPaaS）和认知智能产品，磨练团队，建设组织。2019 年实现盈利。这一阶段以数据挖掘、iPaaS 数据集成为核心能力。</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2020 — 2022</div>
+    <div class="tl-title">流程智能阶段</div>
+    <div class="tl-desc">受 UiPath、Blue Prism 启发，推出第一代数字机器人产品 CubeRobot/CubeRPA，实现 office 办公流程自动化，串联企业不同业务系统消除"信息孤岛"。构建"RPA + AI + iPaaS"超自动化平台，聚焦大供应链（生产制造、物流配送、新零售）。</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2023 — 至今</div>
+    <div class="tl-title">LLM 智能阶段</div>
+    <div class="tl-desc">运用 LLM 通用大模型能力升级平台，推出行业垂类大模型 CubeLLM（后更名小沓 LLM）、CubeAgent。2025 WAIC 发布运小沓 4.0（品牌升级为 ONEAIX），2026 WAIC 发布小沓 OS + 小沓 KE，构建"理解—执行—学习"完整闭环。</div>
+  </div>
+</div>
+
+<div class="highlight-box">
+<strong>关键战略选择</strong>：壹沓从成立之初就选择<strong>大供应链垂直赛道</strong>（生产制造、物流配送、新零售），而非通用企业服务。这使其在供应链物流领域的行业 Know-How 沉淀远深于通用 RPA/Agent 厂商——成为其最核心的差异化壁垒。
+</div>
+
+<!-- ========== 第2章 ========== -->
+<h2 id="s2"><span class="num">02</span> 产品矩阵与功能体系</h2>
+
+<p>ONEAIX 平台构建了"<strong>Agent + 平台 + 数据</strong>"三位一体的超自动化能力，整合<strong>供应链物流</strong>与<strong>供应链品牌</strong>两大产品线。</p>
+
+<h3>2.1 供应链物流产品线（运小沓）</h3>
+<div class="card">
+<p>面向货代、船公司、港口物流企业，覆盖供应链物流全链路能力：</p>
+<table>
+<tr><th>Agent</th><th>功能</th><th>核心价值</th></tr>
+<tr><td>智能询价报价 Agent</td><td>自动对接市场运价数据，秒级生成精准报价</td><td>30分钟 → 秒级，效率提升6倍</td></tr>
+<tr><td>接单订舱 Agent</td><td>7x24自动接单，处理订舱/放舱全流程</td><td>打破时间与人力限制</td></tr>
+<tr><td>单证识别 Agent</td><td>提单/舱单多模态自动识别与录入</td><td>多模态大模型解析，准确率领先</td></tr>
+<tr><td>客服应答 Agent</td><td>嵌入企业 IM 系统，自然语言交互</td><td>自动生成客户画像与销售分析</td></tr>
+<tr><td>物流可视 Agent</td><td>全程追踪十几个环节，风险预警</td><td>港口拥堵/罢工等提前预警</td></tr>
+<tr><td>运价查比 Agent</td><td>多船司运价实时比对</td><td>最优报价决策</td></tr>
+<tr><td>舱单管理 Agent</td><td>舱单数据自动核验与管理</td><td>降低人工错误</td></tr>
+<tr><td>RPA 超自动化</td><td>跨系统操作流程自动化</td><td>消除信息孤岛</td></tr>
+</table>
+</div>
+
+<h3>2.2 供应链品牌产品线</h3>
+<div class="card">
+<p>面向品牌零售企业，覆盖新零售全场景：</p>
+<table>
+<tr><th>产品</th><th>功能</th><th>核心价值</th></tr>
+<tr><td>电商运营平台</td><td>多平台数据采集、竞店分析、投放优化</td><td>多平台数据一键汇总</td></tr>
+<tr><td>智能选品</td><td>市场趋势分析、选品推荐</td><td>数据驱动选品决策</td></tr>
+<tr><td>达人营销</td><td>达人匹配、效果追踪</td><td>精准达人合作</td></tr>
+<tr><td>GEO 生成式引擎优化</td><td>让品牌被大模型提及</td><td>触达数千万 AI 消费者</td></tr>
+<tr><td>商场结算平台</td><td>商场结算全流程自动化</td><td>效率提升800%，年省近300万</td></tr>
+<tr><td>市场数据监测</td><td>全网品牌趋势实时追踪</td><td>消费者洞察/舆情监控</td></tr>
+<tr><td>AI 视频生成（SuperV）</td><td>脚本→分镜→画面→配音全流程自动化</td><td>视频制作压缩至分钟级</td></tr>
+<tr><td>超级检索（SuperSearchEye）</td><td>全网页面智能采集与结构化解析</td><td>竞品监测/舆情/价格追踪</td></tr>
+</table>
+</div>
+
+<div class="highlight-box">
+<strong>产品哲学</strong>：壹沓不是做通用 Agent 平台让用户自己搭建，而是提供<strong>开箱即用的行业垂直 Agent</strong>——每个 Agent 都内置了供应链行业的业务规则、术语解析和流程逻辑。这与 Coze/Dify 的"通用搭建平台"路线形成鲜明错位。
+</div>
+
+<!-- ========== 第3章 ========== -->
+<h2 id="s3"><span class="num">03</span> 核心技术架构：三引擎闭环</h2>
+
+<p>2026 WAIC（7 月 18 日），壹沓科技发布<strong>小沓 OS</strong> 与<strong>小沓 KE</strong> 两大核心技术底座，与自研<strong>小沓 LLM</strong> 协同形成"理解 — 执行 — 学习"完整闭环。CEO 卞晓瑜表示："我们发布的不是两套孤立的技术底座，而是企业级 AI Native 基础设施。"</p>
+
+<div class="grid3">
+  <div class="stat" style="border-color: var(--purple);">
+    <div class="num" style="color: var(--purple);">小沓 LLM</div>
+    <div class="label">理解与推理</div>
+    <div style="margin-top:8px;font-size:12px;color:var(--text2);">供应链垂类大模型<br>融合行业知识/规则/数据</div>
+  </div>
+  <div class="stat" style="border-color: var(--teal);">
+    <div class="num" style="color: var(--teal);">小沓 OS</div>
+    <div class="label">执行与交付</div>
+    <div style="margin-top:8px;font-size:12px;color:var(--text2);">Agent编排平台<br>任务拆解/流程控制/工具调用</div>
+  </div>
+  <div class="stat" style="border-color: var(--amber);">
+    <div class="num" style="color: var(--amber);">小沓 KE</div>
+    <div class="label">学习与进化</div>
+    <div style="margin-top:8px;font-size:12px;color:var(--text2);">企业知识引擎<br>长期记忆/知识沉淀/持续进化</div>
+  </div>
+</div>
+
+<h3>3.1 小沓 LLM（小沓大模型）— 理解引擎</h3>
+<ul>
+  <li><strong>定位</strong>：全球首款供应链垂类大模型，"数字员工的大脑"</li>
+  <li><strong>技术路径</strong>：基于国内外先进大模型基座，融合供应链领域知识、规则、数据，经专业微调后精准解析行业术语与业务指令</li>
+  <li><strong>核心能力</strong>：智能决策、风险控制、流程优化；支持自然语言与语音多模态交互</li>
+  <li><strong>部署方式</strong>：支持私有化部署，满足企业数据安全需求</li>
+  <li><strong>差异化</strong>：不是通用大模型的简单微调，而是将供应链行业规则、SOP、运价逻辑等深度融入模型——这是通用 LLM 无法直接替代的</li>
+</ul>
+
+<h3>3.2 小沓 OS — 执行引擎</h3>
+<ul>
+  <li><strong>定位</strong>：面向企业复杂流程的 Agent 编排平台</li>
+  <li><strong>核心能力</strong>：
+    <ul>
+      <li>统一编排 Agent、工具与业务流程</li>
+      <li>任务拆解：将复杂任务分解为可执行子任务</li>
+      <li>流程控制：多步骤流程的状态管理与异常处理</li>
+      <li>工具调用：对接企业 ERP/TMS/WMS 等系统</li>
+      <li>权限约束：角色级权限控制与数据安全</li>
+      <li>结果校验与反馈回流：执行结果自动验证，异常可追溯</li>
+    </ul>
+  </li>
+  <li><strong>关键意义</strong>：让 Agent 在复杂企业场景中"稳定完成端到端任务"，从"能理解"走向"能交付"——这是 Agent 从 Demo 到生产环境的关键一跃</li>
+</ul>
+
+<h3>3.3 小沓 KE — 学习引擎</h3>
+<ul>
+  <li><strong>定位</strong>：Agent 原生的自进化全域知识引擎</li>
+  <li><strong>核心能力</strong>：
+    <ul>
+      <li>汇聚企业私有数据、行业数据与外部知识</li>
+      <li>为 Agent 提供精准上下文、长期记忆与持续学习能力</li>
+      <li>构建面向 Agent 的企业知识底座——可理解、可检索、可调用、可演化</li>
+      <li>驱动企业知识不断流动、沉淀与进化，形成持续进化的知识闭环</li>
+    </ul>
+  </li>
+  <li><strong>差异化</strong>：不只是静态知识库（RAG），而是"Agent 原生"——知识随 Agent 使用自动积累、更新、进化</li>
+</ul>
+
+<h3>3.4 CubeFlow — Agent 任务流编排系统</h3>
+<div class="card">
+<p>CubeFlow 是连接三引擎的"调度中心"，也是壹沓技术架构的中枢：</p>
+<ul>
+  <li><strong>多 Agent 协同</strong>：按需调度具备数据收集、分析、执行等专长的智能体协同工作</li>
+  <li><strong>协议支持</strong>：基于 MCP（Model Context Protocol）/ A2A（Agent-to-Agent）等协议保障高效交互</li>
+  <li><strong>复杂流程构建</strong>：支持条件分支、循环、异常处理等复杂业务逻辑</li>
+  <li><strong>可观测性</strong>：全程可追溯、异常可预警、结果可保障</li>
+</ul>
+</div>
+
+<h3>3.5 多模态智能解析层</h3>
+<p>解决供应链场景特有的"信息输入"难题。供应链业务中文本、图像、PDF、邮件等格式混杂，系统通过融合跨模态信息，全面理解内容含义，为上层 Agent 提供高质量的输入支撑。</p>
+
+<div class="warn-box">
+<strong>技术架构小结</strong>：壹沓的技术架构设计有一个核心逻辑——<strong>解决 Agent 从"能理解"到"能交付"的鸿沟</strong>。大多数 Agent 平台停留在 LLM + 工具调用层面，而壹沓通过"OS（编排）+ KE（知识）"补齐了执行稳定性和知识积累两个关键短板，这是其在复杂供应链场景中能真正落地的技术基础。
+</div>
+
+<!-- ========== 第4章 ========== -->
+<h2 id="s4"><span class="num">04</span> 运小沓四代演进路径</h2>
+
+<table>
+<tr><th>版本</th><th>年份</th><th>能力定位</th><th>关键技术</th><th>突破点</th></tr>
+<tr>
+  <td><strong>1.0</strong></td>
+  <td>2020</td>
+  <td>单场景自动化</td>
+  <td>CubeRobot / RPA</td>
+  <td>模拟人工操作，解决订舱、财务自动化等单点场景</td>
+</tr>
+<tr>
+  <td><strong>2.0</strong></td>
+  <td>2022</td>
+  <td>跨场景串联</td>
+  <td>CubeRPA 平台</td>
+  <td>打通单证、运价、物流可视化等跨系统场景，提供统一服务</td>
+</tr>
+<tr>
+  <td><strong>3.0</strong></td>
+  <td>2023</td>
+  <td>智能执行引擎</td>
+  <td>CubeAgent + LLM</td>
+  <td>基于大模型构建专业 AI 智能体，员工可直接用自然语言对 Agent 下达指令（"帮我查运价、帮我订舱"），系统自动执行</td>
+</tr>
+<tr>
+  <td><strong>4.0</strong></td>
+  <td>2025</td>
+  <td>自主规划 Agent</td>
+  <td>小沓LLM + OS + KE</td>
+  <td>供应链领域首个具备自主规划能力的垂类 AI Agent，实现多任务规划与协同能力</td>
+</tr>
+</table>
+
+<div class="quote">
+"从2020年1.0版本的单场景自动化，迭代到4.0版本具备自主规划能力，运小沓的应用已覆盖询盘、报价、接单、订舱、客服等供应链物流核心环节，显著提升了企业效率与客户体验。"<br>—— 卞晓瑜，壹沓科技 CEO
+</div>
+
+<div class="highlight-box">
+<strong>演进逻辑</strong>：从"人操作软件"→"人编排流程"→"人对话 Agent"→"Agent 自主规划"。每一代都降低了人介入的深度，第 4.0 代的自主规划能力标志着从"人主导、AI 辅助"向"Agent 自主决策与执行"的范式跃迁。
+</div>
+
+<!-- ========== 第5章 ========== -->
+<h2 id="s5"><span class="num">05</span> 应用场景与量化效果</h2>
+
+<h3>5.1 供应链物流场景</h3>
+
+<h4>智能询价报价</h4>
+<div class="card">
+<p><strong>痛点</strong>：国际物流企业每天对接上千个客户群，人工响应询报价平均需 30 分钟。</p>
+<p><strong>解决方案</strong>：运小沓询报价 Agent 嵌入企业 IM 系统，客户和销售发条消息就能立刻获得报价，系统还能自动生成客户画像和销售行为分析。</p>
+<p><strong>效果</strong>：询价响应从 30 分钟缩短到秒级，整体效率提升约 6 倍。"你问我100次，我就可以报100次，生意的逻辑就变了。"—— COO 顾震宇</p>
+</div>
+
+<h4>物流可视化与风险预警</h4>
+<div class="card">
+<p>通过物流可视化等工具，AI 追踪货物从工厂到目的港的十几个环节，并提前预警潜在风险（如港口拥堵、罢工等）。这是数字员工赋能业务的关键体现。</p>
+</div>
+
+<h4>单证识别与处理</h4>
+<div class="card">
+<p>利用多模态大模型智能解析技术，自动识别提单、舱单、报关单等各类单证，从文本、图像、PDF 等多源异构数据中提取结构化信息，实现单证录入自动化。</p>
+</div>
+
+<h3>5.2 供应链品牌场景</h3>
+
+<h4>商场结算自动化</h4>
+<div class="card">
+<p><strong>案例</strong>：某上市女装企业，全国门店超 2000 家，每月需投入近 60 人每天进行 6 小时商场业务结算。</p>
+<p><strong>效果</strong>：使用壹沓科技平台后，每人每天仅需半小时，效率提升 800%。海澜生活也透露，壹沓自动化平台每年为其节约近 300 万元。</p>
+</div>
+
+<h4>GEO 生成式引擎优化</h4>
+<div class="card">
+<p>这是一项前瞻性产品——随着越来越多消费者通过 ChatGPT/文心一言等大模型寻找产品和品牌，GEO 优化确保品牌在 AI 回答中被提及。这是传统 SEO 在 AI 时代的延伸，壹沓在这一领域布局较早。</p>
+</div>
+
+<h4>电商运营自动化</h4>
+<div class="card">
+<p>为特步、雅戈尔等品牌提供电商运营自动化：生意参谋日报制作、商品信息统计下载、直通车计划下载、自助分析记录、挽单成功监测等，实现多平台数据一键汇总。</p>
+</div>
+
+<div class="grid2">
+  <div class="stat"><div class="num">6x</div><div class="label">询报价效率提升</div></div>
+  <div class="stat"><div class="num">800%</div><div class="label">商场结算效率提升</div></div>
+  <div class="stat"><div class="num">300万</div><div class="label">年节省成本（案例）</div></div>
+  <div class="stat"><div class="num">40%</div><div class="label">人力成本降低</div></div>
+</div>
+
+<!-- ========== 第6章 ========== -->
+<h2 id="s6"><span class="num">06</span> 客户矩阵与全球化布局</h2>
+
+<h3>6.1 标杆客户</h3>
+<div class="grid2">
+  <div class="card">
+    <h4 style="margin-top:0;color:var(--coral)">供应链物流</h4>
+    <ul>
+      <li><strong>中远海运</strong> — 航运巨头，数字员工注入新动能</li>
+      <li><strong>中国外运</strong> — 助力货运全球畅行无忧</li>
+      <li><strong>青岛港</strong> — 港口数字化新引擎</li>
+      <li><strong>丹麦得斯威（DSV）</strong> — 全球供应链企业人机协作</li>
+      <li><strong>畅联国际物流</strong> — 31 家分支机构全数字化</li>
+      <li><strong>德邦快递</strong> — 万人级企业数字化</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4 style="margin-top:0;color:var(--pink)">供应链品牌</h4>
+    <ul>
+      <li><strong>特步</strong> — 深入核心业务场景数字化转型</li>
+      <li><strong>上美股份</strong> — 效率国货美妆新范式</li>
+      <li><strong>高露洁</strong> — 全球个护领军企业数字化</li>
+      <li><strong>飞科电器</strong> — 智能时尚电器品牌</li>
+      <li><strong>雅戈尔</strong> — 43 年纺织服装龙头</li>
+      <li><strong>海澜生活</strong> — 年省近300万</li>
+    </ul>
+  </div>
+</div>
+
+<div class="grid3">
+  <div class="stat"><div class="num">~2000</div><div class="label">服务企业总数</div></div>
+  <div class="stat"><div class="num">70+</div><div class="label">行业 TOP100 客户</div></div>
+  <div class="stat"><div class="num">50+</div><div class="label">世界 500 强客户</div></div>
+</div>
+
+<h3>6.2 全球化布局</h3>
+<div class="card">
+<ul>
+  <li><strong>上海</strong>：中国总部 & 研发中心</li>
+  <li><strong>新加坡</strong>：海外运营中心（区域总部）</li>
+  <li><strong>青岛</strong>：华北运营中心</li>
+  <li><strong>武汉</strong>：华中研发中心</li>
+  <li><strong>深圳</strong>：华南运营中心</li>
+  <li><strong>越南胡志明</strong>：越南运营中心</li>
+</ul>
+<p>业务覆盖东南亚、日韩、欧美等多地。2024 年仅用 5 个月完成供应链大模型产品在新加坡的商业化落地，2025 上半年海外板块营收同比增长迅速，成为新增长极。入选上海市首批出海服务平台试点企业。</p>
+</div>
+
+<!-- ========== 第7章 ========== -->
+<h2 id="s7"><span class="num">07</span> 融资历程与资本认可</h2>
+
+<div class="timeline">
+  <div class="tl-item">
+    <div class="tl-date">2021 年 2 月 · A 轮</div>
+    <div class="tl-title">1 亿元人民币</div>
+    <div class="tl-desc">投资方：SIG 海纳亚洲</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2021 年 6 月 · A+ 轮</div>
+    <div class="tl-title">2 亿元人民币</div>
+    <div class="tl-desc">投资方：IDG 资本、钟鼎资本、红杉中国、SIG 海纳亚洲</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2023 年 3 月 · B 轮</div>
+    <div class="tl-title">近 2 亿元人民币</div>
+    <div class="tl-desc">投资方：鼎晖投资、创享欢聚投资、IDG 资本、钟鼎资本</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2024 年 8 月 · B+ 轮</div>
+    <div class="tl-title">数亿元人民币</div>
+    <div class="tl-desc">投资方：鼎晖 VGC（领投）、新尚资本（跟投）。投后估值超 <strong>40 亿元</strong>。累计融资约 <strong>5 亿元+</strong>。指数资本担任独家财务顾问。</div>
+  </div>
+</div>
+
+<div class="highlight-box">
+<strong>资本方阵容</strong>：IDG、红杉中国、钟鼎资本、鼎晖投资、SIG 海纳亚洲——全部是中国一线 VC。且从 A 到 B+ 轮，老股东持续加投，说明投资人对团队和赛道的高度认可。钟鼎资本专注供应链赛道投资，其重仓壹沓体现了供应链行业的专业背书。
+</div>
+
+<!-- ========== 第8章 ========== -->
+<h2 id="s8"><span class="num">08</span> 竞争格局与差异化定位</h2>
+
+<h3>8.1 壹沓 vs 通用 RPA/Agent 厂商</h3>
+<table>
+<tr><th>维度</th><th>壹沓科技 ONEAIX</th><th>来也科技 Laiye</th><th>影刀 RPA</th><th>实在智能</th></tr>
+<tr><td>核心赛道</td><td>大供应链垂直</td><td>通用企业自动化</td><td>电商/通用桌面</td><td>通用 Agent + RPA</td></tr>
+<tr><td>大模型</td><td>自研垂类 LLM</td><td>模型中立/混合</td><td>无自研大模型</td><td>自研塔斯大模型</td></tr>
+<tr><td>Agent 编排</td><td>CubeFlow + 小沓OS</td><td>WEP 平台</td><td>AI Power</td><td>实在 Agent</td></tr>
+<tr><td>知识引擎</td><td>小沓 KE（自进化）</td><td>无独立知识引擎</td><td>RAG 知识库</td><td>无独立知识引擎</td></tr>
+<tr><td>行业深度</td><td>★★★★★（供应链专精）</td><td>★★★★（多行业）</td><td>★★★（电商偏重）</td><td>★★★（通用）</td></tr>
+<tr><td>全球化</td><td>新加坡总部，已出海</td><td>有国际版</td><td>国内为主</td><td>国内为主</td></tr>
+<tr><td>客户规模</td><td>~2000 家</td><td>300+ 500 强</td><td>数十万用户</td><td>数百家</td></tr>
+</table>
+
+<h3>8.2 独特定位</h3>
+<div class="card">
+<p>第三方评价（脉脉）指出壹沓的差异化：<strong>"在供应链以及新零售场景的深度钻研而被置于考虑范围内。特别是针对单据处理、物流数字员工以及大宗商品对账这类的 Know-How，壹沓科技提供了非常成熟的行业套件。"</strong></p>
+<p>但也指出局限：<strong>"对于需要横向打通企业内部多个非供应链系统（如人力资源管理、私域营销以及跨不同框架的定制化后台），壹沓的技术栈与交付手段会体现出一定的场景局限性。"</strong></p>
+</div>
+
+<div class="warn-box">
+<strong>竞争定位总结</strong>：壹沓是"供应链垂直 Agent"路线的代表——深度极深但宽度有限。如果客户的核心痛点集中在供应链履约层面，壹沓是最有竞争力的选择；但如果需要一套统领各部门系统的"中央大脑"，壹沓的横向覆盖能力仍有待验证。
+</div>
+
+<!-- ========== 第9章 ========== -->
+<h2 id="s9"><span class="num">09</span> 与未来式智能、来也科技、中科闻歌四方对比</h2>
+
+<table>
+<tr><th>维度</th><th>壹沓科技 ONEAIX</th><th>未来式智能 AutoAgents.AI</th><th>来也科技 Laiye</th><th>中科闻歌 Wenge AI</th></tr>
+<tr><td><strong>核心定位</strong></td><td>供应链数字员工</td><td>企业级 Agent 平台</td><td>智能自动化平台</td><td>通用决策大模型</td></tr>
+<tr><td><strong>类比</strong></td><td>垂直行业专家</td><td>Agent 编排引擎</td><td>自动化执行底座</td><td>决策推演大脑</td></tr>
+<tr><td><strong>技术路线</strong></td><td>垂类LLM+OS+KE三引擎</td><td>Multi-Agent中心化调度</td><td>RPA+IDP+对话AI+Agent</td><td>DOMA：数据→本体→模型→决策</td></tr>
+<tr><td><strong>核心产品</strong></td><td>运小沓 / CubeAgent</td><td>灵搭 / 袋袋 / 智能终端</td><td>Laiye Worker / APA/ADP/ACX</td><td>雅意/Decitron/智川/ScienceOne</td></tr>
+<tr><td><strong>大模型</strong></td><td>自研供应链垂类 LLM</td><td>多模型混合适配</td><td>模型中立/智能路由</td><td>自研雅意 2.0 + 磐石</td></tr>
+<tr><td><strong>知识引擎</strong></td><td>小沓 KE（自进化）</td><td>知识流自编排</td><td>无独立知识引擎</td><td>智图知识大脑</td></tr>
+<tr><td><strong>行业覆盖</strong></td><td>供应链物流 + 品牌</td><td>电力/金融/制造/政务</td><td>电力/医疗/制造/零售/通信/金融</td><td>媒体/政务/金融/工业/医疗/科研</td></tr>
+<tr><td><strong>团队背景</strong></td><td>华为/阿里/微软系</td><td>达摩院/飞书系</td><td>奥森科技/吾来合并</td><td>中科院自动化所</td></tr>
+<tr><td><strong>成立时间</strong></td><td>2016（2017运营）</td><td>2023</td><td>2015</td><td>2017</td></tr>
+<tr><td><strong>团队规模</strong></td><td>~300 人</td><td>未公开</td><td>未公开（大型）</td><td>250+（43.9%研发）</td></tr>
+<tr><td><strong>融资阶段</strong></td><td>B+ 轮，估值 40 亿+</td><td>Pre-A 轮</td><td>多轮，成熟期</td><td>港股上市 (01956)</td></tr>
+<tr><td><strong>客户规模</strong></td><td>~2000 家</td><td>数十家大客户</td><td>300+ 500 强</td><td>未公开（政府为主）</td></tr>
+<tr><td><strong>全球化</strong></td><td>新加坡总部，已出海</td><td>国内为主</td><td>有国际版</td><td>国内为主</td></tr>
+<tr><td><strong>核心壁垒</strong></td><td>行业Know-How+垂类LLM</td><td>Multi-Agent编排+数据飞轮</td><td>RPA执行能力+全栈信创</td><td>中科院背书+Decitron决策</td></tr>
+<tr><td><strong>主要风险</strong></td><td>赛道宽度有限</td><td>赛道拥挤+商业化验证</td><td>RPA历史包袱</td><td>持续亏损+现金流</td></tr>
+</table>
+
+<div class="highlight-box">
+<strong>四方路线对比</strong>：
+<ul style="margin-top:8px;">
+  <li><strong>壹沓科技</strong> = "垂直专才型"（供应链垂直深度最强）</li>
+  <li><strong>来也科技</strong> = "双手型"（RPA 执行能力最强）</li>
+  <li><strong>中科闻歌</strong> = "大脑型"（决策推演最强）</li>
+  <li><strong>未来式智能</strong> = "协调型"（Agent 编排最强）</li>
+</ul>
+四家公司走出了完全不同的路线，分别代表了 Agent 落地的四种范式：垂直深耕（壹沓）、自下而上执行（来也）、自上而下决策（闻歌）、中间编排（未来式）。
+</div>
+
+<!-- ========== 第10章 ========== -->
+<h2 id="s10"><span class="num">10</span> 护城河、风险与未来展望</h2>
+
+<h3>10.1 四道护城河</h3>
+
+<div class="card">
+<h4 style="margin-top:0;">1. 供应链垂直 Know-How 深度沉淀</h4>
+<p>6 年深耕供应链物流+品牌领域，积累的行业规则、SOP、运价逻辑、单证格式等 Know-How 是通用厂商难以速成的。每一代产品迭代都加深了这一壁垒——从单场景到跨场景到自主规划，行业知识已内化进模型和编排系统。</p>
+</div>
+
+<div class="card">
+<h4 style="margin-top:0;">2. 全球首款供应链垂类大模型</h4>
+<p>小沓 LLM 不是通用大模型的简单微调，而是将供应链行业知识、规则、数据深度融入。通用 LLM 可以理解"什么是提单"，但无法精准执行运价比对、订舱流程、舱单核验等行业专属逻辑。这一壁垒随行业数据持续积累而加深。</p>
+</div>
+
+<div class="card">
+<h4 style="margin-top:0;">3. "理解—执行—学习"三引擎闭环</h4>
+<p>小沓 LLM + OS + KE 构成的闭环使壹沓不同于大多数"LLM + 工具调用"的简单 Agent 方案。OS 解决执行稳定性，KE 解决知识积累与进化——这两者在复杂企业场景中是真正的落地门槛。</p>
+</div>
+
+<div class="card">
+<h4 style="margin-top:0;">4. 标杆客户集群与全球化先发</h4>
+<p>中远海运、中外运、青岛港、DSV 等头部供应链企业客户形成了行业标杆效应。新加坡海外总部 + 5 个月商业化落地速度，使其在国际市场建立了先发优势——国际供应链物流是一个天然全球化的市场，先发优势价值巨大。</p>
+</div>
+
+<h3>10.2 主要风险</h3>
+
+<div class="warn-box">
+<h4 style="margin-top:0;color:var(--coral);">1. 赛道宽度局限</h4>
+<p>深耕供应链是优势也是约束。当客户需要跨部门、跨系统的"中央大脑"时，壹沓的横向覆盖能力不足。若供应链 AI Agent 市场增速放缓，壹沓的天花板也将受限。</p>
+</div>
+
+<div class="warn-box">
+<h4 style="margin-top:0;color:var(--coral);">2. 大模型厂商的降维打击</h4>
+<p>大模型能力持续跃升，通用 LLM 可能逐步覆盖供应链垂类 LLM 的部分能力。如果大模型厂商自带 Agent 编排能力进入供应链赛道，壹沓的中间层价值可能被压缩。</p>
+</div>
+
+<div class="warn-box">
+<h4 style="margin-top:0;color:var(--coral);">3. 从项目制到产品化的转化压力</h4>
+<p>近 2000 家客户中很多仍需要定制化交付。如何将行业 Know-How 从项目经验转化为标准化产品，是实现规模化扩张的关键挑战。小沓 OS + KE 的发布正是试图解决这一问题。</p>
+</div>
+
+<div class="warn-box">
+<h4 style="margin-top:0;color:var(--coral);">4. 同赛道竞争加剧</h4>
+<p>RPA 中国预测 2024 年中国 RPA 市场规模达 77.8 亿元，2022-2026 年复合年增长率 43.4%。来也、影刀、实在智能等厂商都在向 Agent + 垂直行业方向演进，赛道日益拥挤。</p>
+</div>
+
+<h3>10.3 未来展望</h3>
+
+<div class="card">
+<p>CEO 卞晓瑜提出了"AI Native 组织"的演进方向——组织形态正经历三代变迁：</p>
+<ul>
+  <li><strong>第一代</strong>：流程型组织（按 SOP 执行）</li>
+  <li><strong>第二代</strong>：可迭代产品型组织（敏捷开发）</li>
+  <li><strong>第三代</strong>：基于 Agentic 驱动的 AI Native 组织（Agent 自主决策与执行）</li>
+</ul>
+<p>壹沓的战略是构建"All-in-One AI"产品，以"白领 + AI Agent"新型办公模式，推动企业从"人主导、AI 辅助"向"Agent 自主决策与执行"跃迁。</p>
+</div>
+
+<div class="highlight-box">
+<strong>核心判断</strong>：壹沓科技代表了 AI Agent 落地的"垂直深耕"范式——不做通用平台，而是在供应链这一个垂直赛道上做到极致深度。其护城河不是单一技术，而是<strong>"垂类 LLM + 行业 Know-How + 执行闭环 + 标杆客户"的四重复合壁垒</strong>。这一路线的天花板取决于供应链 AI 市场的总规模，但在其专注的领域内，壹沓已经建立了难以撼动的领先地位。2026 年小沓 OS + KE 的发布，标志着壹沓正从"供应链 Agent 产品"向"企业级 AI Native 基础设施"升级——如果能成功实现从项目到平台的转化，壹沓有望成为供应链领域的"AI 操作系统"。
+</div>
+
+<hr style="margin: 48px 0; border: none; border-top: 1px solid var(--border);">
+
+<p style="color: var(--text3); font-size: 13px; text-align: center;">
+本报告基于公开信息整理分析，数据截至 2026 年 7 月。壹沓科技（ONEAIX Technologies）| 上海 · 新加坡<br>
+分析维度：公司定位 · 产品矩阵 · 技术架构 · 演进路径 · 应用场景 · 客户矩阵 · 融资历程 · 竞争格局 · 四方对比 · 风险展望
+</p>
+
+</div>
+</body>
+</html>

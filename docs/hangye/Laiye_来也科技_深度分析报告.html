@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>来也科技（Laiye）深度分析报告</title>
+<style>
+  :root{
+    --bg:#ffffff; --bg-sec:#f7f7f4; --bg-ter:#f1efe8;
+    --t1:#2c2c2a; --t2:#5f5e5a; --t3:#888780;
+    --bd:#e4e2da; --bd2:#d3d1c7;
+    --blue:#185fa5; --blue-l:#e6f1fb; --teal:#0f6e56; --teal-l:#e1f5ee;
+    --amber:#854f0b; --amber-l:#faeeda; --purple:#534ab7; --purple-l:#eeedfe;
+    --coral:#993c1d; --coral-l:#faece7; --green:#3b6d11; --green-l:#eaf3de;
+    --red:#a32d2d; --red-l:#fcebeb;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg-ter);color:var(--t1);line-height:1.7;font-size:15px}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 24px 80px}
+  .hero{background:var(--bg);border:1px solid var(--bd);border-radius:16px;padding:36px 32px;margin-bottom:24px}
+  .tag{display:inline-block;font-size:12px;color:var(--blue);background:var(--blue-l);padding:3px 10px;border-radius:4px;margin-bottom:12px;font-weight:500}
+  h1{font-size:26px;font-weight:600;margin-bottom:8px;line-height:1.3}
+  .sub{color:var(--t2);font-size:14px;margin-bottom:20px}
+  .meta{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--t3);border-top:1px solid var(--bd);padding-top:16px}
+  .meta span:before{content:"·";margin-right:6px;color:var(--t3)}
+  .meta span:first-child:before{content:""}
+  section{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:28px 28px;margin-bottom:20px}
+  h2{font-size:19px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .h2num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--blue);color:#fff;border-radius:6px;font-size:14px;font-weight:500;flex-shrink:0}
+  .h2desc{color:var(--t3);font-size:13px;font-weight:400;margin-bottom:18px;margin-left:38px}
+  h3{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--t1)}
+  p{margin-bottom:12px;color:var(--t1)}
+  .muted{color:var(--t2)}
+  .hl{background:linear-gradient(transparent 60%, #faeec7 60%);padding:0 2px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+  .card{background:var(--bg-sec);border-radius:8px;padding:14px 16px}
+  .card .k{font-size:12px;color:var(--t3);margin-bottom:4px}
+  .card .v{font-size:20px;font-weight:600;color:var(--t1)}
+  .card .v small{font-size:13px;font-weight:400;color:var(--t2)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--bd)}
+  th{background:var(--bg-sec);font-weight:600;color:var(--t2);font-size:12px}
+  td{color:var(--t1)}
+  tr:hover td{background:var(--bg-sec)}
+  .prod{display:grid;grid-template-columns:1fr;gap:14px;margin:16px 0}
+  .prod-item{border:1px solid var(--bd);border-radius:10px;padding:16px 18px;border-left:4px solid var(--blue)}
+  .prod-item.t{border-left-color:var(--teal)}
+  .prod-item.a{border-left-color:var(--amber)}
+  .prod-item.p{border-left-color:var(--purple)}
+  .prod-item.c{border-left-color:var(--coral)}
+  .prod-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+  .prod-name{font-size:16px;font-weight:600}
+  .prod-en{font-size:13px;color:var(--t3)}
+  .prod-role{margin-left:auto;font-size:12px;color:var(--t2);background:var(--bg-sec);padding:2px 8px;border-radius:4px}
+  .callout{border-left:3px solid var(--amber);background:var(--amber-l);padding:12px 16px;margin:14px 0;border-radius:0 8px 8px 0;font-size:14px}
+  .callout b{color:var(--amber)}
+  .risk{border-left:3px solid var(--red);background:var(--red-l);padding:12px 16px;margin:10px 0;border-radius:0 8px 8px 0;font-size:14px}
+  .scene-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:14px 0}
+  .scene{border:1px solid var(--bd);border-radius:8px;padding:14px 16px}
+  .scene-h{font-weight:600;font-size:14px;margin-bottom:6px}
+  .scene ul{margin:6px 0 0 0;padding-left:18px;font-size:13px;color:var(--t2)}
+  .scene li{margin-bottom:3px}
+  .meter{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px}
+  .bar{flex:1;height:6px;background:var(--bg-ter);border-radius:3px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:3px}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0}
+  @media(max-width:640px){.twocol{grid-template-columns:1fr}}
+  .arch-box{background:var(--blue-l);border:1px solid #b5d4f4;border-radius:8px;padding:14px 16px;margin:10px 0}
+  .arch-box h4{font-size:14px;font-weight:600;color:var(--blue);margin-bottom:6px}
+  .arch-box p{font-size:13px;color:var(--t2);margin-bottom:6px}
+  .arch-box p:last-child{margin-bottom:0}
+  .timeline{position:relative;padding-left:24px;margin:16px 0}
+  .timeline:before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--bd2)}
+  .tl-item{position:relative;margin-bottom:14px}
+  .tl-item:before{content:"";position:absolute;left:-22px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--blue);border:2px solid var(--bg)}
+  .tl-date{font-size:12px;color:var(--t3);font-weight:500}
+  .tl-title{font-size:14px;font-weight:600;margin:2px 0}
+  .tl-desc{font-size:13px;color:var(--t2)}
+  .foot{text-align:center;font-size:12px;color:var(--t3);margin-top:32px;padding-top:20px;border-top:1px solid var(--bd)}
+  .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;margin-right:4px;font-weight:500}
+  .b-blue{background:var(--blue-l);color:var(--blue)}
+  .b-teal{background:var(--teal-l);color:var(--teal)}
+  .b-amber{background:var(--amber-l);color:var(--amber)}
+  .b-purple{background:var(--purple-l);color:var(--purple)}
+  .b-coral{background:var(--coral-l);color:var(--coral)}
+  .b-gray{background:var(--bg-sec);color:var(--t2)}
+  .b-green{background:var(--green-l);color:var(--green)}
+  .stage-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+  @media(max-width:640px){.stage-row{grid-template-columns:1fr}}
+  .stage{border-radius:8px;padding:14px;text-align:center}
+  .stage .s-num{font-size:12px;color:var(--t3);font-weight:500}
+  .stage .s-title{font-size:14px;font-weight:600;margin:4px 0}
+  .stage .s-desc{font-size:11px;color:var(--t2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <span class="tag">智能自动化 · RPA→AI Agent · 平台深度分析</span>
+  <h1>来也科技（Laiye）深度分析报告</h1>
+  <p class="sub">从 RPA 老兵到 AI Agent 平台——一家用十年自动化积累卡位智能体时代的"数字员工"公司全景拆解</p>
+  <div class="meta">
+    <span>分析主体：北京来也网络科技有限公司</span>
+    <span>成立：2015-08</span>
+    <span>核心产品：APA / ADP / ACX / Laiye Worker / WEP</span>
+    <span>最近轮次：C++轮 7000万美元（2022）</span>
+  </div>
+</div>
+
+<section>
+  <h2><span class="h2num">0</span>核心结论摘要</h2>
+  <p class="h2desc">一句话定位：中国唯一同时进入 Gartner RPA/IDP/对话式AI 三大魔力象限的智能自动化厂商</p>
+
+  <div class="callout">
+    <b>判断：</b>来也科技是 Agent 浪潮中典型的<span class="hl">"老树新枝"型公司</span>——十年 RPA+AI 积累形成的执行能力、客户基础与信创合规底座，是纯 Agent 创业公司难以速成的护城河。它不是从零做 Agent，而是把<b>已验证的 RPA 执行层 + 文档处理 + 对话 AI 升级为"智能体技能层"</b>，用"Laiye Worker"重新封装为桌面端 AI 员工。其核心壁垒在于<b>"真正能跑通闭环执行"——别家还在演示 Agent 写邮件，它已能登录税务系统取票→提取字段→校对合同→录入财务系统</b>。
+  </div>
+
+  <div class="cards">
+    <div class="card"><div class="k">成立时间</div><div class="v">2015.08</div></div>
+    <div class="card"><div class="k">注册资本</div><div class="v">8.5<small>亿人民币</small></div></div>
+    <div class="card"><div class="k">专利数量</div><div class="v">450<small>+</small></div></div>
+    <div class="card"><div class="k">客户推荐率</div><div class="v">97<small>%</small></div></div>
+    <div class="card"><div class="k">500强客户</div><div class="v">300<small>+</small></div></div>
+    <div class="card"><div class="k">开发者社区</div><div class="v">80<small>万+</small></div></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="h2num">1</span>公司画像与发展脉络</h2>
+  <p class="h2desc">从 C 端智能助理到 RPA+AI 再到 AI Agent 的三次转型</p>
+
+  <h3>1.1 创始团队：今晚看啥 → 百度 → 来也</h3>
+  <table>
+    <tr><th>角色</th><th>姓名</th><th>履历要点</th></tr>
+    <tr><td>董事长 / CEO</td><td>汪冠春</td><td>2011 创立"今晚看啥"（视频推荐），百万用户后被百度收购；任百度智能交互应用团队负责人，研发百度语音助手、小度机器人，带团队拿下中国首个戛纳金狮奖；2015 创立来也</td></tr>
+    <tr><td>CTO</td><td>胡一川</td><td>奥森科技（UiBot）创始人，2019 与来也合并后任来也 CTO；技术路线主导者</td></tr>
+    <tr><td>COO</td><td>褚瑞</td><td>商业化与运营负责人</td></tr>
+  </table>
+
+  <h3>1.2 发展三阶段：三次战略跃迁</h3>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-date">2015-2016 · 第一阶段</div>
+      <div class="tl-title">C端智能助理"助理来也"</div>
+      <div class="tl-desc">注册用户超 165 万，与"小来"日活交互过万；获微软、光速天使轮投资；但发现 To C 智能助理商业模式难打通</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2017-2018 · 第二阶段</div>
+      <div class="tl-title">转 To B，推出"吾来"对话机器人平台</div>
+      <div class="tl-desc">服务零售、母婴、旅游、通信、汽车、金融行业；与中国移动、惠氏、Nike 等达成合作</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2019 · 关键转折</div>
+      <div class="tl-title">与奥森科技合并，正式进军 RPA+AI 市场</div>
+      <div class="tl-desc">携手机器人流程自动化平台"来也 UiBot"，获 B+轮 3500 万美元；开发者社区注册超 20 万</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2020-2022 · 规模化</div>
+      <div class="tl-title">C轮 4200 万美元 → C+轮 5000 万美元 → 收购法国 Mindsay</div>
+      <div class="tl-desc">成立新加坡亚太总部；全球首个智能自动化体验中心落地福州；UiBot 适配国产化中标麒麟/飞腾</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2022 · C++轮 7000 万美元</div>
+      <div class="tl-title">进入大模型前夜的智能自动化平台期</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2023-2024 · 第三阶段</div>
+      <div class="tl-title">大语言模型赋能的数字化劳动力平台</div>
+      <div class="tl-desc">发布 LLM 赋能平台，推出数字员工开发助手、知识管理与问答助手、文档审核助手三款 AI Agent 产品</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2025-2026 · Agent 元年</div>
+      <div class="tl-title">APA 社区版发布 + Laiye Worker 正式发布</div>
+      <div class="tl-desc">定义"智能体流程自动化 APA"新范式；OpenAPA 框架刷新 OSWorld 纪录并开源；连续 5 年入选 Gartner RPA 魔力象限</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>战略洞察：</b>来也的转型节奏精准踩中了三轮浪潮——<b>2015 智能助理 → 2019 RPA → 2023 AI Agent</b>。每一次转型都不是推倒重来，而是在前一轮积累上叠加：C 端助理的对话能力沉淀为"吾来"对话 AI，2019 合并 UiBot 获得 RPA 执行能力，2023 大模型让两者融合升级为 APA+ADP+ACX。这种"叠加式进化"使其在 Agent 时代无需从零起步。
+  </div>
+</section>
+
+<section>
+  <h2><span class="h2num">2</span>产品矩阵：从"三大技能层"到"Worker 桌面入口"</h2>
+  <p class="h2desc">十年企业级能力沉淀封装为即插即用的 Skill</p>
+
+  <h3>2.1 三大核心技能层（十年沉淀）</h3>
+  <div class="prod">
+    <div class="prod-item t">
+      <div class="prod-head">
+        <span class="prod-name">APA 智能体流程自动化</span>
+        <span class="prod-en">Agentic Process Automation</span>
+        <span class="prod-role">执行层</span>
+      </div>
+      <p class="muted">新一代智能体流程自动化产品，融合 LLM 能力。与传统 RPA 的根本区别：不依赖固定规则与结构化数据，能理解上下文、处理非结构化信息、自主决策。支持自然语言描述自动生成流程——业务人员用中文描述需求即可自动构建自动化流程，开发效率提升 10 倍。</p>
+      <p><span class="badge b-teal">低代码+自然语言</span><span class="badge b-teal">UI自动化</span><span class="badge b-teal">自适应修复</span><span class="badge b-gray">解决传统 RPA 流程脆弱痛点</span></p>
+    </div>
+
+    <div class="prod-item a">
+      <div class="prod-head">
+        <span class="prod-name">ADP 智能体文档处理</span>
+        <span class="prod-en">Agentic Document Processing</span>
+        <span class="prod-role">认知层</span>
+      </div>
+      <p class="muted">用智能体架构重新定义文档处理。核心技术：<b>VLM 视觉理解版式 + LLM 语义理解内容 + 智能体编排多模型协同</b>。零样本学习（无需标注训练）、100+ 语言支持、复杂版式（无框线表格/多栏/手写体/盖章遮挡）理解。实测文档解析 7,000 页/小时，海外发票 92.3% 准确率。</p>
+      <p><span class="badge b-amber">零样本</span><span class="badge b-amber">100+语言</span><span class="badge b-amber">人机协同数据飞轮</span><span class="badge b-gray">OCR→IDP→ADP 范式跃迁</span></p>
+    </div>
+
+    <div class="prod-item p">
+      <div class="prod-head">
+        <span class="prod-name">ACX 智能体客户体验</span>
+        <span class="prod-en">AI-Native Customer Experience</span>
+        <span class="prod-role">交互层</span>
+      </div>
+      <p class="muted">把"吾来"对话 AI 升级为 AI 原生客户体验平台。多模态意图触发、多轮对话、读写数据表、个性化问答；意图合并与重新聚类，知识库持续优化。把对话洞察转化为增长引擎。</p>
+      <p><span class="badge b-purple">对话式AI</span><span class="badge b-purple">意图理解</span><span class="badge b-purple">RAG知识库</span><span class="badge b-gray">多渠道触达</span></p>
+    </div>
+  </div>
+
+  <h3>2.2 两大新产品：Laiye Worker 与 WEP 平台</h3>
+  <div class="prod">
+    <div class="prod-item">
+      <div class="prod-head">
+        <span class="prod-name">Laiye Worker</span>
+        <span class="prod-en">桌面端 AI 员工（2026 全新发布）</span>
+        <span class="prod-role">消费入口</span>
+      </div>
+      <p class="muted">不是又一个 ChatBot，而是企业级 Agent 体系中的"执行层"。像给真实同事派活一样下达任务，它在你的电脑上自主规划、调用企业系统、操作文档与数据，<b>自动为任务挑最合适的大模型</b>，最后把可交付结果摆到面前。四档方案：社区版（免费）/ Plus（¥39/月）/ Pro（¥199/月）/ Enterprise。</p>
+      <p><span class="badge b-blue">桌面端原生</span><span class="badge b-blue">模型中立·智能路由</span><span class="badge b-blue">隐私脱敏</span><span class="badge b-blue">权限治理</span><span class="badge b-gray">数据不出域</span></p>
+    </div>
+
+    <div class="prod-item c">
+      <div class="prod-head">
+        <span class="prod-name">WEP 工作执行平台</span>
+        <span class="prod-en">Work Execution Platform</span>
+        <span class="prod-role">平台底座</span>
+      </div>
+      <p class="muted">为政府和企业构建大模型驱动的数字员工队伍的核心引擎。提供从设计、开发到运营的全流程管理：可视化流程设计器 + 自然语言意图理解；低代码/专业开发双模式；统一的智能体调度、监控、审计中心。核心价值：让智能体工作内容<b>可解释、可追溯</b>。</p>
+      <p><span class="badge b-coral">全生命周期管理</span><span class="badge b-coral">调度监控审计</span><span class="badge b-coral">多租户</span><span class="badge b-gray">企业级治理</span></p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>产品架构的关键洞察：</b>来也的产品矩阵本质是"平台 + 技能 + 入口"的三层结构。技能层（APA/ADP/ACX）是十年沉淀的护城河，已被封装为即插即用的 Skill，<b>无需单独购买</b>——Worker 派任务时自动调用。这种"技能即插即用 + 平台统一调度 + Worker 触达员工"的设计，与未来式智能的"灵搭+袋袋+终端"异曲同工，但来也的技能层更厚、更成熟。
+  </div>
+</section>
+
+<section>
+  <h2><span class="h2num">3</span>技术架构深度剖析</h2>
+  <p class="h2desc">六层模型：应用智能体 → Worker → WEP → 技能层 → 大模型与编排 → 信创底座</p>
+
+  <h3>3.1 核心创新：ADP 对 IDP 的范式跃迁</h3>
+  <p>来也 ADP 是其技术差异化最明显的一环。它没有走传统 IDP 的"OCR+模板"路线，而是用智能体架构重新定义文档处理：</p>
+  <table>
+    <tr><th>维度</th><th>传统 OCR</th><th>传统 IDP</th><th>来也 ADP</th></tr>
+    <tr><td>核心能力</td><td>识别字符</td><td>提取字段</td><td>理解业务</td></tr>
+    <tr><td>技术架构</td><td>OCR + 规则/模板</td><td>OCR + 专有AI模型 + 少量LLM</td><td>VLM + LLM + 智能体编排</td></tr>
+    <tr><td>训练方式</td><td>需标注训练</td><td>需少量标注</td><td>零样本·自然语言描述</td></tr>
+    <tr><td>语言支持</td><td>≤10 种</td><td>10-20 种</td><td>100+ 种·自动识别</td></tr>
+    <tr><td>版式适应性</td><td>固定模板</td><td>较强但有挑战</td><td>强泛化·无框线/多栏/手写体</td></tr>
+    <tr><td>业务语义</td><td>无</td><td>有限（预定义实体）</td><td>完整（理解合同风险、审批逻辑）</td></tr>
+  </table>
+  <p class="muted">Gartner 2025 首发 IDP 魔力象限中来也被定位为"特定领域者"，但来也选择的是与 ABBYY、UiPath 不同的技术路径——用智能体架构重新定义能力边界。</p>
+
+  <h3>3.2 混合编排引擎：稳定与灵活的平衡</h3>
+  <div class="twocol">
+    <div class="arch-box">
+      <h4>工作流编排（稳定）</h4>
+      <p>基于企业确定的 SOP 构建，稳定、高效、可预测。适合规则明确的重复流程。</p>
+    </div>
+    <div class="arch-box">
+      <h4>自主规划编排（灵活）</h4>
+      <p>智能体根据上下文<b>自主调用、组合工具</b>，无需人工干预完成跨系统复杂流程。适合非结构化、动态任务。</p>
+    </div>
+  </div>
+  <p>企业可按场景灵活选择或组合使用，这是来也区别于纯 RPA（只有工作流）和纯 Agent（只有自主规划）的关键。</p>
+
+  <h3>3.3 多模型中立与智能路由</h3>
+  <p>Laiye Worker 不绑定任何模型厂商，按任务复杂度、预算和合规要求<b>自动路由</b>到最合适的大模型。支持的模型包括：</p>
+  <div class="cards">
+    <div class="card"><div class="k">国产模型</div><div class="v" style="font-size:14px;font-weight:500">DeepSeek / Qwen / GLM</div></div>
+    <div class="card"><div class="k">海外模型</div><div class="v" style="font-size:14px;font-weight:500">OpenAI / Claude</div></div>
+    <div class="card"><div class="k">私有化</div><div class="v" style="font-size:14px;font-weight:500">支持本地部署</div></div>
+    <div class="card"><div class="k">路由策略</div><div class="v" style="font-size:14px;font-weight:500">按复杂度+预算+合规</div></div>
+  </div>
+
+  <h3>3.4 信创与合规底座（高合规行业准入证）</h3>
+  <p>这是来也能拿下电网、金融、政务等高合规客户的基础，也是其相对纯 Agent 创业公司的核心壁垒：</p>
+  <div class="cards">
+    <div class="card"><div class="k">芯片适配</div><div class="v" style="font-size:14px;font-weight:500">鲲鹏/飞腾/海光</div></div>
+    <div class="card"><div class="k">操作系统</div><div class="v" style="font-size:14px;font-weight:500">统信UOS/麒麟OS</div></div>
+    <div class="card"><div class="k">数据库</div><div class="v" style="font-size:14px;font-weight:500">达梦/人大金仓/OceanBase</div></div>
+    <div class="card"><div class="k">安全认证</div><div class="v" style="font-size:14px;font-weight:500">CMMI5·等保三级</div></div>
+  </div>
+
+  <h3>3.5 权威认证全景：智能自动化领域的"大满贯"</h3>
+  <table>
+    <tr><th>认证机构</th><th>评估维度</th><th>来也成绩</th><th>行业地位</th></tr>
+    <tr><td>Gartner</td><td>RPA 魔力象限</td><td>连续 5 年入选</td><td>中国厂商领导者象限</td></tr>
+    <tr><td>Gartner</td><td>IDP 魔力象限（2025 首发）</td><td>入选</td><td>中国厂商首家</td></tr>
+    <tr><td>Gartner</td><td>对话式 AI 魔力象限</td><td>入选</td><td>中国厂商首家</td></tr>
+    <tr><td>Everest Group</td><td>RPA/对话AI/IDP PEAK Matrix</td><td>三产品全上榜</td><td>全球唯一</td></tr>
+    <tr><td>IDC</td><td>RPA MarketScape</td><td>领导者象限</td><td>中国厂商领导者</td></tr>
+    <tr><td>工信部</td><td>专精特新</td><td>国家级"小巨人"</td><td>国家级</td></tr>
+    <tr><td>—</td><td>软件成熟度</td><td>CMMI5</td><td>最高等级</td></tr>
+  </table>
+  <div class="callout">
+    <b>认证壁垒的意义：</b>同时进入三大魔力象限意味着来也在 RPA（执行）、IDP（文档认知）、对话式 AI（交互）三条技术路线都达到全球入选门槛。这不仅是技术能力的证明，更是<b>大客户采购的"准入证"</b>——500 强企业采购通常要求供应商同时具备这三项能力且通过权威认证，纯 Agent 创业公司很难短期内补齐。
+  </div>
+</section>
+
+<section>
+  <h2><span class="h2num">4</span>核心功能特性</h2>
+  <p class="h2desc">面向"真正能跑通闭环"的执行能力</p>
+
+  <h3>4.1 APA 解决的传统 RPA 三大痛点</h3>
+  <table>
+    <tr><th>痛点</th><th>传统 RPA</th><th>来也 APA</th></tr>
+    <tr><td>非结构化数据</td><td>无能为力（自由文本/扫描件）</td><td>LLM 理解并处理非结构化输入</td></tr>
+    <tr><td>流程脆弱</td><td>业务微小变化即中断，需人工重配</td><td>AI 自适应能力使流程更鲁棒</td></tr>
+    <tr><td>开发门槛</td><td>需专业技术人员</td><td>自然语言创建流程，业务人员可用</td></tr>
+  </table>
+
+  <h3>4.2 Laiye Worker 的真实闭环能力</h3>
+  <p>来也反复强调自己与"只会写邮件的 Agent"的根本差异。一个典型 Worker 闭环任务：</p>
+  <div class="arch-box" style="background:var(--teal-l);border-color:#9fe1cb">
+    <h4 style="color:var(--teal)">真实闭环示例：合同付款核对</h4>
+    <p>① 登录合同管理系统 → ② 读取本月合同 142 条 → ③ 读取银行流水 → ④ 交叉比对金额 → ⑤ 生成异常清单</p>
+    <p class="muted">全程在本地桌面端执行，数据脱敏后路由至 DeepSeek-V4，本地脱敏完成，模型自动切换。这不是演示，是生产环境真实任务。</p>
+  </div>
+
+  <h3>4.3 六大职能岗位覆盖</h3>
+  <table>
+    <tr><th>职能</th><th>典型场景</th></tr>
+    <tr><td>财务</td><td>票据自动归集入账、银企对账、合同金额交叉校验、月结报表生成</td></tr>
+    <tr><td>人力</td><td>简历筛选、员工档案归档、社保跨系统申报、7×24 员工咨询</td></tr>
+    <tr><td>法务</td><td>合同条款审查与红线提醒、合规文件批量比对、跨地域法规追踪</td></tr>
+    <tr><td>运营</td><td>跨系统数据采集看板更新、工单异常监控、SOP 流程自动执行</td></tr>
+    <tr><td>市场</td><td>行业研报整理、竞品动态日报、多渠道内容生成、线索打分分发</td></tr>
+    <tr><td>其他</td><td>客户成功、采购、IT 运维、知识管理</td></tr>
+  </table>
+
+  <h3>4.4 开箱即用的智能体矩阵</h3>
+  <div class="cards">
+    <div class="card"><div class="k">销售</div><div class="v" style="font-size:14px;font-weight:500">线索生成 Agent</div></div>
+    <div class="card"><div class="k">人力</div><div class="v" style="font-size:14px;font-weight:500">候选人筛选 Agent</div></div>
+    <div class="card"><div class="k">市场</div><div class="v" style="font-size:14px;font-weight:500">市场分析 Agent</div></div>
+    <div class="card"><div class="k">法务</div><div class="v" style="font-size:14px;font-weight:500">合同审核 Agent</div></div>
+    <div class="card"><div class="k">采购</div><div class="v" style="font-size:14px;font-weight:500">标书评审 Agent</div></div>
+    <div class="card"><div class="k">客服</div><div class="v" style="font-size:14px;font-weight:500">营销服务 Agent</div></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="h2num">5</span>应用场景全景：六大行业标杆案例</h2>
+  <p class="h2desc">数字员工落地的三阶段，对应不同行业成熟度</p>
+
+  <h3>5.1 三阶段落地模型</h3>
+  <div class="stage-row">
+    <div class="stage" style="background:var(--bg-sec)">
+      <div class="s-num">阶段一</div>
+      <div class="s-title">RPA</div>
+      <div class="s-desc">代替人完成高频重复流程<br>数据抓取/录入/跨系统<br>典型：财务、HR</div>
+    </div>
+    <div class="stage" style="background:var(--blue-l)">
+      <div class="s-num">阶段二</div>
+      <div class="s-title">RPA + AI</div>
+      <div class="s-desc">AI 扩展 RPA 边界<br>文档处理/智能问答<br>典型：客服、营销</div>
+    </div>
+    <div class="stage" style="background:var(--teal-l)">
+      <div class="s-num">阶段三</div>
+      <div class="s-title">AI Agent</div>
+      <div class="s-desc">7×24 人机协作<br>自主规划全场景<br>典型：所有场景</div>
+    </div>
+  </div>
+
+  <h3>5.2 六大行业标杆案例与量化价值</h3>
+  <div class="scene-grid">
+    <div class="scene" style="border-left:3px solid var(--amber)">
+      <div class="scene-h" style="color:var(--amber)">电力 · 国家电网陕西</div>
+      <ul>
+        <li>22 个省级单位部署，数字班组/数字员工解决方案</li>
+        <li>配电设备巡视：字段分类汇总录入管理系统</li>
+        <li>终端在线状态监测：故障自动判断发单，效率↑3 倍</li>
+        <li>电费欠费催收：60 分钟→8 分钟，准确率 100%</li>
+        <li>电力应收报表对比：120 分钟→10 分钟，效率↑10 倍</li>
+      </ul>
+      <div class="meter">综合提升<span class="bar"><i style="width:90%;background:var(--amber)"></i></span>9倍效率·百万成本节省</div>
+    </div>
+
+    <div class="scene" style="border-left:3px solid var(--teal)">
+      <div class="scene-h" style="color:var(--teal)">医疗 · 阿斯利康</div>
+      <ul>
+        <li>合规咨询智能体，处理患者与医护问询</li>
+        <li>问题覆盖率 82.3%，智能推荐触发率 98%+</li>
+        <li>准确率 90%+，让员工聚焦更高价值工作</li>
+      </ul>
+      <div class="meter">合规成本<span class="bar"><i style="width:75%;background:var(--teal)"></i></span>↓50%</div>
+    </div>
+
+    <div class="scene" style="border-left:3px solid var(--blue)">
+      <div class="scene-h" style="color:var(--blue)">制造 · 首钢/英科医疗</div>
+      <ul>
+        <li>首钢股份：44 个业务流程自动化，年省 180 万</li>
+        <li>流程执行准确率 100%，碳减排 20,661kg</li>
+        <li>英科医疗：设计师效率↑10 倍，年省 2000 人天</li>
+        <li>荣获 2024 拉姆·查兰管理实践奖</li>
+      </ul>
+      <div class="meter">效率提升<span class="bar"><i style="width:88%;background:var(--blue)"></i></span>10倍·年省2000人天</div>
+    </div>
+
+    <div class="scene" style="border-left:3px solid var(--purple)">
+      <div class="scene-h" style="color:var(--purple)">零售 · 惠氏</div>
+      <ul>
+        <li>人机协作客服，年服务 28 万客户</li>
+        <li>答案召回率 85%，召回准确率 90%</li>
+        <li>日均工作流效率↑30%</li>
+      </ul>
+      <div class="meter">效率提升<span class="bar"><i style="width:70%;background:var(--purple)"></i></span>30%·28万客户/年</div>
+    </div>
+
+    <div class="scene" style="border-left:3px solid var(--coral)">
+      <div class="scene-h" style="color:var(--coral)">通信 · 中移在线</div>
+      <ul>
+        <li>月均 200 万+ 会话</li>
+        <li>渠道运营/业务办理/代理对接</li>
+        <li>运营成本↓45%</li>
+        <li>BPO 培训时间缩短 35%，CSAT 达 4.6</li>
+      </ul>
+      <div class="meter">成本降低<span class="bar"><i style="width:80%;background:var(--coral)"></i></span>45%·200万会话/月</div>
+    </div>
+
+    <div class="scene" style="border-left:3px solid var(--green)">
+      <div class="scene-h" style="color:var(--green)">金融 · 华夏基金</div>
+      <ul>
+        <li>IT 搭建基础平台，业务部门编制 RPA</li>
+        <li>基金运作/银企对账/票据处理</li>
+        <li>对账效率↑5-36 倍，准确率 95%-100%</li>
+        <li>节省 80%+ 对账工时</li>
+      </ul>
+      <div class="meter">对账效率<span class="bar"><i style="width:85%;background:var(--green)"></i></span>↑36倍·准确率100%</div>
+    </div>
+  </div>
+
+  <h3>5.3 跨行业通用价值：财务对账</h3>
+  <p>无论行业，财务对账场景展现了最稳定的价值输出：</p>
+  <table>
+    <tr><th>对账类型</th><th>痛点</th><th>来也方案</th><th>效果</th></tr>
+    <tr><td>银企对账</td><td>数十家银行数百账户，月数万笔</td><td>RPA 登录网银+ADP 提取字段+异常标记</td><td>↑5-36 倍·准确率 95%-100%</td></tr>
+    <tr><td>供应商往来</td><td>对账单格式各异（PDF/Excel/扫描件）</td><td>多格式解析+三方匹配+差异预警</td><td>单据 30 分钟→20 秒·↑90%</td></tr>
+    <tr><td>集团内部往来</td><td>各子公司系统不同（SAP/Oracle/用友/金蝶）</td><td>跨系统数据统一+自动核对</td><td>人工审核↓85%</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2><span class="h2num">6</span>商业模式</h2>
+  <p class="h2desc">从项目制到平台订阅再到 Worker 普惠的三层结构</p>
+
+  <table>
+    <tr><th>层级</th><th>产品</th><th>客户</th><th>收费模式</th><th>阶段</th></tr>
+    <tr><td>企业平台层</td><td>WEP + APA/ADP/ACX</td><td>500 强/政企头部</td><td>平台授权+实施+续约</td><td>成熟（主力收入）</td></tr>
+    <tr><td>桌面消费层</td><td>Laiye Worker</td><td>个人/中小企业</td><td>四档订阅（免费→¥39→¥199→企业）</td><td>新发布（规模化）</td></tr>
+    <tr><td>开发者生态层</td><td>APA 社区版 + OpenAPA</td><td>全球开发者（80万+）</td><td>免费+积分制</td><td>生态培育</td></tr>
+  </table>
+
+  <div class="callout">
+    <b>商业策略洞察：</b>来也正在走一条"大客户验证 → 平台化 → 普惠化"的路径。APA 社区版免费开放（10 倍开发者规模、10 倍场景覆盖目标）是典型的<b>开发者生态打法</b>，对标当年 UiPath 的社区版战略；Laiye Worker 四档定价则试图把企业级能力下沉到个人与中小企业，用订阅制打开长尾市场。
+  </div>
+
+  <h3>6.1 定价细节（Laiye Worker）</h3>
+  <table>
+    <tr><th>档位</th><th>价格</th><th>月积分</th><th>每日积分</th><th>并发</th><th>差异化能力</th></tr>
+    <tr><td>Community</td><td>免费</td><td>500（注册送）</td><td>50</td><td>2</td><td>智能路由+文本/视觉/生图模型</td></tr>
+    <tr><td>Plus</td><td>¥39/月</td><td>1000</td><td>50</td><td>5</td><td>+隐私保护</td></tr>
+    <tr><td>Pro</td><td>¥199/月</td><td>6000</td><td>50</td><td>10</td><td>全部 Plus 能力</td></tr>
+    <tr><td>Enterprise</td><td>联系销售</td><td>按需</td><td>—</td><td>—</td><td>SSO/权限/审计等企业治理</td></tr>
+  </table>
+  <p class="muted">积分是调用各类大模型和工具的统一计量单位，每日积分次日重置不累积，月度积分按订阅周期发放。</p>
+</section>
+
+<section>
+  <h2><span class="h2num">7</span>竞争格局与差异化</h2>
+  <p class="h2desc">在 RPA+Agent 赛道的"非典型"优势</p>
+
+  <h3>7.1 与四类对手的对比</h3>
+  <table>
+    <tr><th>维度</th><th>来也科技</th><th>未来式智能（灵搭）</th><th>实在/影刀/金智维</th><th>大模型厂商自带</th></tr>
+    <tr><td>定位</td><td>智能自动化平台（RPA→Agent）</td><td>企业级 Agent 搭建平台</td><td>RPA 厂商（向 AI 演进）</td><td>模型附属能力</td></tr>
+    <tr><td>核心壁垒</td><td>十年执行能力+信创+三象限</td><td>行业 Know-How+数据飞轮</td><td>RPA 市场份额</td><td>模型能力</td></tr>
+    <tr><td>文档处理</td><td>ADP（零样本+100语言）</td><td>知识库 RAG</td><td>OCR+模板</td><td>基础</td></tr>
+    <tr><td>执行层</td><td>APA（成熟 UI 自动化）</td><td>工具调用</td><td>RPA（成熟）</td><td>弱</td></tr>
+    <tr><td>对话 AI</td><td>ACX（吾来升级）</td><td>对话节点</td><td>弱</td><td>强</td></tr>
+    <tr><td>信创合规</td><td>全栈（CMMI5/等保三级）</td><td>云+端</td><td>部分</td><td>部分</td></tr>
+    <tr><td>模型绑定</td><td>中立·智能路由</td><td>中立·多模型</td><td>部分绑定</td><td>强绑定</td></tr>
+    <tr><td>权威认证</td><td>Gartner 三象限唯一</td><td>信通院认证</td><td>部分</td><td>—</td></tr>
+  </table>
+
+  <h3>7.2 来也的四道护城河</h3>
+  <div class="cards">
+    <div class="card"><div class="k">护城河一</div><div class="v" style="font-size:15px;font-weight:500">十年执行能力沉淀</div><div class="muted" style="font-size:12px;margin-top:4px">APA/RPA 真能跑通系统操作闭环，非演示级</div></div>
+    <div class="card"><div class="k">护城河二</div><div class="v" style="font-size:15px;font-weight:500">三大魔力象限全覆盖</div><div class="muted" style="font-size:12px;margin-top:4px">大客户采购准入证，纯创业公司难补齐</div></div>
+    <div class="card"><div class="k">护城河三</div><div class="v" style="font-size:15px;font-weight:500">全栈信创+合规认证</div><div class="muted" style="font-size:12px;margin-top:4px">电网/金融/政务高合规行业准入</div></div>
+    <div class="card"><div class="k">护城河四</div><div class="v" style="font-size:15px;font-weight:500">80万开发者社区</div><div class="muted" style="font-size:12px;margin-top:4px">生态护城河，对标 UiPath 社区版战略</div></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="h2num">8</span>挑战与风险</h2>
+  <p class="h2desc">老牌 RPA 厂商转型 Agent 的现实压力</p>
+
+  <div class="risk">
+    <b>风险一：RPA 历史包袱与 Agent 范式切换的张力。</b>来也的核心收入仍来自 RPA 项目与平台授权。APA 虽然升级了 RPA，但客户认知仍停留在"自动化工具"，向"自主 Agent"的心智迁移需要时间。若大模型原生 Agent 能力快速突破，RPA 式的"录屏+规则"范式可能被颠覆。
+  </div>
+  <div class="risk">
+    <b>风险二：ADP 在 IDP 魔力象限中的位置。</b>来也被 Gartner 定位为"特定领域者"（非领导者象限），意味着在市场份额与全球化方面仍落后于 ABBYY、UiPath 等国际巨头。零样本+智能体架构虽是技术亮点，但商业化规模仍需验证。
+  </div>
+  <div class="risk">
+    <b>风险三：Laiye Worker 的规模化与生态冷启动。</b>四档定价试图打开长尾市场，但个人 AI 员工赛道竞争激烈（与各类 AI 助手/Agent 产品同台），社区版积分制能否真正转化为付费订阅尚待观察。开发者社区 80 万是 RPA 时代积累，能否迁移到 APA 生态是关键。
+  </div>
+  <div class="risk">
+    <b>风险四：大模型厂商自带 Agent 的挤压。</b>OpenAI、智谱、百度等大模型厂商正把 Agent 能力内置到模型中，可能压缩"中间编排层"的价值。来也的护城河在于"执行层"（真能操作系统），但若模型原生具备 GUI 操作能力，这一层也会被稀释。
+  </div>
+  <div class="risk">
+    <b>风险五：国际化与国内市场的平衡。</b>来也在新加坡、英国设总部，收购法国 Mindsay，但主要收入与案例仍来自国内。Gartner 象限的认可不等于海外市场份额，与 UiPath、Automation Anywhere 的全球竞争仍需持续投入。
+  </div>
+</section>
+
+<section>
+  <h2><span class="h2num">9</span>与未来式智能对比：两种 Agent 路径</h2>
+  <p class="h2desc">同为"数字员工"，截然不同的起点与路径</p>
+
+  <table>
+    <tr><th>维度</th><th>来也科技</th><th>未来式智能</th></tr>
+    <tr><td>成立时间</td><td>2015（10 年）</td><td>2023（3 年）</td></tr>
+    <tr><td>起点</td><td>C 端助理→RPA→Agent（叠加进化）</td><td>直接做 Agent（原生）</td></tr>
+    <tr><td>团队背景</td><td>今晚看啥/百度/奥森科技</td><td>阿里达摩院</td></tr>
+    <tr><td>核心壁垒</td><td>执行能力+信创+认证</td><td>行业 Know-How+数据飞轮</td></tr>
+    <tr><td>技术路径</td><td>RPA 升级为 APA（保留执行层）</td><td>Multi-Agent 编排（中心化调度）</td></tr>
+    <tr><td>文档处理</td><td>ADP（零样本·100语言）</td><td>知识库 RAG</td></tr>
+    <tr><td>标杆行业</td><td>电力/制造/通信/零售/医疗/金融（6 行业）</td><td>电力为主（35 数字岗位）</td></tr>
+    <tr><td>客户规模</td><td>300+ 500 强</td><td>20+ 电网客户</td></tr>
+    <tr><td>商业模式</td><td>平台授权+订阅（四档）</td><td>平台+市场+终端</td></tr>
+    <tr><td>融资阶段</td><td>C++ 轮（成熟期）</td><td>Pre-A（早期）</td></tr>
+    <tr><td>风险</td><td>RPA 包袱+国际化</td><td>规模化+双边市场冷启动</td></tr>
+  </table>
+
+  <div class="callout">
+    <b>路径差异的本质：</b>来也走的是<span class="hl">"自下而上"路径</span>——先有扎实的执行能力（RPA），再叠加认知（ADP）与交互（ACX），最后用 Agent 重新封装；未来式智能走的是<span class="hl">"自上而下"路径</span>——先有 Multi-Agent 编排与行业 Know-How，再向下补执行能力。前者护城河在"能做事"，后者护城河在"懂行业"。两者在电力行业交汇，但客户画像与商业阶段不同。
+  </div>
+</section>
+
+<section>
+  <h2><span class="h2num">10</span>总结与展望</h2>
+  <p class="h2desc">一家用十年积累卡位智能体时代的"老树新枝"</p>
+
+  <p>来也科技是国内智能自动化赛道少有的<span class="hl">"全栈型"公司</span>——同时具备执行层（APA/RPA）、认知层（ADP）、交互层（ACX）、平台层（WEP）与入口层（Worker）的完整能力栈。它的价值不在单一技术突破，而在四件事的咬合：</p>
+
+  <div class="cards">
+    <div class="card"><div class="k">① 选对了赛道演进</div><div class="v" style="font-size:15px;font-weight:500">RPA→AI Agent</div><div class="muted" style="font-size:12px;margin-top:4px">叠加进化而非推倒重来</div></div>
+    <div class="card"><div class="k">② 做对了技术路径</div><div class="v" style="font-size:15px;font-weight:500">ADP 智能体化</div><div class="muted" style="font-size:12px;margin-top:4px">用 Agent 架构重定义文档处理</div></div>
+    <div class="card"><div class="k">③ 卡对了合规位置</div><div class="v" style="font-size:15px;font-weight:500">信创+三象限</div><div class="muted" style="font-size:12px;margin-top:4px">高合规行业准入证</div></div>
+    <div class="card"><div class="k">④ 找对了普惠路径</div><div class="v" style="font-size:15px;font-weight:500">Worker+社区版</div><div class="muted" style="font-size:12px;margin-top:4px">把企业级能力下沉长尾</div></div>
+  </div>
+
+  <p>它的下一步看点集中在三个问题：<b>Laiye Worker 能否打开个人/中小企业订阅市场、ADP 能否从 IDP"特定领域者"跃迁到领导者象限、APA 能否成为智能体流程自动化的事实标准</b>。若三者有一者跑通，来也将从"智能自动化厂商"升级为"数字员工基础设施"；若都受阻，则可能在 Agent 范式下被更原生的创业公司与大模型厂商夹击。</p>
+
+  <div class="callout">
+    <b>一句话总结：</b>来也科技是 Agent 浪潮中"底盘最稳"的玩家——十年 RPA 执行能力 + 三大魔力象限认证 + 全栈信创合规，让它在大客户市场拥有纯 Agent 创业公司难以速成的护城河。它的命运，将取决于能否把"企业级执行能力"成功封装为"普惠化的 AI 员工"，从项目制收入平滑过渡到订阅制规模。
+  </div>
+</section>
+
+<div class="foot">
+  本报告基于公开信息整理分析，数据截至 2026-07。客户案例、认证、融资等数据来源于来也科技官网、Gartner/Everest/IDC 报道、36氪、腾讯新闻等公开渠道，仅供参考。
+  <br>分析主体：北京来也网络科技有限公司（Laiye） · 与未来式智能（AutoAgents.ai）为两家独立公司
+</div>
+
+</div>
+</body>
+</html>
