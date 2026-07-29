@@ -2,7 +2,7 @@
 
 > **今日目标**：让模型从"只会聊天"变成"能干活"——跑通 Agent 工具调用闭环。
 > **对应知识块**：① 大模型 API（Function Calling / Tool Use）
-> **路线图位置**：`docs/企业级Agent开发加速路线.md` 第一周 Jul 2
+> **路线图位置**：`docs/00_总纲_路线.md` 第一周 Jul 2
 > **前置完成**：Day 1（API 入门 + 主备 fallback）
 
 ---

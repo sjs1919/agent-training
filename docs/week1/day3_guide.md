@@ -2,7 +2,7 @@
 
 > **今日目标**：把 Day 2 的单一 Prompt 升级为三层架构，让模型行为可预测、输出可解析，并修复演示 3 的年份 bug。
 > **对应知识块**：⑦ 提示词工程（系统化）
-> **路线图位置**：`docs/企业级Agent开发加速路线.md` 第一周 Jul 3
+> **路线图位置**：`docs/00_总纲_路线.md` 第一周 Jul 3
 > **前置完成**：Day 2（Function Calling Agent 闭环）
 
 ---
@@ -11,7 +11,7 @@
 
 ### 1. 三层 Prompt 架构（理论，~1h）
 
-> 📖 **参考资料**：`docs/培训路线图分析.md` → 知识块 7
+> 📖 **参考资料**：`docs/00_总纲_资料索引.md` → 知识块 7
 > ⭐ [提示词工程核心技术 — Jimmy Song](https://jimmysong.io/zh/book/ai-handbook/prompt/techniques/)
 
 System Prompt 不是"随便写句话"，而是有结构的工程产物。三层架构：

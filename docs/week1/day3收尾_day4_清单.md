@@ -29,7 +29,7 @@
 - [从 Prompt 到上下文工程构建 Agent - 腾讯云](https://cloud.tencent.cn/developer/article/2586420) - 培训路线图 ⑦ 中文资料清单第 3 项，Agent 场景下 Prompt 如何演变到"上下文工程"；重点关注版本管理章节
 - [提示词产品化设计 - 葡萄城](https://grapecity.csdn.net/6a292794662f9a54cb7c5829.html) - 培训路线图 ⑦ 中文资料清单第 4 项，Prompt 生产化视角；重点关注 A/B 测试 / 灰度发布 / 权限管控
 
-> 三份的选源依据：`docs/培训路线图分析.md` 知识块 ⑦ 的"中文资料"表。综合浓缩摘要见同文档"重要章节摘要"格（含 System Prompt 万能模板、三层架构、Few-shot 黄金法则、Injection 防护等）。
+> 三份的选源依据：`docs/00_总纲_资料索引.md` 知识块 ⑦ 的"中文资料"表。综合浓缩摘要见同文档"重要章节摘要"格（含 System Prompt 万能模板、三层架构、Few-shot 黄金法则、Injection 防护等）。
 
 **权威英文**（已读的可跳，需要复习就看）：
 - [吴恩达 Prompt Engineering 课程](https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/)

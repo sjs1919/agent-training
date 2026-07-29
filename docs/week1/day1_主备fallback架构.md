@@ -396,8 +396,8 @@ A: System Prompt 强制 JSON Schema 输出 + 后处理校验 +
 
 本文档是 Day 1（知识块① 大模型 API）的工程化延伸，对应路线图第一周。
 
-- **路线图主文档**：`projects/agent-training/docs/企业级Agent开发加速路线.md`
-- **参考资料索引**：`projects/agent-training/docs/培训路线图分析.md`（见知识块① 大模型 API）
+- **路线图主文档**：`projects/agent-training/docs/00_总纲_路线.md`
+- **参考资料索引**：`projects/agent-training/docs/00_总纲_资料索引.md`（见知识块① 大模型 API）
 
 **学习路径**：
 - Day 1（本周）：API 入门 + 主备 fallback（本文档）← 你在这里

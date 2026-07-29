@@ -47,6 +47,6 @@ cd scripts/week1 && python day1_api_basics.py
 
 ## 参考
 
-- 路线图：[企业级 Agent 开发加速路线](docs/企业级Agent开发加速路线.md)
-- 资料索引：[培训路线图分析](docs/培训路线图分析.md)
+- 路线图：[企业级 Agent 开发加速路线](docs/00_总纲_路线.md)
+- 资料索引：[培训路线图分析](docs/00_总纲_资料索引.md)
 - Claude Code 学习仓库：[learn-claude-code](../../learn-claude-code)
