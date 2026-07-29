@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行业深度分析报告 · 12 家 AI Agent 公司</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --border: #e8e6e0;
+    --text: #1a1a1a;
+    --text-secondary: #5c5b57;
+    --text-muted: #8e8d88;
+    --accent: #534AB7;
+    --accent-light: #EEEDFE;
+    --teal: #0F6E56;
+    --teal-light: #E1F5EE;
+    --amber: #854F0B;
+    --amber-light: #FAEEDA;
+    --coral: #993C1D;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-size: 14px;
+  }
+
+  /* 顶部栏 */
+  header {
+    flex: 0 0 auto;
+    padding: 14px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  header .titles h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.2px; }
+  header .titles p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  header .actions { display: flex; align-items: center; gap: 10px; }
+  header .cur-name {
+    font-size: 13px; color: var(--text-secondary); font-weight: 500;
+    padding: 4px 12px; background: var(--accent-light); color: var(--accent);
+    border-radius: 20px; white-space: nowrap;
+  }
+  header .open-blank {
+    font-size: 12px; color: var(--text-muted); text-decoration: none;
+    border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px;
+    white-space: nowrap;
+  }
+  header .open-blank:hover { color: var(--accent); border-color: var(--accent); }
+  header .hint { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+
+  /* 主体：侧栏 + 内容 */
+  .main { flex: 1; display: flex; min-height: 0; }
+  .sidebar {
+    flex: 0 0 300px;
+    overflow-y: auto;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 8px 0 24px;
+  }
+  .content { flex: 1; min-width: 0; display: flex; }
+  .content iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+
+  /* 分组 */
+  .group-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 20px 6px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+  .group-head .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .group-head .count { color: var(--text-muted); font-weight: 400; }
+  .tier-high .dot { background: var(--teal); }
+  .tier-mid  .dot { background: var(--amber); }
+  .tier-low  .dot { background: var(--text-muted); }
+
+  /* 列表项 */
+  .item {
+    display: block;
+    padding: 10px 20px 10px 18px;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+    color: var(--text);
+    cursor: pointer;
+    transition: background .12s ease;
+  }
+  .item:hover { background: #f5f4f0; }
+  .item .row1 { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+  .item .name { font-size: 14px; font-weight: 600; }
+  .item .star { color: var(--amber); font-size: 13px; }
+  .item .tier {
+    margin-left: auto;
+    font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 10px;
+  }
+  .item .tier.high { background: var(--teal-light); color: var(--teal); }
+  .item .tier.mid  { background: var(--amber-light); color: var(--amber); }
+  .item .tier.low  { background: #f0efeb; color: var(--text-muted); }
+  .item .tag { font-size: 11px; color: var(--accent); font-weight: 500; margin-right: 4px; }
+  .item .desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+  .item.active {
+    background: var(--accent-light);
+    border-left-color: var(--accent);
+  }
+  .item.active .name { color: var(--accent); }
+
+  /* 窄屏 */
+  @media (max-width: 760px) {
+    header { flex-wrap: wrap; gap: 8px; }
+    header .hint { display: none; }
+    .sidebar { flex: 0 0 220px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="titles">
+    <h1>行业深度分析报告 · 12 家 AI Agent 公司</h1>
+    <p>与"企业级 Agent + 智能制造排程排产 demo"贴合度导航</p>
+  </div>
+  <div class="actions">
+    <span class="cur-name" id="curName">中科闻歌</span>
+    <a class="open-blank" id="openBlank" href="#" target="_blank" rel="noopener">在新标签打开 ↗</a>
+    <span class="hint">↑/↓ 切换</span>
+  </div>
+</header>
+
+<div class="main">
+  <nav class="sidebar" id="sidebar"></nav>
+  <div class="content">
+    <iframe id="frame" name="report" title="报告内容"></iframe>
+  </div>
+</div>
+
+<script>
+  // 报告数据：按 README 推荐阅读顺序（高→中→低贴合）
+  const REPORTS = [
+    { id:'wenge',       file:'Wenge_中科闻歌_深度分析报告.html',          name:'中科闻歌',     star:true, tier:'high', tag:'⭐ Harness架构', desc:'中科院孵化·通用决策大模型·DOMA全栈框架' },
+    { id:'laplace',     file:'LaplaceAI_拉普拉斯AI_深度分析报告.html',    name:'拉普拉斯AI',   tier:'high', tag:'排产同构',     desc:'AI原生AgenticOS·粉末冶金排产(75%→98%)' },
+    { id:'langcore',    file:'LangCore_语核科技_深度分析报告.html',       name:'语核科技',     tier:'high', tag:'长任务控制',   desc:'制造业垂直Agent数字员工·RaaS按结果付费' },
+    { id:'zoellent',    file:'Zoellent_卓世科技_深度分析报告.html',       name:'卓世科技',     tier:'high', tag:'OT设备层',     desc:'行业大模型+智能体+具身终端三轮驱动' },
+    { id:'oneaix',      file:'ONEAIX_壹沓科技_深度分析报告.html',         name:'壹沓科技',     tier:'high', tag:'工程化完整',   desc:'全球供应链数字员工·小沓OS超自动化' },
+    { id:'laiye',       file:'Laiye_来也科技_深度分析报告.html',          name:'来也科技',     tier:'high', tag:'治理工程',     desc:'RPA老兵升级智能自动化平台·WEP' },
+    { id:'autoagents',  file:'AutoAgents_AI_深度分析报告.html',           name:'AutoAgents.AI',tier:'high', tag:'Multi-Agent',  desc:'企业级Agent平台·数字员工嵌入业务流程' },
+    { id:'frontis',     file:'Frontis_衔远科技_深度分析报告.html',        name:'衔远科技',     tier:'mid',  tag:'Harness评测',  desc:'L4能力转化层·模型可换资产不动' },
+    { id:'redbear',     file:'RedBearAI_红熊AI_深度分析报告.html',        name:'红熊AI',       tier:'mid',  tag:'记忆MCP',      desc:'记忆科学+全模态大模型双核心' },
+    { id:'analemma',    file:'AnalemmaAI_日行迹智能_深度分析报告.html',   name:'日行迹智能',   tier:'low',  tag:'仅思想借鉴',   desc:'AI4AI科研自动化·不面向企业' },
+    { id:'juzibot',     file:'JUZIBOT_句子互动_深度分析报告.html',        name:'句子互动',     tier:'low',  tag:'场景无交集',   desc:'IM原生Agent·私域营销' },
+    { id:'mindverse',   file:'Mindverse_心识宇宙_深度分析报告.html',      name:'心识宇宙',     tier:'low',  tag:'C端陪伴',      desc:'C端数字身份/陪伴方向' },
+  ];
+
+  const TIER_LABEL = { high: '高', mid: '中', low: '低' };
+  const GROUPS = [
+    { key:'high', label:'高贴合', cls:'tier-high' },
+    { key:'mid',  label:'中贴合', cls:'tier-mid'  },
+    { key:'low',  label:'低贴合', cls:'tier-low'  },
+  ];
+
+  const sidebar = document.getElementById('sidebar');
+  const frame   = document.getElementById('frame');
+  const curName = document.getElementById('curName');
+  const openBlank = document.getElementById('openBlank');
+
+  // 渲染侧栏
+  GROUPS.forEach(g => {
+    const items = REPORTS.filter(r => r.tier === g.key);
+    if (!items.length) return;
+    const head = document.createElement('div');
+    head.className = 'group-head ' + g.cls;
+    head.innerHTML = `<span class="dot"></span>${g.label}<span class="count">· ${items.length}</span>`;
+    sidebar.appendChild(head);
+    items.forEach(r => {
+      const a = document.createElement('a');
+      a.className = 'item';
+      a.href = '#' + r.id;
+      a.dataset.id = r.id;
+      a.innerHTML = `
+        <div class="row1">
+          ${r.star ? '<span class="star">★</span>' : ''}
+          <span class="name">${r.name}</span>
+          <span class="tier ${r.tier}">${TIER_LABEL[r.tier]}</span>
+        </div>
+        <div><span class="tag">${r.tag}</span><span class="desc">${r.desc}</span></div>
+      `;
+      a.addEventListener('click', e => {
+        // 让 hashchange 统一处理，避免重复逻辑
+        if (location.hash === '#' + r.id) select(r.id);
+      });
+      sidebar.appendChild(a);
+    });
+  });
+
+  function select(id) {
+    const r = REPORTS.find(x => x.id === id) || REPORTS[0];
+    frame.src = r.file;
+    curName.textContent = r.name;
+    openBlank.href = r.file;
+    document.title = `${r.name} · 行业深度分析报告`;
+    sidebar.querySelectorAll('.item').forEach(el => {
+      el.classList.toggle('active', el.dataset.id === r.id);
+    });
+    // 选中项滚入视野
+    const active = sidebar.querySelector('.item.active');
+    if (active) active.scrollIntoView({ block:'nearest', behavior:'smooth' });
+  }
+
+  // hash 同步：刷新/分享链接保持当前报告
+  window.addEventListener('hashchange', () => {
+    select(location.hash.slice(1) || REPORTS[0].id);
+  });
+
+  // 初始化
+  select(location.hash.slice(1) || REPORTS[0].id);
+
+  // 键盘 ↑/↓ 在列表间切换
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const ids = REPORTS.map(r => r.id);
+    let idx = ids.indexOf((location.hash.slice(1) || REPORTS[0].id));
+    if (e.key === 'ArrowDown' || e.key === 'j') { idx = (idx + 1) % ids.length; e.preventDefault(); }
+    else if (e.key === 'ArrowUp' || e.key === 'k') { idx = (idx - 1 + ids.length) % ids.length; e.preventDefault(); }
+    else return;
+    location.hash = ids[idx];
+  });
+</script>
+</body>
+</html>
