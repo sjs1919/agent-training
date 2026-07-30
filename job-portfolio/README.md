@@ -12,6 +12,8 @@ job-portfolio/
 │
 ├── vibe-coding经验与面试亮点.md             ← ③ vibe coding 3项目素材库
 ├── 简历版与面试要点.md                      ← ④ 简历 bullet + 8领域盲点 + 答法框架
+├── agent-training经验与面试亮点.md          ← ⑤ Agent训练4周素材(填面试禁区:Agent/LangGraph/MCP)
+├── 制造业智能改造场景与理论.md              ← ⑥ 6环节智能改造场景+理论+线上问题(企业Agent深度支撑)
 │
 ├── docs/                                  ← 经历补充原始文档
 │   ├── 未来工场经历补充-待补充清单.md        ★ P0/P1/P2 待补充项
@@ -46,6 +48,8 @@ job-portfolio/
 | **准备面试** | `简历版与面试要点.md` §二（8领域盲点） | `vibe-coding经验与面试亮点.md` §三（项目亮点） |
 | **补充经历** | `docs/未来工场经历补充-待补充清单.md` | 按 P0→P1→P2 逐项补 |
 | **讲故事素材** | `docs/项目负责人优化-培训稿.md` | `vibe-coding经验与面试亮点.md` §四（缺点与教训） |
+| **准备 Agent 方向面试** | `agent-training经验与面试亮点.md` | `简历版与面试要点.md` §四（原面试禁区，已补） |
+| **智能改造深度素材** | `制造业智能改造场景与理论.md` | `agent-training经验与面试亮点.md`（训练能力源码锚点） |
 | **AI培训参考** | `docs/ai-training/` | 培训大纲 + 实战指南 |
 
 ## 面试核心资料（已就绪）
@@ -56,17 +60,21 @@ job-portfolio/
 | 面试口径（离职原因/薪资谈判/反向考察） | `summary.md` §面试口径 | 2026-05-07 确定 |
 | 8 技术领域盲点 + Top 10 | `简历版与面试要点.md` | 2026-07-07 整理 |
 | Vibe Coding 3项目亮点/教训 | `vibe-coding经验与面试亮点.md` | 2026-07-07 整理 |
+| Agent训练4周素材(填禁区) | `agent-training经验与面试亮点.md` | 2026-07-30 整理 |
+| 制造业6环节智能改造场景 | `制造业智能改造场景与理论.md` | 2026-07-30 整理 |
 | 未来工场经历 P0 补充 | `docs/未来工场经历补充-待补充清单.md` | 部分完成 |
 | 项目负责人机制 | `docs/项目负责人优化-培训稿.md` | 已完成 |
 
 ## 面试禁区（来自 `简历版与面试要点.md` §四）
 
-- Agent 开发（未接触）、LangChain/LangGraph（未实战）、MCP 协议（未落地）
+- ~~Agent 开发、LangChain/LangGraph、MCP 协议~~ → **2026-07-30 已补**：见 `agent-training经验与面试亮点.md`（4 周实战：手写 ReAct / LangGraph StateGraph / 双 MCP Server / Supervisor 多 Agent / Token Exchange 鉴权 / RAGAS 评估）
 - 大模型微调/训练（应用层，不涉及）
 - K8s/Service Mesh（Docker Compose 够用）
 
 ## 更新记录
 
+- 2026-07-30：新增 `制造业智能改造场景与理论.md`，6 环节智能改造场景+理论+线上问题（企业 Agent 深度支撑）
+- 2026-07-30：新增 `agent-training经验与面试亮点.md`，用 4 周训练成果填掉面试禁区（Agent/LangGraph/MCP）
 - 2026-07-20：从 `workspace/shared/resume` 下载并整合到 `agent-training/job-portfolio/`
 - 2026-07-07：本地创建 `vibe-coding经验与面试亮点.md`、`简历版与面试要点.md`
 - 2026-05-05~05-27：多轮找工作对话，积累 sessions 和 docs
