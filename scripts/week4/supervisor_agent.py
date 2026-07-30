@@ -172,19 +172,30 @@ class SupervisorAgent:
             "audit_report": self.audit.get_report(),
         }
 
-        # --- 步骤 5：综合输出 ---
-        print(f"\n{'='*60}")
-        print(f" 审核 Agent 发现")
-        print(f"{'='*60}")
-        for r in review_results:
-            risk = json.loads(r.get("context", "{}"))
-            print(f"  {r['order_id']}: 数据已采集（{r['status']}）")
+        # --- 步骤 5：综合输出（LLM 推理） ---
+        synthesis_context = json.dumps({
+            "review_results": [
+                {"order_id": r["order_id"], "risk_assessment": r.get("risk_assessment", {})}
+                for r in review_results
+            ],
+            "production_feasibility": production_result.get("feasibility_assessment", {}),
+        }, ensure_ascii=False, indent=2)
+        messages = [
+            {"role": "system", "content": SUPERVISOR_PROMPT},
+            {"role": "user", "content": f"用户请求：{query}\n\n子 Agent 结果：\n{synthesis_context}\n\n请综合给出排产建议。"},
+        ]
+        try:
+            response = call_llm(messages)
+            synthesis = response.choices[0].message.content.strip()
+        except Exception as e:
+            synthesis = f"综合分析失败：{e}"
+
+        summary["synthesis"] = synthesis
 
         print(f"\n{'='*60}")
-        print(f" 生产 Agent 发现")
+        print(f" Supervisor 综合排产建议")
         print(f"{'='*60}")
-        print(f"  材料库存：{str(production_result.get('material', ''))[:100]}")
-        print(f"  设备负载：{str(production_result.get('machine', ''))[:100]}")
+        print(synthesis)
 
         return summary
 

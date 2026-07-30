@@ -21,6 +21,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "scripts" / "week3"))
 from order_server import get_order_detail, get_production_status
 from resource_server import query_customer
+from langgraph_agent import call_llm
 
 SYSTEM_PROMPT = """你是一位风控审核专家。你的职责是评估订单风险。
 
@@ -88,12 +89,33 @@ def build_review_context(order_id: str) -> str:
         return json.dumps({"error": str(e)})
 
 
+def _parse_json(text: str) -> dict:
+    """从 LLM 输出中解析 JSON（兼容 ```json``` 包裹和纯文本）。"""
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        return {"raw": text}
+
+
 def review_order(order_id: str) -> dict:
-    """审核单笔订单，返回风险评级结果。"""
+    """审核单笔订单，调用 LLM 返回风险评级结果。"""
     context = build_review_context(order_id)
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": f"请审核订单 {order_id} 的风险等级。\n\n订单上下文数据：\n{context}"},
+    ]
+    try:
+        response = call_llm(messages)
+        risk_data = _parse_json(response.choices[0].message.content)
+    except Exception as e:
+        risk_data = {"error": str(e), "risk_level": "unknown"}
     return {
         "order_id": order_id,
         "context": context,
+        "risk_assessment": risk_data,
         "agent": "review_agent",
-        "status": "pending_review",
+        "status": "reviewed",
     }
