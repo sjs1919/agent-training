@@ -48,5 +48,11 @@ cd scripts/week1 && python day1_api_basics.py
 ## 参考
 
 - 路线图：[企业级 Agent 开发加速路线](docs/00_总纲_路线.md)
+- 简历整理：[job-portfolio/](job-portfolio/) — 找工作简历与面试准备（当前：HR 框架确认阶段）
+- 评估框架：[简历评估框架-HR视角.md](简历评估框架-HR视角.md) — 10 模块 75+ 评估项
+
+## 协作规则
+
+**对话及时落盘**：每次与 AI 协作的对话，结束后立即保存到 `job-portfolio/sessions/session-{日期}-{话题}.md`。避免工作整理丢失。重要产出文件同步更新本 README 和 `job-portfolio/README.md` 的索引。
 - 资料索引：[培训路线图分析](docs/00_总纲_资料索引.md)
 - Claude Code 学习仓库：[learn-claude-code](../../learn-claude-code)
