@@ -94,8 +94,16 @@ Week 4 的目标是"多 Agent 协作"，但三个 Agent（Supervisor / 审核 / 
 
 **测试**：`python supervisor_agent.py "今天先做哪些订单？综合风险评估和产能情况给出排产建议"` 跑通，5 次 LLM 调用（3 审核 + 1 产能 + 1 综合），输出按优先级排序的排产建议（ORD003 → ORD001 → ORD005，每单含风险+产能+操作+理由）。
 
-**剩余缺口（留 Week 5 或后续）**：
-- #5 Token 内存存储（无持久化，重启丢失）
-- #6 audit `log_path` 未落盘（仅内存）
-- #7 工具调用前未校验 Token 权限（子 Agent 不传 Token）
-- #8 `query` 路由目标仅 print，无实际分发
+**剩余缺口（2026-08-05 全部修复）**：
+- ~~#5 Token 内存存储（无持久化，重启丢失）~~ ✅ 已修复：`TokenStore` 抽象 + `SqliteTokenStore` 实现，默认 `tokens.db`
+- ~~#6 audit `log_path` 未落盘（仅内存）~~ ✅ 已修复：`_persist()` 即时追加 JSONL 到 `{RUNTIME_DIR}/audit.jsonl`
+- ~~#7 工具调用前未校验 Token 权限（子 Agent 不传 Token）~~ ✅ 代码排查确认不成立：`review_agent.py:35` 和 `production_agent.py:28` 均传 `token` 给 `registry.execute()`
+- ~~#8 `query` 路由目标仅 print，无实际分发~~ ✅ 代码排查确认不成立：`review_agent.py:42` 和 `production_agent.py:29` 在 Agent 中调 `registry.execute()`，非仅 print
+
+## 七、2026-08-05 企业级缺口补齐
+
+| 缺口 | 修复 | 文件 |
+|------|------|------|
+| **成本监控**（week5 #1） | `CostTracker` 单例 + 按 provider 定价 + 预算熔断 + `LLM_BUDGET_LIMIT` | 新建 `observability/cost.py`，集成 `core/llm_client.py` |
+| **Token 持久化**（week4 #5） | `TokenStore` 抽象 → `SqliteTokenStore` 默认落地，`TOKEN_STORE=memory` 切回内存 | `auth/token_exchange.py` 重写 |
+| **审计持久化**（week4 #6） | `_persist()` 即时追加 JSONL，`AUDIT_LOG=none` 禁用 | `auth/audit_logger.py` 重写 |
