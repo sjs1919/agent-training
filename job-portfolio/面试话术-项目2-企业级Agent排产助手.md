@@ -11,6 +11,19 @@
 
 **行业**：制造业智能调度（3D 打印 / CNC 排程排产），承接项目1智能机器管理系统的下一环
 
+**Agent 技术晋级线（成长弧线）**：这个项目不是一步到位的，是我从单 Agent 一步步晋级的产物——
+```
+单 Agent 学习：机器故障查询（企微知识库）
+   → 自建单 Agent（知识库 + 订单打印 + 机器状态 + BPC转换 + 故障预警）
+   → demo Agent 排程排产（本项目）
+```
+- **起点**：先是做个企微知识库里的机器故障查询，理解"一个 Agent 调一个知识库"的最小闭环
+- **晋级**：自建单 Agent，把知识库 + 订单打印 + 机器状态 + BPC 转换 + 故障预警 多个工具装进一个 Agent，学会多工具调用
+- **落地**：最终才做到排程排产这种需要 Agent 编排 + 多 Agent 协作的复杂度
+- **工程化底座**：前期用 Java 构建 MCP Server，落地对接企微知识库和内部 MCP 接口，鉴权、限流、降级等工程化能力在 Java 上落地——虽然 Agent 实验用 Python 验证，但工程化原则跨语言相通
+
+> 这条线的价值：证明「真懂原理不是培训班出来」——先手写最小闭环，再逐步加工具、加复杂度，最后才做多 Agent 编排，每一步都有实物。
+
 **业务定位**：面向制造业排程排产的对话式助手。用户用自然语言问生产问题，Agent 自动调用工具查数据、检索合同、综合分析后回答——把「业务人员看报表、翻合同」变成「直接问系统」。
 
 **业务规模**：
@@ -257,9 +270,11 @@ LLM 可能传多余字段（如把 comment 字段带进 WHERE）、越权调工�
 
 ## 七、面试话术（1 分钟版）
 
-> 我独立实现了一个面向制造业排程排产的企业级 Agent 排产助手，核心是「LangGraph 状态图 + Supervisor 多 Agent + 权限治理」三层架构。用户用自然语言问生产问题，Agent 自动调工具查订单/库存/设备，检索合同条款，综合分析回答。
+> 我独立实现了一个面向制造业排程排产的企业级 Agent 排产助手。但这不是一步到位的——我有一条 Agent 技术晋级线：先是企微知识库里的机器故障查询（单 Agent 最小闭环），再自建单 Agent 装进多个工具（知识库 + 订单打印 + 机器状态 + BPC 转换 + 故障预警），最后才做到排程排产这种需要 Agent 编排 + 多 Agent 协作的复杂度。前期还用 Java 建了 MCP Server 做工程化底座，鉴权限流降级在 Java 落地。
 >
-> 技术上覆盖 Agent 开发全链路：手写 ReAct 循环 → LangGraph 编排 → 多 Agent Supervisor 协作 → Token Exchange（RFC 8693）鉴权 → RAGAS 评估。RAG 端用 BM25 + 向量 RRF + Cross-Encoder 重排四步召回，解决中文 RAG 召回不准的问题。
+> 这个项目核心是「LangGraph 状态图 + Supervisor 多 Agent + 权限治理」三层架构。用户用自然语言问生产问题，Agent 自动调工具查订单/库存/设备，检索合同条款，综合分析回答。
+>
+> 技术上覆盖 Agent 开发全链路：手写 ReAct 循环 → LangGraph 编排 → 多 Agent Supervisor 协作 → Token Exchange（RFC 8693）鉴权 → 评估闭环。RAG 端用 BM25 + 向量 RRF + Cross-Encoder 重排四步召回，解决中文 RAG 召回不准的问题。
 >
 > 多 Agent 用 Supervisor 路由到专业子 Agent（订单评审/生产评估），子 Agent 各持受限权限令牌，工具层强制 RBAC，审计 trace_id 贯穿，实现洋葱型三道防线。落地用制造业真实约束验证：合同赔付、航天件全检、PEEK 耗料公式规则引擎。
 
@@ -278,6 +293,8 @@ LLM 可能传多余字段（如把 comment 字段带进 WHERE）、越权调工�
 | "评估怎么做的？" | 10 组 ground truth + 工具准确率/完整性/综合评分 3 维指标，回归基线 ≥7/10 |
 | "两级缓存区别？" | L1 精确缓存 SQLite <1ms 0 token（相同 prompt）；L2 语义缓存 Chroma cosine ~50ms（近义改写） |
 | "观测层怎么接 Jaeger？" | OTel 同构接口 + 可插拔 backend，OTEL_EXPORTER=otel 发 OTLP 到 Jaeger 4317 |
+| "Agent 是怎么一步步学起来的？" | 晋级线：机器故障查询（单 Agent 最小闭环）→ 自建单 Agent 多工具（知识库+订单打印+机器状态+BPC转换+故障预警）→ 排程排产（Agent 编排+多 Agent）——先手写最小闭环再逐步加复杂度，不是一步到位 |
+| "为什么用 Java 做 MCP Server？" | 工程化底座：鉴权/限流/降级这些能力在 Java 落地更稳，对接企微知识库和内部 MCP 接口；Agent 实验用 Python 验证，但工程化原则跨语言相通 |
 | "和项目1什么关系？" | 项目1是设备管理层（6 服务流水线），排产助手是决策层（Agent 排程排产），MES 排程演进路线里规划引入 Agent 智能调度 |
 | "生产级差距在哪？" | 教学版验证：缺 JWT 签名/refresh token（权限）、采样/异步导出（观测）、增量索引/多租户 RAG、NL2SQL、CI 集成轨迹评估 |
 
@@ -285,8 +302,10 @@ LLM 可能传多余字段（如把 comment 字段带进 WHERE）、越权调工�
 
 ## 九、口径红线（对面试官）
 
-- 术语锚点可深可浅：VP/CTO 问「Agent 到什么深度」→ 讲 4-7 行全链路（ReAct→LangGraph→Supervisor→Token Exchange→RAGAS）；HR/猎头不问不主动展开
+- 术语锚点可深可浅：VP/CTO 问「Agent 到什么深度」→ 讲 4-7 行全链路（ReAct→LangGraph→Supervisor→Token Exchange→评估闭环）；HR/猎头不问不主动展开
 - **说「团队级验证」不说「规模化」**（demo 是验证可行性，非生产规模）
+- **晋级线口径**：机器故障查询 → 自建单 Agent → 排程排产，先手写最小闭环再逐步加复杂度——证明真懂原理不是贴标签，别吹"一上来就会多 Agent"
+- **RAGAS 表述（已修正）**：话术说「评估闭环」，不主动说 RAGAS；被追问「RAGAS 在哪」→「week4 训练脚本里跑过，demo 用自研指标更可控」
 - 源码可追溯：`agent-training/demo/` + `agent-training/scripts/week1-4/`（repo 备索）
 - 与简历叙事一致：AI 工程化 + 制造业落地 + 团队管理三重叠加
 
