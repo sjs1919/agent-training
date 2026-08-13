@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>豆包简历评估报告 — v4.4.A1.01（老板视角诊断）</title>
+<style>
+  :root {
+    --bg: #f8f9fa; --card: #ffffff; --text: #1a1a2e;
+    --accent: #1F4E79; --accent-light: #2E75B6; --warn: #C45911;
+    --ok: #375623; --border: #d1d5db; --muted: #6b7280;
+    --p0-bg: #fef2f2; --p0-border: #dc2626; --p0-text: #991b1b;
+    --p1-bg: #fffbeb; --p1-border: #d97706; --p1-text: #92400e;
+    --p2-bg: #eff6ff; --p2-border: #2563eb; --p2-text: #1e40af;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "等线", sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; padding: 20px; }
+  .container { max-width: 900px; margin: 0 auto; }
+
+  /* ---- 首屏结论区 ---- */
+  .hero { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); color: #fff; border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; }
+  .hero h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .hero .meta { font-size: 12.5px; opacity: 0.85; margin-bottom: 14px; }
+  .hero .verdict { font-size: 15px; line-height: 1.7; }
+  .score-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+  .score-box { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 110px; }
+  .score-box .num { font-size: 26px; font-weight: 800; }
+  .score-box .lbl { font-size: 11.5px; opacity: 0.85; margin-top: 2px; }
+
+  /* ---- 卡片通用 ---- */
+  .card { background: var(--card); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 18px; overflow: hidden; }
+  .card-header { background: var(--accent); color: #fff; padding: 11px 18px; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .card-body { padding: 16px 18px; }
+
+  /* ---- 问题条目 ---- */
+  .issue { border-left: 4px solid var(--border); padding: 10px 14px; margin-bottom: 10px; border-radius: 0 6px 6px 0; background: #fafafa; transition: all .15s; }
+  .issue:hover { background: #f0f0f0; }
+  .issue.p0 { border-left-color: var(--p0-border); background: var(--p0-bg); }
+  .issue.p1 { border-left-color: var(--p1-border); background: var(--p1-bg); }
+  .issue.p2 { border-left-color: var(--p2-border); background: var(--p2-bg); }
+  .issue-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; display: flex; gap: 8px; align-items: baseline; }
+  .tag { font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .tag.p0 { background: var(--p0-border); color: #fff; }
+  .tag.p1 { background: var(--p1-border); color: #fff; }
+  .tag.p2 { background: var(--p2-border); color: #fff; }
+  .issue-detail { font-size: 13px; color: #374151; line-height: 1.6; }
+  .issue-detail code { background: #e5e7eb; padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: "Consolas","Courier New",monospace; }
+  .fix-status { font-size: 12px; margin-top: 5px; padding: 3px 8px; border-radius: 4px; display: inline-block; }
+  .fix-fixed { background: #d1fae5; color: #065f46; }
+  .fix-partial { background: #fef3c7; color: #92400e; }
+  .fix-open { background: #fee2e2; color: #991b1b; }
+
+  /* ---- 表格 ---- */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
+  th { background: #f3f4f6; padding: 8px 10px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); }
+  td { padding: 7px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+  tr:hover td { background: #fafafa; }
+
+  /* ---- 优化方向 ---- */
+  .opt-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px dashed #ddd; }
+  .opt-item:last-child { border-bottom: none; }
+  .opt-num { width: 28px; height: 28px; background: var(--accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .opt-text h4 { font-size: 14px; margin-bottom: 3px; }
+  .opt-text p { font-size: 13px; color: #555; }
+
+  /* ---- 附录 ---- */
+  .appendix { font-size: 12.5px; color: var(--muted); padding: 14px 18px; background: #f9fafb; border-top: 1px solid var(--border); }
+  .appendix ul { padding-left: 18px; margin-top: 6px; }
+  .appendix li { margin-bottom: 3px; }
+
+  /* ---- 维度评分条 ---- */
+  .bar-wrap { height: 22px; background: #e5e7eb; border-radius: 11px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 11px; transition: width .4s ease; }
+  .bar-label { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.25); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ==================== 首屏结论 ==================== -->
+<div class="hero">
+  <h1>📋 豆包简历评估报告 — v4.4.A1.01</h1>
+  <div class="meta">评估人：豆包（字节跳动 AI） · 视角：老板/招聘决策者 · 基线版本：v4.4.A1.01-AI落地版.md · 报告日期：2026-08-13</div>
+  <div class="verdict">
+    <strong>总体判断：</strong>内容骨架扎实（150+ 人团队、三段式、LLMOps、Agent 排产），但<strong>第一眼观感严重扣分</strong>——错别字泛滥 + 格式混乱 + 业务收益缺失 + 管理逻辑断层。老板视角下，这份简历会被判定为"技术能力强但文档粗糙、不懂商业价值"，直接影响面试邀请率。核心问题不是能力不足，而是<strong>呈现方式与决策者阅读习惯不匹配</strong>。
+  </div>
+  <div class="score-row">
+    <div class="score-box"><div class="num">52</div><div class="lbl">综合得分<br>/100</div></div>
+    <div class="score-box"><div class="num">D+</div><div class="lbl">等级</div></div>
+    <div class="score-box"><div class="num">27</div><div class="lbl">问题项数</div></div>
+    <div class="score-box"><div class="num">6</div><div class="lbl">P0 致命项</div></div>
+  </div>
+</div>
+
+<!-- ==================== 一、维度评分总览 ==================== -->
+<div class="card">
+  <div class="card-header">📊 四维度评分总览</div>
+  <div class="card-body">
+    <table>
+      <thead><tr><th style="width:22%">维度</th><th style="width:12%">得分</th><th style="width:38%">核心问题</th><th style="width:28%">修复状态</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>① 阅读观感</strong></td>
+          <td><strong style="color:#dc2626">35 / 100</strong></td>
+          <td>错别字 11+ 处、乱码符号、格式混乱、段落挤成一团</td>
+          <td><span class="fix-status fix-partial">v4.5.A 大部修复</span></td>
+        </tr>
+        <tr>
+          <td><strong>② 数据真实性</strong></td>
+          <td><strong style="color:#d97706">58 / 100</strong></td>
+          <td>数字有但缺业务收益量化；管理指标无前后对比</td>
+          <td><span class="fix-status fix-partial">v4.5.A 部分补强</span></td>
+        </tr>
+        <tr>
+          <td><strong>③ 业务价值</strong></td>
+          <td><strong style="color:#d97706">42 / 100</strong></td>
+          <td>纯技术罗列无经营改善数据；AI 项目无 ROI/降本/增收</td>
+          <td><span class="fix-status fix-partial">v4.5.A 已加业务收益导向</span></td>
+        </tr>
+        <tr>
+          <td><strong>④ 求职说服力</strong></td>
+          <td><strong style="color:#d97706">55 / 100</strong></td>
+          <td>开篇太长无摘要；跨界经历不串联；管理方法论空洞</td>
+          <td><span class="fix-status fix-partial">v4.5.A 开篇+串联已改</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:12.5px;color:var(--muted);margin-top:8px;">注：修复状态基于 v4.5.A 版本对比（v4.5.A 为基于本报告生成的修订版）。v4.4.A1.01 为原始被评对象。</p>
+  </div>
+</div>
+
+<!-- ==================== 二、详细发现 ==================== -->
+<div class="card">
+  <div class="card-header">🔍 详细发现（按豆包四大类 + 隐性风险）</div>
+  <div class="card-body">
+
+    <!-- ===== 类别 A：排版&文字硬伤 ===== -->
+    <h3 style="font-size:15px;color:var(--accent);margin:14px 0 10px;border-bottom:2px solid var(--accent);padding-bottom:4px;">A. 排版 &amp; 文字硬伤（第一眼减分）— 得分 35/100</h3>
+
+    <div class="issue p0">
+      <div class="issue-title"><span class="tag p0">P0-致命</span> A1. 错别字 / 生造字泛滥（11+ 处），专业度大打折扣</div>
+      <div class="issue-detail">
+        豆包逐字检出以下错别字（原文 → 正确）：<br>
+        <code>债守</code>→值守 &nbsp; <code>越载</code>→负载 &nbsp; <code>涩灡</code>→阻塞 &nbsp; <code>梯闌</code>→梯队 &nbsp;
+        <code>优秋</code>→优秀 &nbsp; <code>刑业</code>→行业 &nbsp; <code>配奕</code>→配套 &nbsp;
+        <code>雄团</code>→集团 &nbsp; <code>架株师</code>→架构师<br>
+        <strong>老板心理：</strong>"技术管理者写简历都不校对，落地项目文档、方案报告质量堪忧。"<br>
+        <span class="fix-status fix-fixed">✅ v4.5.A 全文统一校对修复</span>
+      </div>
+    </div>
+
+    <div class="issue p0">
+      <div class="issue-title"><span class="tag p0">P0-致命</span> A2. 乱码符号无释义 + 标点混用全角半角</div>
+      <div class="issue-detail">
+        <code>「→」</code> 符号未做语义说明；<code>「2460」</code> 数字作为术语出现但无上下文解释；全角/半角标点混杂使用；断句混乱导致段落挤成一团。<br>
+        <span class="fix-status fix-fixed">✅ v4.5.A 删除自造符号，统一标点规范</span>
+      </div>
+    </div>
+
+    <div class="issue p1">
+      <div class="issue-title"><span class="tag p1">P1-重要</span> A3. 格式混乱，信息堆砌，重点完全淹没</div>
+      <div class="issue-detail">
+        无统一段落间距；无项目区分加粗；<strong>"关键成果快照""领导价值主张"</strong> 为自造名词（非行业标准术语）；所有数据堆在长句里，没有分点呈现、没有量化数字加粗。老板快速扫读时抓不住核心业绩。<br>
+        <span class="fix-status fix-partial">⚠️ v4.5.A 改为四段式结构 + 成果快照表格化</span>
+      </div>
+    </div>
+
+    <!-- ===== 类别 B：表述口语化 & 自造词汇 ===== -->
+    <h3 style="font-size:15px;color:var(--accent);margin:18px 0 10px;border-bottom:2px solid var(--accent);padding-bottom:4px;">B. 表述口语化 &amp; 自造晦涩词汇</h3>
+
+    <div class="issue p1">
+      <div class="issue-title"><span class="tag p1">P1-重要</span> B1. 内部口语外露，对外招聘看不懂</div>
+      <div class="issue-detail">
+        <code>"外科手术式调整"</code> <code>"人盯人救火"</code> <code>"身先士卒救火"</code> —— 这些是内部沟通用语，对外行/跨部门面试官无法快速理解其含义和量级。<br>
+        <span class="fix-status fix-fixed">✅ v4.5.A 全部替换为正式表述（针对性补位与结构优化 / 主导紧急止血与体系根治 / 研发处于高应急状态）</span>
+      </div>
+    </div>
+
+    <div class="issue p1">
+      <div class="issue-title"><span class="tag p1">P1-重要</span> B2. 自造专业术语无通俗注解</div>
+      <div class="issue-detail">
+        <code>「价值三轴」</code> <code>「token-hub」</code> <code>「playbook」</code> <code>「Vibe Coding」</code> <code>「三段式推进：2460」</code> —— 非 AI 技术背景的面试官（尤其是业务方老板 / HRD）无法在 3 秒内理解这些词代表什么价值。<br>
+        <span class="fix-status fix-partial">⚠️ v4.5.A 保留 token-hub/playbook 但加了 LLMOps 框架词锚定；价值三轴改为"AI 负责人三轴"并加能力定义</span>
+      </div>
+    </div>
+
+    <!-- ===== 类别 C：数据 & 业务价值缺失 ===== -->
+    <h3 style="font-size:15px;color:var(--accent);margin:18px 0 10px;border-bottom:2px solid var(--accent);padding-bottom:4px;">C. 数据 &amp; 成果问题：有数字，但缺少<strong>业务收益</strong> — 得分 42/100</h3>
+
+    <div class="issue p0">
+      <div class="issue-title"><span class="tag p0">P0-致命</span> C1. Agent 排产项目：纯技术罗列，零业务收益</div>
+      <div class="issue-detail">
+        写清了 React、LangGraph、多 Agent 协作等技术栈，但<strong>完全没写</strong>：<br>
+        • 排产效率提升多少？ &nbsp;• 产能利用率提升多少？ &nbsp;• 物料损耗降低多少？<br>
+        • 人工调度减少多少人？ &nbsp;• 订单交付周期缩短多少？<br>
+        <strong>老板视角：</strong>"纯技术罗列，看不到给工厂带来的实际经营改善。"<br>
+        <span class="fix-status fix-partial">⚠️ v4.5.A 加了"业务背景-动作-方案-结果"四段式框架，但具体排产量化数字仍受限于实际可验证数据</span>
+      </div>
+    </div>
+
+    <div class="issue p1">
+      <div class="issue-title"><span class="tag p1">P1-重要</span> C2. 智能机器管理系统（700+ 设备）：只讲接入速度，无成本节约</div>
+      <div class="issue-detail">
+        写了 7×24 无人值守、多集群重构，但<strong>没写</strong>：<br>
+        • 每年节省多少夜班人工成本？ &nbsp;• 故障停机率下降多少？<br>
+        • 售后运维成本减少多少？ &nbsp;• 运维人力下降多少？<br>
+        <span class="fix-status fix-partial">⚠️ v4.5.A 压缩为 2 行并加"已在产线试运行"口径，但仍缺量化经营指标</span>
+      </div>
+    </div>
+
+    <div class="issue p1">
+      <div class="issue-title"><span class="tag p1">P1-重要</span> C3. 金融过往（600 亿放款）：成果单薄</div>
+      <div class="issue-detail">
+        只写了"支撑规模"，未体现架构优化带来的：<br>
+        • 坏账降低 &nbsp;• 资金周转效率提升 &nbsp;• 系统故障率下降 &nbsp;• 资金方接入成本降低<br>
+        <span class="fix-status fix-open">❌ 未修复（需用户补充金融段可验证的经营指标）</span>
+      </div>
+    </div>
+
+    <div class="issue p1">
+      <div class="issue-title"><span class="tag p1">P1-重要</span> C4. 人才数据偏内部，无组织收益佐证</div>
+      <div class="issue-detail">
+        "带出 4 主管 3 骨干"——但没写团队流失率下降、交付逾期率降低、人均产出提升；<br>
+        "6 场 AI 培训 200 人"——没有 AI 落地交付增量佐证（如培训后有多少团队开始用 AI 工具）。<br>
+        <span class="fix-status fix-partial">⚠️ v4.5.A 加了"以示范推动团队规模化采纳"语态，但组织级量化指标仍需补充</span>
+      </div>
+    </div>
+
+    <!-- ===== 类别 D：管理履历逻辑漏洞 ===== -->
+    <h3 style="font-size:15px;color:var(--accent);margin:18px 0 10px;border-bottom:2px solid var(--accent);padding-bottom:4px;">D. 管理履历逻辑漏洞 — 得分 55/100</h3>
+
+    <div class="issue p0">
+      <div class="issue-title"><span class="tag p0">P0-致命</span> D1. "三段式 2460"无释义，管理方法论无法落地验证</div>
+      <div class="issue-detail">
+        "稳团队、模型嵌套、AI 转型"三段式只有过程描述，<strong>缺少对比数据</strong>：<br>
+        • 接手前：延期 2 个月、救火频发 → 接手后：迭代负载 70%–90%<br>
+        但没有：<strong>交付准时率 ↑? 、线上故障下降率 ↓? 、人力成本优化 ↓?</strong><br>
+        <span class="fix-status fix-partial">⚠️ v4.5.A 三段式改为有 competency 定义的结构锚点，但前后对比量化数据仍待补充</span>
+      </div>
+    </div>
+
+    <div class="issue p1">
+      <div class="issue-title"><span class="tag p1">P1-重要</span> D2. 150 人大团队履历与当前 AI 工程化主线割裂</div>
+      <div class="issue-detail">
+        早年腾讯、金融集团、供应链经历只是简单罗列，<strong>没有提炼可复用的管理经验迁移到 AI 落地</strong>。<br>
+        <strong>老板看不到：</strong>过往大规模团队管理经验如何赋能现在 AI 小队 / LLMOps / Agent 落地——履历出现断层。<br>
+        <span class="fix-status fix-partial">⚠️ v4.5.A 加了"跨行业方法论串联"段（金融高并发→跨境多区域→制造业→AI 工程化），但迁移逻辑仍偏弱</span>
+      </div>
+    </div>
+
+    <div class="issue p2">
+      <div class="issue-title"><span class="tag p2">P2-次要</span> D3. 团队建设模式描述模糊</div>
+      <div class="issue-detail">
+        "0→1 搭建 / 规模化整合 / 空降跨职能"三种模式只写了"做了什么"，不写"解决了什么矛盾"和"结果如何"。例如空降 6 人职能团队时，当时左右什么矛盾？解决后产出什么变化？<br>
+        <span class="fix-status fix-fixed">✅ v4.4.A1.01 已精确化为三种建队模式的定义 + 可验证证据（见 B3 修正）</span>
+      </div>
+    </div>
+
+    <!-- ===== 类别 E：求职说服力缺陷 ===== -->
+    <h3 style="font-size:15px;color:var(--accent);margin:18px 0 10px;border-bottom:2px solid var(--accent);padding-bottom:4px;">E. 求职说服力缺陷</h3>
+
+    <div class="issue p0">
+      <div class="issue-title"><span class="tag p0">P0-致命</span> E1. 核心亮点分散，开篇抓不住眼球</div>
+      <div class="issue-detail">
+        开头简介太长（Pitch 段），20 年研发、10 年管理、150 人团队、AI 商业落地等核心优势埋在大段文字里，<strong>没有 1–2 行精炼摘要</strong>让老板 6 秒内判断"这人值不值得聊"。<br>
+        <span class="fix-status fix-fixed">✅ v4.5.A 开篇 Pitch 重写为 100 字内浓缩核心竞争力（含业务收益导向）</span>
+      </div>
+    </div>
+
+    <div class="issue p1">
+      <div class="issue-title"><span class="tag p1">P1-重要</span> E2. 跨界经历只做罗列，不做价值串联</div>
+      <div class="issue-detail">
+        金融、跨境、制造、AI 多行业经历，没有总结<strong>跨行业通用能力</strong>（高并发架构 / 大规模团队管理 / 产业 AI 落地方法论），浪费多年多赛道履历优势。<br>
+        <span class="fix-status fix-fixed">✅ v4.5.A 新增"跨行业方法论串联"独立段落</span>
+      </div>
+    </div>
+
+    <!-- ===== 类别 F：隐性风险（老板深度考量）===== -->
+    <h3 style="font-size:15px;color:var(--warn);margin:18px 0 10px;border-bottom:2px solid var(--warn);padding-bottom:4px;">⚠️ F. 隐性风险点（老板深度考量 — 不一定明说，但影响录用决策）</h3>
+
+    <div class="issue p0">
+      <div class="issue-title"><span class="tag p0">P0-致命</span> F1. 文字严谨度差 → 推断交付质量不可控 → 合规/品牌风险</div>
+      <div class="issue-detail">
+        技术管理者输出方案、立项报告、落地规范频现低级错别字 → 若入职，<strong>对外客户交付材料、内部战略文档容易出错</strong> → 带来合规风险和品牌损害。<br>
+        这是豆包给出的<strong>最严厉的隐性扣分项</strong>——它把"简历错别字"直接关联到"职业可靠性"。<br>
+        <span class="fix-status fix-fixed">✅ v4.5.A 全文校对 + 删除所有自造字/乱码</span>
+      </div>
+    </div>
+
+    <div class="issue p0">
+      <div class="issue-title"><span class="tag p0">P0-致命</span> F2. AI 项目无商业收益 → 质疑 AI 落地变现能力</div>
+      <div class="issue-detail">
+        企业招 AI 负责人的核心诉求是<strong>"用 AI 降本增收"</strong>，而非"快速搭一套系统"。lexy 商城无 GMV 数据、制造 Agent 无产能收益 → 老板会质疑："这人能帮我们赚钱吗？"——即使技术能力再强，商业闭环缺失也会在终面被否决。<br>
+        <span class="fix-status fix-partial">⚠️ v4.5.A lexy 段改为"新市场冷启动期，GMV 不编"的诚实表述 + playbook 方法论资产；制造段加业务背景框架</span>
+      </div>
+    </div>
+
+  </div><!-- end card-body -->
+</div><!-- end card -->
+
+<!-- ==================== 三、修复对照矩阵 ==================== -->
+<div class="card">
+  <div class="card-header">🔧 修复对照矩阵（v4.4.A1.01 → v4.5.A）</div>
+  <div class="card-body">
+    <table>
+      <thead><tr><th style="width:6%">#</th><th style="width:28%">问题</th><th style="width:33%">v4.4.A1.01 状态</th><th style="width:33%">v4.5.A 修复动作</th></tr></thead>
+      <tbody>
+        <tr><td>A1</td><td>错别字 11+ 处</td><td style="color:#dc2626">❌ 存在</td><td style="color:#065f46">✅ 全文统一校对</td></tr>
+        <tr><td>A2</td><td>乱码符号无释义</td><td style="color:#dc2626">❌ 存在</td><td style="color:#065f46">✅ 删除自造符号</td></tr>
+        <tr><td>A3</td><td>格式混乱重点淹没</td><td style="color:#d97706">⚠️ 密集</td><td style="color:#065f46">✅ 四段式 + 快照表</td></tr>
+        <tr><td>B1</td><td>内部口语外露</td><td style="color:#dc2626">❌ 存在</td><td style="color:#065f46">✅ 全部替换正式表述</td></tr>
+        <tr><td>B2</td><td>自造术语无注解</td><td style="color:#d97706">⚠️ 部分</td><td style="color:#d97706">⚠️ 加框架词锚定</td></tr>
+        <tr><td>C1</td><td>Agent 排产零业务收益</td><td style="color:#dc2626">❌ 纯技术</td><td style="color:#d97706">⚠️ 加四段式框架</td></tr>
+        <tr><td>C2</td><td>智能机器无成本节约</td><td style="color:#d97706">⚠️ 仅接入速度</td><td style="color:#d97706">⚠️ 压缩+试运行口径</td></tr>
+        <tr><td>C3</td><td>金融段成果单薄</td><td style="color:#d97706">⚠️ 仅支撑规模</td><td style="color:#d97706">⚠️ 待补充经营指标</td></tr>
+        <tr><td>C4</td><td>人才数据无组织收益</td><td style="color:#d97706">⚠️ 仅内部数字</td><td style="color:#d97706">⚠️ 语态修正</td></tr>
+        <tr><td>D1</td><td>三段式无对比数据</td><td style="color:#dc2626">❌ 仅过程描述</td><td style="color:#d97706">⚠️ 加能力定义</td></tr>
+        <tr><td>D2</td><td>大团队履历割裂</td><td style="color:#d97706">⚠️ 简单罗列</td><td style="color:#d97706">⚠️ 加跨行业串联</td></tr>
+        <tr><td>E1</td><td>开篇无精炼摘要</td><td style="color:#dc2626">❌ 太长</td><td style="color:#065f46">✅ 100 字浓缩</td></tr>
+        <tr><td>E2</td><td>跨界经历不串联</td><td style="color:#d97706">⚠️ 仅罗列</td><td style="color:#065f46">✅ 新增串联段</td></tr>
+        <tr><td>F1</td><td>严谨度→交付风险</td><td style="color:#dc2626">❌ 高风险</td><td style="color:#065f46">✅ 校对修复</td></tr>
+        <tr><td>F2</td><td>AI 无商业收益</td><td style="color:#dc2626">❌ 高风险</td><td style="color:#d97706">⚠️ 诚实+方法论转</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 四、豆包优化方向（原版 6 条）==================== -->
+<div class="card">
+  <div class="card-header">💡 豆包优化方向（老板视角期待改成什么样）</div>
+  <div class="card-body">
+    <div class="opt-item"><div class="opt-num">1</div><div class="opt-text"><h4>全文统一校对 + 分点量化 + 商业收益配套</h4><p>删除全部错别字和乱码符号；每个技术指标配一个业务收益数字（降 X%、省 Y 万、提效 Z 倍）。</p></div></div>
+    <div class="opt-item"><div class="opt-num">2</div><div class="opt-text"><h4>每个项目遵循「业务背景 → 我的动作 → 技术方案 → 经营结果」四段式</h4><p>优先展示降本、增收、提效三类结果，让老板 10 秒内看到"这个人能帮我赚/省多少钱"。</p></div></div>
+    <div class="opt-item"><div class="opt-num">3</div><div class="opt-text"><h4>压缩纯技术细节，增加经营指标</h4><p>减少 React/LangGraph/MCP 等工具名堆砌，增加 ROI、成本节约、产能提升、人力优化等老板关心的语言。</p></div></div>
+    <div class="opt-item"><div class="opt-num">4</div><div class="opt-text"><h4>提炼统一管理方法论，用前后对比数据证明治理能力</h4><p>不只写"带过 150 人"，要写"接手前 X 问题 → 接手后 Y 改善 → 证明 Z 能力"。</p></div></div>
+    <div class="opt-item"><div class="opt-num">5</div><div class="opt-text"><h4>开篇 100 字内浓缩核心竞争力</h4><p>20 年研发 + 10 年百人团队管理 + 跨制造/跨境/金融落地生产级 Agent 与 LLMOps 体系，通过 AI 工程化实现交付翻倍、人力成本大幅下降。</p></div></div>
+    <div class="opt-item"><div class="opt-num">6</div><div class="opt-text"><h4>串联多行业履历，突出跨产业 AI 落地可复制方法论</h4><p>不只是列出"做过金融/跨境/制造/AI"，要提炼通用的方法论资产（高并发架构能力 × 大规模团队管理 × 产业 AI 落地），强化战略视角、成本视角、经营视角。</p></div></div>
+  </div>
+</div>
+
+<!-- ==================== 五、与其它评估交叉对比 ==================== -->
+<div class="card">
+  <div class="card-header">📊 与其它评估交叉对比（offer鹅 JD 对齐 / 唐映册盲区扫描 / 林知行盲区扫描）</div>
+  <div class="card-body">
+    <table>
+      <thead><tr><th style="width:25%">问题域</th><th style="width:20%">豆包（老板视角）</th><th style="width:20%">唐映册（HR/ATS）</th><th style="width:20%">offer鹅（JD 对齐）</th><th style="width:15%">共识度</th></tr></thead>
+      <tbody>
+        <tr><td>错别字/严谨度</td><td>P0 致命（关联交付风险）</td><td>提及（排版减分）</td><td>D1-D3 修复</td><td>★★★ 高度共识</td></tr>
+        <tr><td>业务收益缺失</td><td>P0 致命（质疑变现能力）</td><td>提及（非规模化生产减分）</td><td>D4/D5/D6 补强</td><td>★★★ 高度共识</td></tr>
+        <tr><td>开篇无摘要</td><td>P0 致命（6 秒扫读失败）</td><td>P0（一号位语态）</td><td>未单独列</td><td>★★★ 高度共识</td></tr>
+        <tr><td>管理逻辑断层</td><td>P1 重要（履历割裂）</td><td>提及（三次0→1含糊）</td><td>D2 人才梯队</td><td>★★☆ 中度共识</td></tr>
+        <tr><td>自造术语</td><td>P1 重要（面试官看不懂）</td><td>未强调</td><td>D8 Agent 治理</td><td>★☆☆ 豆包独有</td></tr>
+        <tr><td>跨界不串联</td><td>P1 重要（浪费履历优势）</td><td>未强调</td><td>未涉及</td><td>★☆☆ 豆包独有</td></tr>
+        <tr><td>金融段单薄</td><td>P1 重要（缺经营指标）</td><td>未涉及</td><td>未涉及</td><td>★☆☆ 豆包独有</td></tr>
+        <tr><td>当前人少 vs 150+</td><td>未直接提及</td><td>未涉及</td><td>未涉及</td><td>— 林知行独有</td></tr>
+        <tr><td>RAG/Memory 缺失</td><td>未涉及</td><td>建议补 RAG 句</td><td>未涉及</td><td>★☆☆ 唐映册独有</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12.5px;color:var(--muted);margin-top:8px;"><strong>关键洞察：</strong>豆包的独特价值在于"老板/业务决策者"视角——它比 HR 视角（唐映册）和 JD 匹配视角（offer鹅）更关注<strong>商业闭环</strong>和<strong>第一眼信任感</strong>。三者互补，豆包补上了"这份简历能不能帮公司赚钱"这一最关键的问号。</p>
+  </div>
+</div>
+
+<!-- ==================== 附录 ==================== -->
+<div class="appendix">
+  <strong>附录</strong>
+  <ul>
+    <li><strong>评估来源：</strong>豆包（字节跳动 AI）"假设我是老板"简历诊断，2026-08-12 22:20–22:22，共 6 张微信截图</li>
+    <li><strong>原始素材：</strong><code>v4-doubao/微信图片_20260812222051_{43,44}_200.jpg</code> ~ <code>_20260812222210_48_200.jpg</code></li>
+    <li><strong>基线版本：</strong><code>resumes/简历-v4.4.A1.01-AI落地版.md</code>（被评对象）</li>
+    <li><strong>衍生修订版：</strong><code>resumes/简历-v4.5.A-AI落地版.md</code>（基于本报告 + 豆包诊断生成）</li>
+    <li><strong>交叉参考：</strong><code>analysis/JD关键词对齐与gap分析-v4.1输入.md</code>（offer鹅）、<code>resumes/简历盲区扫描报告-v4.4.A1-唐映册.md</code>（唐映册）、<code>简历v4.4.A1盲点与优化建议-2026-08-12.md</code>（林知行合并复审）</li>
+    <li><strong>报告生成：</strong>2026-08-13 18:24，由 WorkBuddy AI 助手基于 6 张原始截图逐条整理生成</li>
+  </ul>
+</div>
+
+</div><!-- end container -->
+</body>
+</html>
