@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>简历 v4.6 三视角评估与面试补给报告 · 2026-08-14</title>
+<style>
+  :root{
+    --ink:#1c2733; --sub:#5a6b7b; --line:#e3e9ef; --bg:#f7f9fb;
+    --steel:#1F4E79; --steel-soft:#eaf1f8; --red:#c0392b; --amber:#e08e0b;
+    --green:#2e8b57; --card:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",sans-serif;
+    line-height:1.65;font-size:15px;}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 28px 60px;}
+  header{border-bottom:3px solid var(--steel);padding-bottom:16px;margin-bottom:8px;}
+  h1{font-size:26px;margin:0 0 4px;color:var(--steel);letter-spacing:.5px;}
+  .sub{color:var(--sub);font-size:14px;}
+  h2{font-size:20px;color:var(--steel);margin:34px 0 12px;
+    border-left:5px solid var(--steel);padding-left:12px;}
+  h3{font-size:16px;color:var(--ink);margin:20px 0 8px;}
+  p{margin:8px 0;}
+  .lead{background:var(--steel-soft);border:1px solid #cfe0f1;border-radius:8px;
+    padding:16px 18px;margin:18px 0;font-size:15px;}
+  .lead b{color:var(--steel);}
+  /* 三视角卡 */
+  .cards{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0;}
+  .card{flex:1;min-width:240px;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .card h3{margin:0 0 4px;font-size:17px;}
+  .score{font-size:40px;font-weight:800;line-height:1;margin:6px 0;}
+  .grade{display:inline-block;background:var(--steel);color:#fff;border-radius:5px;
+    padding:2px 10px;font-size:13px;font-weight:700;margin-bottom:8px;}
+  .card hr{border:none;border-top:1px dashed var(--line);margin:10px 0;}
+  .small{font-size:13px;color:var(--sub);}
+  table{width:100%;border-collapse:collapse;margin:14px 0;background:var(--card);
+    font-size:14px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top;}
+  th{background:var(--steel);color:#fff;font-weight:700;}
+  tr:nth-child(even) td{background:#fafcfe;}
+  .ok{color:var(--green);font-weight:700;}
+  .warn{color:var(--amber);font-weight:700;}
+  .bad{color:var(--red);font-weight:700;}
+  /* 红色加粗标注重弹药 */
+  .flag{color:var(--red);font-weight:700;}
+  .supply{border:1px solid #f0c9c4;background:#fdf2f0;border-radius:8px;
+    padding:12px 16px;margin:12px 0;}
+  .supply .t{font-weight:700;color:var(--red);margin-bottom:4px;}
+  .supply ul{margin:6px 0 2px;padding-left:20px;}
+  .supply li{margin:3px 0;}
+  .tag{display:inline-block;font-size:12px;border-radius:4px;padding:1px 7px;
+    background:#eef3f8;color:var(--steel);margin-right:5px;font-weight:700;}
+  .tag.r{background:#fdecea;color:var(--red);}
+  .note{font-size:13px;color:var(--sub);border-left:3px solid var(--line);
+    padding-left:10px;margin:8px 0;}
+  code{background:#eef3f8;padding:1px 5px;border-radius:3px;font-size:13px;}
+  footer{margin-top:40px;border-top:1px solid var(--line);padding-top:14px;
+    color:var(--sub);font-size:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>简历 v4.6 三视角评估与面试补给报告</h1>
+  <div class="sub">苏坚生 · AI 工程化落地负责人 / 技术总监岗 · 评估对象：<code>resumes/简历-v4.6-AI落地版.md</code> · 2026-08-14</div>
+</header>
+
+<div class="lead">
+  <b>首屏结论：</b>三视角综合分 <b>HR 90（A-）＞ 老板 83（B+）＞ +1 领导 80（B+）</b>。
+  简历的<b>工程化底色、跨行业迁移、三种建队、诚实标注</b>是硬资产，HR 筛简历阶段最买账；但<b>豆包判断准确</b>——"包装水平高于实际 AI 成果"，真正决定 offer 的<b>老板与 +1 会带着尖锐问题严验</b>。本报告的红字区，就是面试前必须补齐弹药、否则会被击穿的"放宽/包装处"。
+</div>
+
+<!-- ========== 一、三视角打分卡 ========== -->
+<h2>一、三视角打分卡（五维百分制）</h2>
+<p class="note">维度权重：内容质量 30 · 结构与排版 25 · 语言与语法 20 · ATS 优化 15 · 影响力与印象 10。三个视角评分口径不同：HR 看表面亮点与硬性条件；老板看业务价值与落地；+1 看技术深度与搭体系能力。</p>
+
+<div class="cards">
+  <div class="card">
+    <h3>① 招聘 HR 视角</h3>
+    <div class="grade">A- · 最友好</div>
+    <div class="score" style="color:var(--green)">90</div>
+    <hr>
+    <p class="small"><b>关注：</b>履历完整度、大厂背书（腾讯/金蝶）、管理规模（150+）、教育（985）、ATS 关键词密度、面试邀约率。</p>
+    <p class="small"><b>担忧：</b>标题带"v4.6"暗示频繁改版/正在看机会；博时达仅 1 年（已标注项目制，可接受）。</p>
+    <p class="small">HR 不懂技术深度，亮点密度高即过筛。这是三视角里最易过的。</p>
+  </div>
+  <div class="card">
+    <h3>② 招聘老板视角</h3>
+    <div class="grade">B+ · 谨慎乐观</div>
+    <div class="score" style="color:var(--amber)">83</div>
+    <hr>
+    <p class="small"><b>关注：</b>能不能帮公司赚钱/省钱、能不能落地、管理风格适配、薪资值不值（深圳研发总监 20 年 ≈ 80–120 万）。</p>
+    <p class="small"><b>担忧：</b>管理错配（150+ 流程搬到 30–50 人变负担）；AI 商业化薄弱（lexy GMV 起步、Agent 未规模化）；"包装高于成果"。</p>
+    <p class="small">会安排尖锐业务面，要求 90 天落地计划。</p>
+  </div>
+  <div class="card">
+    <h3>③ +1 领导视角</h3>
+    <div class="grade">B+ · 严验</div>
+    <div class="score" style="color:var(--amber)">80</div>
+    <hr>
+    <p class="small"><b>关注：</b>技术深度够不够、能不能搭体系、合不合、会不会抢戏。</p>
+    <p class="small"><b>担忧：</b>token-hub 是否 Demo 级；LangGraph/Supervisor 4 周速成深度；实际 AI 经验仅 1–2 年；"总监亲自写全栈"的授权疑云。</p>
+    <p class="small">会安排 2 轮技术深度面，重点验 AI 成果真实性。</p>
+  </div>
+</div>
+
+<table>
+  <tr><th>维度（满分）</th><th>HR</th><th>老板</th><th>+1</th><th>评分逻辑</th></tr>
+  <tr><td>内容质量（30）</td><td>26</td><td>22</td><td>20</td><td>HR 看亮点密度；老板/+1 扣在 AI 商业化与深度</td></tr>
+  <tr><td>结构与排版（25）</td><td>23</td><td>22</td><td>22</td><td>三轴+快照+价值主张，扫读友好，一致认可</td></tr>
+  <tr><td>语言与语法（20）</td><td>18</td><td>18</td><td>18</td><td>v4.6 已修错别字，通顺主动</td></tr>
+  <tr><td>ATS 优化（15）</td><td>15</td><td>14</td><td>14</td><td>关键词密集（LLMOps/Agent/RAG/等保三级），纯文本友好</td></tr>
+  <tr><td>影响力与印象（10）</td><td>8</td><td>7</td><td>6</td><td>HR 爱硬标签；老板/+1 扣在"价值未证"</td></tr>
+  <tr><td><b>综合</b></td><td><b>90</b></td><td><b>83</b></td><td><b>80</b></td><td>—</td></tr>
+</table>
+<p class="note">⚠️ 综合分≠拿 offer 概率。HR 90 只代表"能进面试"；真正定生死的是老板 83 与 +1 80 对应的严验环节。豆包原话："面试，但不要急着发 offer。"</p>
+
+<!-- ========== 二、v4.6 vs 豆包比对 ========== -->
+<h2>二、v4.6 与豆包 v4.6 评估 比对矩阵</h2>
+<p>豆包评估性质（<code>doubao-v4.6-pinggu.txt</code>）：模拟<b>面试官/用人老板</b>视角，针对"中等公司 AI 负责人（30–50 人）"做竞争力与匹配度批判。核心判词：<b>"工程管理底子扎实，但 AI 深度偏浅、成果偏样板间，与 30–50 人团队存在结构性错配风险。"</b></p>
+
+<table>
+  <tr><th>豆包质疑点</th><th>v4.6 现状</th><th>状态</th></tr>
+  <tr><td>AI 成果含金量（lexy 商业化弱、Agent 未落地）</td><td>已诚实标注"GMV 起步期""尚未规模化铺开"——豆包明确认可</td><td class="ok">已吸收（加分项）</td></tr>
+  <tr><td>标题带"v4.6"暗示看机会</td><td>line 1 仍写"个人简历（AI 落地版 v4.6）"</td><td class="bad">未动（P0-1）</td></tr>
+  <tr><td>token-hub "LLMOps"包装感 + 日调用量/QPS空白</td><td>line 11/27/47 仍标"LLMOps（大模型运维）网关"，无运营数据</td><td class="bad">未动（P0-2，最大风险）</td></tr>
+  <tr><td>管理错配（150+流程压死小团队）</td><td>line 16/24/40 仍是"双周迭代7工具闭环"，无小团队信号</td><td class="bad">未动（P0-3）</td></tr>
+  <tr><td>"传统6周"对比口径不公平</td><td>line 9/48 仍写"传统估算约6周，缩短约50%"</td><td class="bad">未动（P1-1）</td></tr>
+  <tr><td>2周开发技术债风险</td><td>line 48 已含"含1周需求与框架，实际开发仅2周"</td><td class="warn">部分（需重框架为"验证MVP"）</td></tr>
+  <tr><td>"总监写全栈"亲力亲为悖论</td><td>line 46 仍写"亲手写了 lexy-admin 全栈"</td><td class="bad">未动（P1-3）</td></tr>
+  <tr><td>AI转型时间线空白（前两年在做什么）</td><td>未交代 2022–2024 主线，AI经验时长含糊</td><td class="bad">未动（P1-4）</td></tr>
+  <tr><td>技术栈缺厚度（微调/向量库/Prompt/成本优化）</td><td>line 92 仅列框架名，未点"成本优化"等真实能力</td><td class="warn">部分（P1-5 待补真实项）</td></tr>
+  <tr><td>12 道面试题（订单量/漏测率/F1值等）</td><td>简历层面改不了，转面试备稿</td><td class="warn">转备稿（第四节）</td></tr>
+</table>
+
+<h3>豆包明确认可、简历已做到的点（保持，不要动）</h3>
+<p>诚实度（"GMV起步期""尚未规模化铺开"）· 跨行业迁移 · 三种建队 · 工程化底色（等保三级/700+设备/微服务）。<b>这些是防穿帮的护城河，不为好看改掉。</b></p>
+
+<!-- ========== 三、严格务实建议 ========== -->
+<h2>三、严格务实建议（按可执行性分级）</h2>
+
+<h3>✅ 立即采纳 · 零风险（简历层可改，不编数据）</h3>
+<ul>
+  <li><b>P0-1 去版本号</b>：投递版标题改为"个人简历（AI 工程化落地负责人）"，版本号只留工作区文件名。消除"频繁改版/看机会"暗示。</li>
+  <li><b>P0-3 加小团队信号</b>：领导价值主张末尾加"不论团队大小，先摸清业务再定节奏——大团队靠体系杠杆，小团队就扁平快、自己冲在前面"；并把"双周迭代7工具闭环"加限定"在150+规模下"。直接化解管理错配论。</li>
+  <li><b>P1-1 lexy 口径补正</b>：把"传统估算约6周"弱化为"比常规交付节奏快约一倍（同等 scope）"，或加小注"同等 scope 常规节奏"。</li>
+  <li><b>P1-2 技术债重框架</b>：把"快"转"节奏对"——"作为市场验证 MVP，重快速验证、轻过度设计；已沉淀 playbook 供团队持续迭代"。</li>
+  <li><b>P1-3 写全栈重框架</b>：加"转型期作为技术负责人先趟通全链路、验证可行，再沉淀 playbook 移交团队"，呼应"已由团队继承迭代"。</li>
+  <li><b>P1-4 AI 时间线补正</b>：未来工场背景加"2022–2024 主攻生产底座与研发体系，2024 起把 AI 工程化作为第二阶段主线"，让 AI 经验时长诚实呈现（约 1–2 年）。</li>
+</ul>
+
+<h3>⚠️ 取决于真实数据（有数补、无数降调）</h3>
+<ul>
+  <li><b>P0-2 token-hub</b>：<u>有真实日调用量/接入模型数/降级案例</u> → 补进 line 27 用数字消解"包装"；<u>无数据</u> → 降调为"自研多模型路由网关 token-hub（统一管路由/计费/降级）"，去掉"LLMOps（大模型运维）"框架词光环。<b>没有日调用量绝不编。</b></li>
+  <li><b>P1-5 技术栈厚度</b>：只补真实做过的内容（如向量库/RAG 调优/成本优化）。至少把 token-hub 的"计费/降级"点明为"AI 成本优化（多模型路由降本）"——这是你已有的真实能力。</li>
+</ul>
+
+<h3>📋 转面试备稿（独立任务，12 问做成 STAR）</h3>
+<p>豆包 12 道面试题（技术深度 4 + 业务价值 3 + 管理适配 3 + 动机 2）本质是为面试官准备的验证清单，简历改不了，必须进 STAR 应答稿。尤其<b>第 11 题"为何从研发总监跳 AI 负责人"是最大红旗</b>，务必准备。</p>
+
+<!-- ========== 四、红字补给清单 ========== -->
+<h2>四、🔴 面试前必补弹药清单（标红加粗 = 放宽/包装处）</h2>
+<p>以下红字是 v4.6 里<b>适度包装或放宽口径</b>的表述（诚实边界内，但深挖会露怯）。你在面试前把对应的<b>理论知识</b>与<b>线上/运行数据</b>补上，就不穿帮。每条按"红字原表述 → 需补理论 → 需补数据"给出。</p>
+
+<div class="supply">
+  <div class="t">A. 框架词光环类（最易被 +1 击穿）</div>
+  <p><span class="flag">「自研 LLMOps（大模型运维）网关 token-hub」</span> — "LLMOps"是光环词，若只是路由网关就是包装。</p>
+  <ul>
+    <li><b>需补理论：</b>LLMOps 与 MLOps 区别；多模型路由的负载均衡/熔断策略；网关鉴权限流（MCP Server RBAC）原理；token 计费与成本归因方法。</li>
+    <li><b>需补线上数据：</b>日调用量、峰值 QPS、接入了哪几个模型、生产中跑了哪些业务（lexy/Agent）、降级触发过几次及场景、谁在维护（个人 or 团队）。</li>
+  </ul>
+  <p><span class="flag">「Agent 评估闭环（自研指标：工具 F1 / 完整性 / 订单命中）」</span> — F1 具体值、评估方法若不答出即露怯。</p>
+  <ul>
+    <li><b>需补理论：</b>Agent 评估为什么不用 RAGAS；工具调用成功率/幻觉率评估方法；离线 eval vs 线上监控区别。</li>
+    <li><b>需补线上数据：</b>工具 F1 具体分数、完整性/订单命中基线与实测值、评估跑了多久、覆盖多少 case。</li>
+  </ul>
+  <p><span class="flag">「Supervisor 多 Agent」「LangGraph 编排」「手写 ReAct」</span> — 4 周速成深度存疑。</p>
+  <ul>
+    <li><b>需补理论：</b>ReAct 范式；LangGraph StateGraph 状态机；Supervisor 路由决策机制；多 Agent 协作的失败模式与兜底。</li>
+    <li><b>需补线上数据：</b>排产 6 环节里哪些真由 AI 决策、哪些只是规则引擎套壳、人工干预率多少。</li>
+  </ul>
+</div>
+
+<div class="supply">
+  <div class="t">B. 对比口径放宽类</div>
+  <p><span class="flag">「传统估算约 6 周，周期缩短约 50%」</span> — 基线团队多大？总监亲自下场 vs 常规团队，口径不公。</p>
+  <ul>
+    <li><b>需补理论：</b>如何界定"同等 scope 常规交付节奏"；MVP 验证 vs 完整交付的区别（为什么 3 周合理）。</li>
+    <li><b>需补线上数据：</b>对比的基线团队规模与角色；常规 6 周估值的来源；实际投入人月。</li>
+  </ul>
+  <p><span class="flag">「测试工作量降一半以上」</span> — 从多少到多少？漏测率如何？</p>
+  <ul>
+    <li><b>需补理论：</b>AI 自动化验收的覆盖率与误报/漏报机制；TDD 在 AI 生成代码下的适用性。</li>
+    <li><b>需补线上数据：</b>测试人日前后对比；上线后 3 个月线上 bug 数 vs 传统项目；漏测率。</li>
+  </ul>
+</div>
+
+<div class="supply">
+  <div class="t">C. 规模与亲力亲为放宽类</div>
+  <p><span class="flag">「带过 150+ 团队」</span> vs 目标 30–50 人 — 流程负担、薪资预期（80–120 万）错配。</p>
+  <ul>
+    <li><b>需补理论：</b>不同规模团队的管理杠杆差异；小团队如何扁平快、一把手冲；哪些流程该砍。</li>
+    <li><b>需补线上数据：</b>150+ 时期的双周迭代负载率/交付准时率；曾带过的最小团队规模与做法。</li>
+  </ul>
+  <p><span class="flag">「亲手写了 lexy-admin 全栈」</span> — 总监写 CRUD，要么无人可用要么授权不足。</p>
+  <ul>
+    <li><b>需补理论：</b>"趟路 + 示范 + 移交"话术；技术负责人在转型期的角色定位；如何避免成为瓶颈。</li>
+    <li><b>需补线上数据：</b>lexy-admin 后续谁维护；过去 3 个月改了多少 bug；技术债清单长度。</li>
+  </ul>
+</div>
+
+<div class="supply">
+  <div class="t">D. 商业成果留白类（不编但要能答）</div>
+  <p><span class="flag">「GMV 起步期，不夸大」「订单持续进来」</span> — 实际没有可量化商业成果。</p>
+  <ul>
+    <li><b>需补理论：</b>如何向老板讲"验证价值 vs 商业成果"；MVP 阶段该承诺什么、不该承诺什么。</li>
+    <li><b>需补线上数据：</b>俄罗斯市场真实订单量/客单价/退货率（若有）；AI 在其中的贡献占比；获客成本。</li>
+  </ul>
+  <p><span class="flag">「排产 6 环节智能改造方案已在产线试运行」</span> — "试运行"弱，且其他 5 环节 AI 做了什么？</p>
+  <ul>
+    <li><b>需补理论：</b>RAG 在合同环节的检索准确率/chunk 策略/召回评估；规则引擎 vs Agent 协同边界。</li>
+    <li><b>需补线上数据：</b>试运行覆盖范围、人工排产替代比例、效率提升实测值。</li>
+  </ul>
+</div>
+
+<div class="supply">
+  <div class="t">E. 技术栈厚度缺口类（豆包点名缺失）</div>
+  <p><span class="flag">技术栈缺：模型微调（LoRA/SFT）、向量库选型调优、Prompt 工程体系化、AI 成本优化、数据飞轮</span></p>
+  <ul>
+    <li><b>需补理论：</b>LoRA/SFT 基本概念与适用场景（坦诚"未做过，但理解原理"）；向量库（Milvus/pgvector）检索原理；Prompt 工程体系；AI 成本优化方法论；数据飞轮闭环。</li>
+    <li><b>需补线上数据：</b>token-hub 计费/降级 = 你已有的真实成本优化案例（准备具体降本数字）；RAG 检索准确率/chunk 策略实测。</li>
+  </ul>
+</div>
+
+<div class="supply">
+  <div class="t">F. 动机红旗类（必准备）</div>
+  <p><span class="flag">「为什么从研发总监岗跳出来找 AI 负责人？」</span> — 豆包认为这是最大红旗。</p>
+  <ul>
+    <li><b>需补理论：</b>职业叙事——"公司在 AI 投入上的天花板 vs 我想把 AI 工程化作为下一阶段主线"；如何回答"是公司投入不足/与管理层分歧/想转型"而不暴露负面。</li>
+    <li><b>需补线上数据：</b>未来工场 AI 投入的实际约束（预算/人头/管理层态度）；你期望的薪资区间与"给不到之前级别能否接受"的底线。</li>
+  </ul>
+</div>
+
+<!-- ========== 五、红线守恒 ========== -->
+<h2>五、红线守恒（写进简历 / 答面试题前务必守住）</h2>
+<table>
+  <tr><th>红线</th><th>说明</th></tr>
+  <tr><td>不编 GMV / 订单量 / 留存</td><td>doubao 要这些数据，但用户红线"无真实数据不编"。保持"起步期"诚实标注，转面试备稿。</td></tr>
+  <tr><td>不把"工程化验证/未规模化"改成"已规模化"</td><td>会穿帮，doubao 明确"发现注水直接 pass"。</td></tr>
+  <tr><td>token-hub 不编日调用量 / QPS</td><td>没有就降调（P0-2 改法 B），不造假。</td></tr>
+  <tr><td>不编微调 / 向量库 / LoRA 经验</td><td>只在 P1-5 补真实做过的内容。</td></tr>
+  <tr><td>年龄不写数字</td><td>保持"20 年研发 / 10 年管理"。</td></tr>
+  <tr><td>评估闭环非 RAGAS</td><td>保持现有自研指标表述。</td></tr>
+</table>
+
+<!-- ========== 六、下一步 ========== -->
+<h2>六、下一步建议</h2>
+<ol>
+  <li><b>简历层（零风险，建议立刻做）</b>：落地 P0-1/P0-3/P1-1~4 六条（去版本号、加小团队信号、lexy 口径、技术债重框架、写全栈重框架、AI 时间线），改 <code>resumes/简历-v4.6-AI落地版.md</code> 后用 <code>tools/</code> 脚本重生成 docx/pdf 覆盖前代成品。</li>
+  <li><b>数据层（取决于你）</b>：P0-2 token-hub 有数补 / 无数降调；P1-5 补真实技术栈厚度。</li>
+  <li><b>面试备稿（独立任务）</b>：把本报告第四节红字清单 + 豆包 12 问做成 STAR 应答稿，<b>重点补 F 动机红旗与 A 框架词理论</b>。</li>
+  <li><b>本报告的定位</b>：仅做诊断，未改动 v4.6。若采纳上述意见，告诉我，我来改 v4.6 并同步更新 <code>README.md</code> 投递版索引。</li>
+</ol>
+
+<footer>
+  本报告由招聘官视角（HR/老板/+1 三视角）独立打分，并融合豆包 v4.6 评估（<code>doubao-v4.6-pinggu.txt</code>）与林知行修改意见汇总（<code>reports/简历-v4.6-修改意见汇总-doubao-2026-08-13.md</code>）。
+  所有红字标注均为"诚实边界内的放宽/包装表述"，配套补给清单旨在面试前补齐弹药，<b>绝不鼓励虚构数据</b>。生成时间：2026-08-14。
+</footer>
+
+</div>
+</body>
+</html>

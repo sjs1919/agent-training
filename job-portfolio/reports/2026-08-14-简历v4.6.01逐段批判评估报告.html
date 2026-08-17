@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>简历 v4.6.01 逐段批判评估报告</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2733; --sub:#5b6675; --line:#e3e8ef;
+    --accent:#2257d6; --good:#1f8a4c; --warn:#c77700; --bad:#c0392b; --chip:#eef2f8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.65;font-size:15px}
+  .wrap{max-width:1040px;margin:0 auto;padding:34px 26px 60px}
+  header.top{border-bottom:3px solid var(--accent);padding-bottom:16px;margin-bottom:22px}
+  h1{font-size:25px;margin:0 0 6px;letter-spacing:.5px}
+  .meta{color:var(--sub);font-size:13.5px}
+  .meta b{color:var(--ink)}
+  h2{font-size:19px;margin:34px 0 14px;padding-left:11px;border-left:5px solid var(--accent)}
+  h3{font-size:16px;margin:20px 0 8px;color:var(--ink)}
+  p{margin:8px 0}
+  .lead{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0}
+  /* overall score */
+  .overall{display:flex;gap:18px;flex-wrap:wrap;align-items:stretch;margin:16px 0}
+  .score-box{flex:0 0 200px;background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:18px;text-align:center;box-shadow:0 1px 3px rgba(20,30,50,.05)}
+  .score-num{font-size:46px;font-weight:800;color:var(--accent);line-height:1}
+  .score-grad{font-size:14px;color:var(--sub);margin-top:4px}
+  .score-note{flex:1;min-width:280px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:16px 18px}
+  .score-note ul{margin:6px 0 0;padding-left:18px}
+  .score-note li{margin:5px 0}
+  /* consistency defects */
+  .defect{background:#fff6f4;border:1px solid #f3c9c2;border-radius:10px;padding:6px 16px;margin:10px 0}
+  .defect h3{color:var(--bad);margin:12px 0 4px}
+  .defect li{margin:6px 0}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;
+    vertical-align:middle;margin-left:6px}
+  .t-p0{background:#fdecea;color:var(--bad)}
+  .t-p1{background:#fff3e0;color:var(--warn)}
+  .t-p2{background:#eef2f8;color:var(--accent)}
+  /* section card */
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:18px 20px;margin:16px 0;box-shadow:0 1px 3px rgba(20,30,50,.04)}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
+    border-bottom:1px dashed var(--line);padding-bottom:10px;margin-bottom:12px}
+  .sec-title{font-size:16.5px;font-weight:700}
+  .sec-loc{color:var(--sub);font-size:12.5px;margin-top:2px}
+  .badge{flex:0 0 auto;text-align:center;background:var(--chip);border-radius:10px;
+    padding:8px 12px;min-width:78px}
+  .badge .b-num{font-size:23px;font-weight:800;line-height:1}
+  .badge .b-grad{font-size:12px;color:var(--sub)}
+  .b-A{color:var(--good)} .b-B{color:var(--accent)} .b-C{color:var(--warn)} .b-D{color:var(--bad)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+  @media(max-width:720px){.cols{grid-template-columns:1fr}.score-box{flex:1}}
+  .col{border-radius:9px;padding:11px 13px}
+  .col-g{background:#f1f8f3;border:1px solid #cfe9d6}
+  .col-w{background:#fdf6ef;border:1px solid #f0dcc2}
+  .col-f{background:#eef3fb;border:1px solid #ccdbf3}
+  .col h4{margin:0 0 6px;font-size:13.5px;letter-spacing:.4px}
+  .col-g h4{color:var(--good)} .col-w h4{color:var(--warn)} .col-f h4{color:var(--accent)}
+  .col ul{margin:0;padding-left:17px}
+  .col li{margin:5px 0;font-size:13.8px}
+  .quote{background:#fafbfc;border-left:3px solid var(--line);padding:8px 12px;margin:10px 0;
+    color:var(--sub);font-size:13px}
+  /* priority summary */
+  table.pri{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.8px}
+  table.pri th,table.pri td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  table.pri th{background:var(--chip);font-weight:700}
+  table.pri td.p{font-weight:700;text-align:center;white-space:nowrap}
+  .p0{color:var(--bad)} .p1{color:var(--warn)} .p2{color:var(--accent)}
+  footer{margin-top:40px;color:var(--sub);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>简历 v4.6.01 逐段批判评估报告</h1>
+  <div class="meta">
+    评估对象：<b>简历-v4.6.01-AI落地版.md</b> ｜ 评估日期：<b>2026-08-14</b> ｜
+    评估立场：<b>招聘官视角（HR + 老板 + 直接上级）+ 批判性复核</b><br>
+    方法论：对简历每一个内容区块独立打分（百分制 + 等级），逐项列 <b>优点 / 劣势 / 修正意见</b>；
+    不客套、不堆赞，重点暴露口径硬伤与可验证性缺口。
+  </div>
+</header>
+
+<div class="lead">
+  <b>评估前提（先讲清楚，避免误读）：</b>这是一份"<b>已吸收豆包零风险修改</b>"的版本，整体包装水平已显著收敛，
+  诚实红线（GMV 起步期 / Agent 未规模化 / 不编数据）守得住。因此本报告<b>不再重复"去 LLMOps 包装"这类已解决问题</b>，
+  而是聚焦三个更深层的问题：<b>① 段间口径不一致</b>（最致命）；<b>② 量化颗粒度断层</b>（硬数字多但"收益证据"少）；
+  <b>③ 总监人设与 IC（个人贡献者）动作的张力</b>。逐段打分见下，硬伤汇总见第二节。
+</div>
+
+<!-- ============ 整体结论 ============ -->
+<h2>一、整体结论与综合评分</h2>
+<div class="overall">
+  <div class="score-box">
+    <div class="score-num">74</div>
+    <div class="score-grad">B（良好，但未达"免疑"）</div>
+  </div>
+  <div class="score-note">
+    <b>综合判断：</b>这是一份"经验真实、方向对、但经不起逐段抠"的简历。
+    <ul>
+      <li><b>强项</b>：行业跨度宽、管理成效有 before/after、AI 落地有真实样板（lexy）、诚实标注到位。</li>
+      <li><b>软肋</b>：段与段之间口径打架（"团队能落地" vs "尚未铺开"）、700+ 设备重复 3 次、核心能力轴漏改残留"个人全栈验证"、量化多为"规模/数量"而少"收益/影响"。</li>
+      <li><b>结论</b>：能过 HR 初筛与老板初面，但<b>二面的深度追问会集中打在"AI 实际产能证据"和"段间矛盾"上</b>。
+      分数不上 80，主要丢在一致性，而非经历本身。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============ 跨段硬伤 ============ -->
+<h2>二、跨段一致性硬伤（最该先修，优先级高于任何单段）</h2>
+<div class="defect">
+  <h3>🔴 硬伤 1：「团队能落地 AI」与「尚未规模化铺开」自相矛盾 <span class="tag t-p0">P0</span></h3>
+  <ul>
+    <li>领导价值主张："把 Agent 从个人验证推成<b>团队能落地的工程化能力</b>"；未来工场核心职责："把 Agent 技术从个人验证变成<b>团队生产交付能力</b>"。</li>
+    <li>但排产项目明确写"<b>当前为工程化验证阶段，尚未规模化铺开</b>"；lexy 是 3 周 MVP 样板。</li>
+    <li><b>冲突点</b>：全文两处宣称"团队生产交付能力"，可证伪的 AI 生产产出只有 lexy 一个样板。老板/上级会直接问："你说团队能落地，第二个落地项目在哪？"</li>
+    <li><b>修正</b>：把"团队生产交付能力"的锚点<b>只锁在 lexy</b>（已上线生产）；排产与 Agent 治理统一表述为"<b>工程化验证 + 方法论沉淀，待规模化</b>"，不再用"生产交付能力"这种完成时态。</li>
+  </ul>
+
+  <h3>🔴 硬伤 2：「个人验证 / 个人全栈验证」残留，与 v4.6.01 修正口径打架 <span class="tag t-p0">P0</span></h3>
+  <ul>
+    <li>v4.6.01 已把 lexy 段"亲手写全栈"改成"<b>转型期先亲手趟通全链路、验证可行，再沉淀 playbook 移交团队</b>"——这是对的。</li>
+    <li>但<b>核心能力轴①</b>仍写："<b>个人全栈验证</b> Vibe Coding → 组队交付 lexy"；一句话 Pitch 仍写"把 Agent 从<b>个人验证</b>推成团队能力"。</li>
+    <li><b>冲突点</b>：同一份简历，同一件事，lexy 段说"示范移交"，核心能力轴说"个人验证"——这是<b>改了下游漏了上游</b>的典型残留。</li>
+    <li><b>修正</b>：核心能力轴①改为"<b>亲自趟通全链路并沉淀 playbook</b> → 组队交付 lexy"；Pitch 去掉"个人验证"。</li>
+  </ul>
+
+  <h3>🟡 硬伤 3：700+ 设备在同一公司段内重复 3 次 <span class="tag t-p1">P1</span></h3>
+  <ul>
+    <li>出现位置：业务背景（L33 隐含）→ 核心职责（L35"规模到 700+ 设备"）→ 智能机器管理系统（L59"700+ 设备…"）。加上快照（L10）共 4 次。</li>
+    <li><b>问题</b>：智能机器管理系统段（L58-60）与核心职责里的"从 0 到 1 建设并规模到 700+ 设备"疑似<b>同一系统分两段写</b>，结构混乱、信息冗余。</li>
+    <li><b>修正</b>：明确二者是同一系统的"职责概述 vs 成果细节"，或把机器管理系统合并进核心职责，避免读者误以为是两个项目。</li>
+  </ul>
+
+  <h3>🟡 硬伤 4：量化"规模/数量"多，"收益/影响"少 <span class="tag t-p1">P1</span></h3>
+  <ul>
+    <li>硬数字密度高：600 亿放款、4300 万客户、700+ 设备、4500 万绑定、3 周 vs 6 周……但<b>收益类数字（省了多少人/钱/时间、提升多少率）</b>几乎都用"明显下降 / 明显降下来 / 抢出窗口"等主观词。</li>
+    <li><b>影响</b>：HR 扫读觉得"有量"，但老板算账时抓不到"你带来的可货币化价值"。</li>
+    <li><b>修正</b>：每个"明显/降一半"补一个可货币化或可比锚点（哪怕区间估算，标注"估算"）。</li>
+  </ul>
+
+  <h3>🟢 硬伤 5：三处"能复用什么"迁移说辞略生硬 <span class="tag t-p2">P2</span></h3>
+  <ul>
+    <li>绿信"高并发可迁移 Agent 服务化"、博时达"报关调度对应制造业调度"、腾讯"亿级消息对应制造业"——这三句迁移逻辑由读者自连，且"制造业亿级消息"有夸大嫌疑（700+ 设备未必亿级消息）。</li>
+    <li><b>修正</b>：迁移说辞要么砍掉（经历本身已说明能力），要么用"可迁移能力：X"统一格式；"亿级消息"改为"高吞吐消息处理"。</li>
+  </ul>
+</div>
+
+<!-- ============ 逐段评估 ============ -->
+<h2>三、逐段评估（按简历顺序）</h2>
+
+<!-- 段1 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">① 标题行 + 一句话 Pitch（L1–5）</div>
+      <div class="sec-loc">定位标签 + 个人价值主张首句</div>
+    </div>
+    <div class="badge"><div class="b-num b-B">78</div><div class="b-grad">B+</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>定位清晰：岗位 / 职级 / 城市 / 年限四要素齐全，不堆技术名词。</li>
+      <li>Pitch 以"业务产出"收尾（"落到实实在在的业务产出"），方向对，比列技术栈的总监简历高级。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li><b>"技术总监及以上"</b>定位模糊——"及以上"让老板问"你到底想投总监还是 VP/CTO？"显得目标不确定。</li>
+      <li>Pitch 里"<b>把 Agent 从个人验证推成团队能落地的工程化能力</b>"提前自曝软肋（个人验证），且与排产"未铺开"张力（见硬伤1）。</li>
+      <li>"10 年管理"缺锚点：2015 任技术总监其实更早，表述可更精确。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>求职目标明确为"<b>AI 负责人 / 技术总监</b>"，删"及以上"。</li>
+    <li>Pitch 去掉"个人验证"，改为"把 AI 从单点验证沉淀为团队可复用的工程化体系"。</li>
+    <li>"10 年管理"补锚："自 2015 年起任技术总监"。</li>
+  </ul></div>
+</div>
+
+<!-- 段2 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">② 关键成果快照（L7–12）</div>
+      <div class="sec-loc">四项业务收益导向摘要</div>
+    </div>
+    <div class="badge"><div class="b-num b-B">72</div><div class="b-grad">B-</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>按"提效 / 运维 / 风险 / 团队"四维组织，结构清爽，业务收益导向正确。</li>
+      <li>有量化（3 周/50%、700+ 设备、4 主管 3 骨干）。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li><b>与正文逐字重复率过高</b>：lexy 3 周/50%、700+ 设备、4 主管 3 骨干 6 场 200+ 在快照、价值主张、核心能力轴、工作经历里各出现一次，全篇至少 4 遍。</li>
+      <li>"金融等保三级经验 + Agent 治理体系 + 自研网关"三层不同性质并列，层级乱、信息密度虚高。</li>
+      <li>"6 场覆盖 200+ 人"中 200+ 是否含重复听众？小数字 + 大覆盖，务实性质疑。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>快照改为"<b>3 个最差异化、且与下文不重复的硬点</b>"，其余交给正文，避免自我复读。</li>
+    <li>把"经验/体系/网关"拆成两句，明确性质。</li>
+    <li>200+ 注明"含跨场次重复"或给"独立听众约 N 人"。</li>
+  </ul></div>
+</div>
+
+<!-- 段3 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">③ 一、领导价值主张（L14–16）</div>
+      <div class="sec-loc">个人方法论与建队经历综述</div>
+    </div>
+    <div class="badge"><div class="b-num b-B">75</div><div class="b-grad">B</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>有个人标签："把乱的理清楚、把散的捏成体系"，比空泛"领导力强"具体。</li>
+      <li>三种建队情形具体（0→ / 30+→150+ / 空降 6 职能），行业跨度串联底层能力。</li>
+      <li>结尾"大团队靠体系杠杆，小团队就扁平快"——v4.6.01 新增的小团队信号，有效化解管理错配质疑。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li><b>约 340 字散文感重</b>，招聘官 6 秒扫读抓不住"你最强的 1 件事"。</li>
+      <li>"底层是同一套工程化能力"是<b>论断非证据</b>，缺"所以新东家能得到什么具体不一样"的落点。</li>
+      <li><b>"Vibe Coding"</b>：2025 才流行的词，20 年研发背景用它，部分严肃老板觉"蹭热点"，且与"工程化体系"人设略冲突。</li>
+      <li>AI 实质成果仅 lexy(3 周样板)+排产(验证)，"把 AI 真正用到交付里"主张略重。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>压缩到 <b>180–220 字</b>，首句直接给"最强 1 件事"（如"擅长把救火型团队改造成按节奏交付的体系"）。</li>
+    <li>"Vibe Coding"改为"<b>自然语言驱动开发（NLD）工程化方法</b>"更稳，或删。</li>
+    <li>结尾补一句可迁移落点："可给你的团队带来 X（体系/方法论/AI 落地节奏）"。</li>
+  </ul></div>
+</div>
+
+<!-- 段4 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">④ 二、核心能力三轴（L18–27）</div>
+      <div class="sec-loc">AI 负责人三轴能力地图</div>
+    </div>
+    <div class="badge"><div class="b-num b-B">73</div><div class="b-grad">B-</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>三轴（战略落地 / 组织人才 / 工程架构）对 AI 负责人岗对口，每条带证据链。</li>
+      <li>③ 轴已去 LLMOps 包装（token-hub 表述干净）。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li><b>① 轴残留"个人全栈验证 Vibe Coding"</b>——与 lexy 段已改的"示范趟通"口径不一致（硬伤2）。</li>
+      <li>三轴与"快照 + 价值主张 + 工作经历"三线重复，全文字数膨胀，总监岗其实可更精炼。</li>
+      <li>② 轴"指标有出处、考核可追溯"好，但无 1 例具体指标。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>① 轴改为"<b>亲自趟通全链路并沉淀 playbook</b> → 组队交付 lexy"，与 lexy 段统一。</li>
+    <li>评估是否保留本节：若保留则去重；若删，能力证据已由经历承载。</li>
+    <li>② 轴补 1 个绩效指标实例（如"交付准时率从 X 到 Y"）。</li>
+  </ul></div>
+</div>
+
+<!-- 段5 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">⑤ 未来工场·业务背景 + 核心职责（L31–35）</div>
+      <div class="sec-loc">当前公司概述与总责</div>
+    </div>
+    <div class="badge"><div class="b-num b-B">80</div><div class="b-grad">B+</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>空降 6 职能 + 救火痛点（需求拖 2 月 / 每周救火 / 半夜爬起）有画面、真实。</li>
+      <li>AI 时间线补正（2022–2024 底座，2024 起 AI 主线）诚实，不抢功。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li>"从 0 到 1 建设并规模到 700+ 设备"与机器管理系统段（L59）疑似<b>同一系统分两段</b>（硬伤3）。</li>
+      <li>"把 Agent 变成团队生产交付能力"与排产"未铺开"矛盾（硬伤1）。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>"团队生产交付能力"改为"<b>团队工程化验证能力</b>"，把完成时态降调。</li>
+    <li>明确核心职责与机器管理系统是"概述 vs 细节"，或合并。</li>
+  </ul></div>
+</div>
+
+<!-- 段6 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">⑥ 未来工场·管理转型（L37–42）</div>
+      <div class="sec-loc">接手时 vs 现在 + 三段推进 + 人才梯队</div>
+    </div>
+    <div class="badge"><div class="b-num b-A">88</div><div class="b-grad">B+</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li><b>全文最强段</b>：before/after 对比（救火→双周迭代 70–90% 负载率 / 绩效链路 / 正常上下班），有硬量化。</li>
+      <li>人才梯队 4 主管 3 骨干 1 连续晋升具体，三段推进方法论清晰。</li>
+      <li>"150+ 规模下逐步沉淀"限定（v4.6.01 新增）化解管理错配。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li>"双周迭代 7 工具闭环"——<b>"7 工具"黑盒</b>，不点名则像凑数。</li>
+      <li>"绩效数据链路贯通"好，但<b>无 1 例指标</b>（如交付准时率从 X 到 Y、故障率下降 Z%）。</li>
+      <li>与快照 / 核心能力轴②重复"4 主管 3 骨干 / 双周迭代"。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>补 <b>1 个绩效指标实例</b>（哪怕"需求按期交付率从 ~60% 到 ~90%"）。</li>
+    <li>"7 工具"点名 2–3 个（如 Jira / Confluence / 自研度量台），否则删。</li>
+    <li>人才数字保留一处即可，避免三处复读。</li>
+  </ul></div>
+</div>
+
+<!-- 段7 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">⑦ 未来工场·lexy 商城（L44–49）</div>
+      <div class="sec-loc">AI 驱动全流程交付样板项目</div>
+    </div>
+    <div class="badge"><div class="b-num b-B">82</div><div class="b-grad">B+</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>3 周 vs 6 周已改为"<b>同等 scope 常规交付节奏约 6 周</b>"，口径公平。</li>
+      <li>AI 自动化验收测试减半、上线时间（2026.06 俄罗斯）、"第一个 AI 全流程样板"定位清晰。</li>
+      <li>MVP"重快速验证轻过度设计"（v4.6.01 新增）有效化解技术债质疑，playbook 继承迭代。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li><b>GMV / 商业敏感度最弱</b>："订单持续进来"无数字，老板想问"3 周抢出的窗口有多大？"</li>
+      <li>"前后端框架、联调交互全程参与 / 亲手趟通全栈"——<b>偏 IC 信号</b>，与"不靠堆人头管团队"人设略冲突，老板疑"你到底在管还是在写代码？"</li>
+      <li>"Java MCP Server 做鉴权 / 限流"——MCP 通常暴露工具，鉴权限流一般在网关层，<b>选型合理性存疑</b>，可能暴露技术深度浅。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>补 GMV / 订单量级区间（如"月均 X 单 / GMV Y 万"，标注估算），这是 AI 负责人最该有的商业论证。</li>
+    <li>"全栈全程参与"改为"<b>架构设计与关键链路把关</b>"，弱化 IC、强化负责人视角。</li>
+    <li>"Java MCP Server 鉴权限流"核实真实架构；若确为 MCP 层做，补一句说明其定位，否则改归到网关。</li>
+  </ul></div>
+</div>
+
+<!-- 段8 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">⑧ 未来工场·企业级 Agent 排产助手（L51–56）</div>
+      <div class="sec-loc">团队级工程化验证项目</div>
+    </div>
+    <div class="badge"><div class="b-num b-C">70</div><div class="b-grad">B-</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>6 环节业务背景真实（订单评审→物料→产能→进度→合同→调度）。</li>
+      <li>RAG 合同检索 + 规则引擎算真实业务规则（坏件口径 / 耗料公式）组合合理，Agent 评估闭环自研指标（工具 F1 / 完整性 / 订单命中）有工程化思维。</li>
+      <li>诚实标注"尚未规模化铺开"保留，守红线。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li>"<b>用 4 周系统训练走完 Agent 全链路</b>"——"系统训练"歧义（训练模型 or 本人学习？），老板/HR 会困惑。</li>
+      <li>"已在产线<b>试运行，支撑核心排产环节</b>" vs "尚未规模化铺开"——"<b>支撑核心</b>"与"试运行"矛盾，夸大。</li>
+      <li>商业价值"方向是替代部分人工排产"——<b>纯方向无验证数据</b>（缩短多少？）。</li>
+      <li>与 lexy（已上线）并列在"当前公司工作经历"下，易让招聘官误判为已落地产出。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>"系统训练"改"<b>技术摸底与原型验证</b>"，消除歧义。</li>
+    <li>"支撑核心排产环节"改"<b>在 1 条产线试运行验证</b>"，与"未铺开"自洽。</li>
+    <li>商业价值给"<b>目标缩短排产周期 X%</b>"而非方向；并在小节标题或背景注明"工程化验证阶段"，与 lexy 的"已上线"明确分层。</li>
+  </ul></div>
+</div>
+
+<!-- 段9 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">⑨ 未来工场·智能机器管理系统（L58–60）</div>
+      <div class="sec-loc">生产运营核心操作系统</div>
+    </div>
+    <div class="badge"><div class="b-num b-C">68</div><div class="b-grad">C+</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>700+ 设备细分（3D 打印 330+ / 尼龙 60+ / 金属 50+ / CNC 250+）具体，7×24 无人值守、多区域多集群、健康度指标体系。</li>
+      <li>价值（释放夜班盯守）清晰。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li><b>全篇最薄</b>（2 行），且与核心职责里的"700+ 设备"重复（硬伤3）。</li>
+      <li><b>零量化收益</b>："运维人力依赖明显下降"——"明显"是主观词，释放几人夜班？年省多少？全无。</li>
+      <li>与核心职责疑似同一系统却分两段，结构混乱。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>补"<b>释放 N 人夜班 / 年省人力成本约 X 万</b>"（估算标注）。</li>
+    <li>合并进核心职责或明确"同一系统的成果细节视角"，删重复。</li>
+  </ul></div>
+</div>
+
+<!-- 段10 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">⑩ 绿信集团（L62–67）</div>
+      <div class="sec-loc">资深架构师 → 研发总监（2016–2022）</div>
+    </div>
+    <div class="badge"><div class="b-num b-B">83</div><div class="b-grad">B</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>规模数字硬：600 亿放款 / 4300 万客户 / 87+ 资金方 / 40+ 流量方，等保三级，自主知识产权（蜂鸟 / 天秤）。</li>
+      <li>30+→150+ 团队成长、3 年升总监，有"能复用什么"锚点。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li><b>缺管理细节</b>：150+ 跨职能怎么管的？与未来工场方法论重复但无新信息。</li>
+      <li>"3 年升总监"未标<b>具体升总监年份</b>（2019？），时间线模糊。</li>
+      <li>"可迁移 Agent 服务化平台"逻辑跳跃（2016–2022 金融 vs 2024+ AI），需读者自连。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>标升总监年份（如"2019 升研发总监"）。</li>
+    <li>补 1 个管理量化（交付准时率 / 团队离职率 / 复用率）。</li>
+    <li>迁移说辞砍或统一格式（见硬伤5）。</li>
+  </ul></div>
+</div>
+
+<!-- 段11 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">⑪ 博时达供应链（L69–72）</div>
+      <div class="sec-loc">技术总监（2015–2016，1 年期）</div>
+    </div>
+    <div class="badge"><div class="b-num b-C">62</div><div class="b-grad">C+</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>跨境进口电商从 0 海关报备 / 通关 / ERP / 三单一证，有"能复用什么"锚点（对应制造业调度）。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li><b>全文最薄</b>（仅背景 + 复用），无任何成果数字。</li>
+      <li>"跨境创业公司"措辞可能弱化（1 年 = 失败？），需中性。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>补 1 个成果数字（如"搭建 X 模块支撑 Y 单/日通关"）。</li>
+    <li>"跨境创业公司"改"<b>跨境电商（1 年期项目）</b>"中性表述。</li>
+  </ul></div>
+</div>
+
+<!-- 段12 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">⑫ 腾讯 MIG（L74–78）</div>
+      <div class="sec-loc">高级开发 / 组长（2011–2015）</div>
+    </div>
+    <div class="badge"><div class="b-num b-B">80</div><div class="b-grad">B+</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>硬数字：4500 万绑定 / 1100 万月活 / 日均 PV 1200 万，3 次股票，T2.3→T3.2 晋级。</li>
+      <li>大厂背书 + 快速晋级，对总监岗有信任加成。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li>离现在 11 年，细节可精简但数字保留合理。</li>
+      <li>"<b>制造业亿级消息处理</b>"——700+ 设备未必亿级消息，<b>夸大嫌疑</b>（硬伤5）。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>"亿级消息"改为"<b>高吞吐消息处理</b>"，避免可证伪夸大。</li>
+    <li>复用说辞与硬伤5统一处理。</li>
+  </ul></div>
+</div>
+
+<!-- 段13 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">⑬ 金蝶软件（L80–84）</div>
+      <div class="sec-loc">高级开发 / 项目经理（2006–2011）</div>
+    </div>
+    <div class="badge"><div class="b-num b-B">78</div><div class="b-grad">B-</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>CRM 核心模块、2010 创新奖、4 年 7 次考核 4 次优秀，有复用锚点。</li>
+      <li>最早经历 3 行精简合理，不喧宾夺主。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li>"能复用什么：企业级软件架构 + 集团客户管理"与前段复用说辞重复，可合并。</li>
+      <li>无管理信息（项目经理），但早期合理，非硬伤。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>复用说辞合并到统一格式（见硬伤5），减少重复感。</li>
+  </ul></div>
+</div>
+
+<!-- 段14 -->
+<div class="sec">
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">⑭ 四、教育与其他（L86–97）</div>
+      <div class="sec-loc">教育 / AI 技术栈 / 证书 / 跨行业沉淀</div>
+    </div>
+    <div class="badge"><div class="b-num b-B">74</div><div class="b-grad">B-</div></div>
+  </div>
+  <div class="cols">
+    <div class="col col-g"><h4>优点</h4><ul>
+      <li>武大 985/211 软件工程清晰；PMP 认证硬；跨行业沉淀线完整。</li>
+      <li>AI 技术栈列了 LangGraph / MCP / RAG 等，方向对口。</li>
+    </ul></div>
+    <div class="col col-w"><h4>劣势 / 风险</h4><ul>
+      <li>"<b>token-hub</b>"是自家项目名，放技术栈像广告；"<b>StateGraph</b>"与 LangGraph 重复（StateGraph 是 LangGraph 概念）。</li>
+      <li><b>技术栈厚度缺口</b>：缺向量库 / embedding / RAG 框架——排产用了 RAG 却不在栈里明示，总监面试官必问 RAG 细节，暴露浅。</li>
+      <li>"多次优秀员工 / 期权股权激励"——"多次"模糊，期权哪家混在一起弱。</li>
+      <li>无硕士（部分总监 JD 要求），但不编；可考虑"持续学习"补位。</li>
+    </ul></div>
+  </div>
+  <div class="col col-f" style="margin-top:10px"><h4>修正意见</h4><ul>
+    <li>技术栈去 token-hub / StateGraph 重复；<b>补真实 RAG 组件</b>（向量库如 Milvus/Chroma、检索框架），若真用过。</li>
+    <li>"多次"具体化（如"腾讯 3 次股票 + 未来工场期权"）。</li>
+    <li>无硕士不编，但可加"持续跟进 AI 前沿（课程 / 社区）"体现学习力。</li>
+  </ul></div>
+</div>
+
+<!-- ============ 修正优先级汇总 ============ -->
+<h2>四、修正优先级汇总（落地下一版 v4.6.02 的清单）</h2>
+<table class="pri">
+  <thead><tr><th class="p">优先级</th><th>问题</th><th>涉及段落</th><th>具体动作</th></tr></thead>
+  <tbody>
+    <tr><td class="p p0">P0</td><td>"团队生产交付能力"与"未铺开"矛盾</td><td>价值主张/核心职责/排产</td><td>AI 产能锚点只锁 lexy；排产统一"工程化验证待规模化"</td></tr>
+    <tr><td class="p p0">P0</td><td>"个人验证/个人全栈验证"残留</td><td>核心能力轴①/Pitch</td><td>改为"亲自趟通全链路并沉淀 playbook"，与 lexy 段统一</td></tr>
+    <tr><td class="p p1">P1</td><td>700+ 设备重复 3–4 次</td><td>核心职责/机器管理系统</td><td>明确同一系统两视角或合并，删冗余</td></tr>
+    <tr><td class="p p1">P1</td><td>量化多收益少</td><td>全局</td><td>每个"明显/降一半"补可货币化或可比锚点（标估算）</td></tr>
+    <tr><td class="p p1">P1</td><td>lexy 缺 GMV / 偏 IC 信号</td><td>lexy 段</td><td>补 GMV 区间；"全栈参与"改"架构把关"</td></tr>
+    <tr><td class="p p1">P1</td><td>排产"支撑核心"夸大</td><td>排产段</td><td>"在 1 条产线试运行验证"，与未铺开自洽</td></tr>
+    <tr><td class="p p1">P1</td><td>技术栈厚度缺口（RAG 组件）</td><td>教育/技术栈</td><td>补真实向量库/检索框架；去 token-hub/StateGraph 重复</td></tr>
+    <tr><td class="p p2">P2</td><td>价值主张 340 字散文</td><td>价值主张</td><td>压到 180–220 字；去 Vibe Coding 蹭热点词</td></tr>
+    <tr><td class="p p2">P2</td><td>管理转型缺指标实例</td><td>管理转型段</td><td>补 1 个绩效指标（如按期交付率 X→Y）</td></tr>
+    <tr><td class="p p2">P2</td><td>"亿级消息"夸大 / 迁移说辞生硬</td><td>腾讯/绿信/博时达</td><td>"亿级消息"改"高吞吐"；迁移说辞统一或砍</td></tr>
+    <tr><td class="p p2">P2</td><td>博时达最薄无数字</td><td>博时达段</td><td>补 1 成果数字；"创业公司"改中性</td></tr>
+    <tr><td class="p p2">P2</td><td>绿信缺升总监年份/管理量化</td><td>绿信段</td><td>标升总监年；补 1 管理量化</td></tr>
+  </tbody>
+</table>
+
+<div class="lead" style="margin-top:24px">
+  <b>一句话收尾：</b>v4.6.01 的"包装收敛"已经做到位，但<b>分数卡在 74 不是因为经历差，而是因为"自己跟自己打架"</b>——
+  两段宣称团队能落地 AI、同一数字重复 4 遍、核心能力轴漏改、量化只给规模不给收益。
+  修掉 P0（2 条）+ P1（5 条）后，预计可稳上 <b>82–85（A- 边缘）</b>；P2 是锦上添花。
+  要不要我直接落一版 <b>v4.6.02</b> 把这些吸收进去？
+</div>
+
+<footer>
+  本报告由简历优化专家立场生成，针对 v4.6.01 真源逐段独立评估。所有批判基于原文，未编造任何经历或数据。
+  诚实红线（GMV 起步期 / Agent 未规模化 / 不编日调用量 / 不编微调 / 不编向量库）全程未被要求突破，本报告亦不主张突破。
+</footer>
+
+</div>
+</body>
+</html>
