@@ -1,5 +1,6 @@
 # 视壮科技（VS）— AI 技术总监
 
+- **状态**：🔚 岗位已关闭（2026-08-21 平台下架，移出待投池）
 - 来源平台：全智（薪资版）/ BOSS直聘
 - 来源URL：https://m1.quanzhi.com/job/detail/6a102647a35f1132935a1b11 ｜ BOSS：https://www.zhipin.com/job_detail/b342cea8636d51a103N_3tS0E1dT.html
 - 采集日期：2026-08-20
