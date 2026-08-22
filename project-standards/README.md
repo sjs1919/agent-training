@@ -1,6 +1,6 @@
 # 项目规范模板包
 
-`TEMPLATE_VERSION: 1.0`
+`TEMPLATE_VERSION: 1.2`
 
 新项目开箱即用的「双仓 + 规则 + 四门禁自动挡」体系：复制两个子模板 + 替换占位符，即可运转 spec → plan → todo → 四门禁全流程。
 
@@ -27,6 +27,13 @@
 - 技能集成：`rules/common/skill-integration.md` — Superpowers-zh Brainstorming、CodeGraph、Understand-Anything 三 Skill 与工作流的联动规范
 - workflow.md：新增阶段1「需求变更影响分析」、阶段0 UI 原型设计指引、门禁引用
 - rules-index.md：新增 skill-integration 两条触发器（需求澄清 + 需求变更影响分析）
+
+### [1.2] - 2026-08-21
+
+#### Added
+
+- 踩坑记录机制：`rules/common/pitfalls.md` — 项目内踩坑日志（`docs/pitfalls/`）遇坑即记，重复出现 ≥2 次升级为 rules 红线（标注来源），规范从实践中成长；与四门禁 CR 走读衔接
+- rules-index.md：新增 pitfalls 触发行（踩坑 / 教训沉淀 / 规范反哺）
 
 > 约定：模板改进只回填本模板包并在此记一行变更（Added / Changed / Fixed 三类）；已复制的项目对照变更记录按需升级，防模板自身漂移。
 

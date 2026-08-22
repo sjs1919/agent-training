@@ -15,6 +15,7 @@
 | 需求变更影响分析 / 知识图谱（CodeGraph + Understand-Anything） | → `common/skill-integration.md` |
 | 分支 / 提交 / 代码更新 | → `common/git.md` |
 | 文档流转 / 归档 / 待办登记 | → `common/docs-flow.md` |
+| 踩坑 / 教训沉淀 / 规范反哺 | → `common/pitfalls.md` |
 | 前后端接口对接 / API 文档同步 | → `common/api-contract.md` |
 | 部署 / 发布 / 镜像构建 / 回滚 | → `common/deployment.md` |
 | 服务器操作（读/写边界） | → `common/server-approval.md` |
