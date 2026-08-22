@@ -29,6 +29,12 @@
 | 运维 / 优雅关闭 | → `stack-go/ops.md` |
 | 构建 / 服务重启 / 版本约束 | → `stack-go/build.md` |
 | 前端组件 / 页面 / 状态管理 | → `stack-vue3/frontend-core.md` |
+| Python 分层 / 工具注册 / 数据源抽象 | → `stack-python/arch.md` |
+| Python 异常处理 / 工具返回值 | → `stack-python/error.md` |
+| Python 观测 / 审计 / span | → `stack-python/logging.md` |
+| MySQL / 迁移 / 种子数据 / tenant_id / WSL 数据库（Python） | → `stack-python/database.md` |
+| Python 测试执行 / pytest / mock LLM / eval | → `stack-python/testing.md` |
+| Python 版本 / Docker / WSL 构建 | → `stack-python/ops-build.md` |
 
 ## 新栈追加协议（三步）
 

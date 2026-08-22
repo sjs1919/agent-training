@@ -1,6 +1,6 @@
 # 项目规范模板包
 
-`TEMPLATE_VERSION: 1.2`
+`TEMPLATE_VERSION: 1.3`
 
 新项目开箱即用的「双仓 + 规则 + 四门禁自动挡」体系：复制两个子模板 + 替换占位符，即可运转 spec → plan → todo → 四门禁全流程。
 
@@ -34,6 +34,13 @@
 
 - 踩坑记录机制：`rules/common/pitfalls.md` — 项目内踩坑日志（`docs/pitfalls/`）遇坑即记，重复出现 ≥2 次升级为 rules 红线（标注来源），规范从实践中成长；与四门禁 CR 走读衔接
 - rules-index.md：新增 pitfalls 触发行（踩坑 / 教训沉淀 / 规范反哺）
+
+### [1.3] - 2026-08-22
+
+#### Added
+
+- stack-python 技术栈规则包（6 文件：arch/error/logging/database/testing/ops-build）--首个非 Go/Vue3 栈，验证「三步追加协议」可裁剪落地（九文件骨架按项目实际裁为 6）
+- 来源：agent-training demo 第二阶段重构启用（落位方案见 agent-training `docs/superpowers/specs/2026-08-22-模板包启用demo重构-design.md`）
 
 > 约定：模板改进只回填本模板包并在此记一行变更（Added / Changed / Fixed 三类）；已复制的项目对照变更记录按需升级，防模板自身漂移。
 
