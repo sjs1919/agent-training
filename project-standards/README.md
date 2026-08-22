@@ -40,6 +40,7 @@
 #### Added
 
 - stack-python 技术栈规则包（6 文件：arch/error/logging/database/testing/ops-build）--首个非 Go/Vue3 栈，验证「三步追加协议」可裁剪落地（九文件骨架按项目实际裁为 6）
+- rules/common/workflow.md：9 角色评估表新增「行业前提」列 + 图例（`{{INDUSTRY_DOMAIN_1}}`/`{{INDUSTRY_DOMAIN_2}}` 占位符，启用项目时替换为项目领域知识）--角色以行业知识为前提评审业务正确性
 - 来源：agent-training demo 第二阶段重构启用（落位方案见 agent-training `docs/superpowers/specs/2026-08-22-模板包启用demo重构-design.md`）
 
 > 约定：模板改进只回填本模板包并在此记一行变更（Added / Changed / Fixed 三类）；已复制的项目对照变更记录按需升级，防模板自身漂移。
